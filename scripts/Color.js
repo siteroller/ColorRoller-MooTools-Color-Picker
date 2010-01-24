@@ -144,16 +144,13 @@ Array.implement({
 	},
 	
 	fromRgb: function(space){
-		var v, hsl = 0, index = '', rgb = $unlink(this), order = [333,133,131,11,31,331,332,233,132,12,21,32,22];
+		var v, hsl = 0, rgb = $A(this);
+		rgb.sort(function(a,b){ return res = a - b });
+		var sort = [], index = $A(rgb);
 		
-		rgb.sort(function(a,b){
-			var res = a - b;
-			index += res > 0 ? 3 : (res < 0 ? 1 : 2);
-			return res;
-		});
-		for(i<3){
-			places[i] = rgbCopy.search(i);
-			rgbCopy[places[i]] = '';
+		for(var i = 0; i < 3; i++){
+			sort[i] = index.indexOf(this[i]);
+			index[sort[i]] = '';
 		}
 		
 		switch((space||'').toLowerCase().slice(-1)){
@@ -161,7 +158,7 @@ Array.implement({
 				v = rgb[2] / 2.55; 
 				span = v;  break; 
 			case 'g': 
-				v = rgb[0] / (rgb[0] - rgb[2] + 255) * 100;
+				v = rgb[0] / (rgb[0] - rgb[2] + 255) * 100 || 0;
 				span = 100;  break; 
 			case 'l': 
 				v = (rgb[2]*1 + rgb[0]*1) / 5.1; 
@@ -172,8 +169,9 @@ Array.implement({
 				}
 		}
 
-		var s = 100 * (rgb[0] / 2.55 - v) / (hsl - v), h = order.indexOf(index*1)%6;
+		var s = 100 * (rgb[0] / 2.55 - v) / (hsl - v) || 0;
 		var d = ((100 * (rgb[1] / 2.55 - v)) / s + v - hsl) / span;
+		var order = [210,120,21,12,102,201], h = order.indexOf((''+sort[0]+sort[1]+sort[2])*1);
 		h += h%2 ? 1-d : d;
 		return [h*60,s,v].map(function(i){ return Math.round(i||0) });	
 	},
