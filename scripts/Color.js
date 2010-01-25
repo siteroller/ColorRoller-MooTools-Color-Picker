@@ -146,19 +146,13 @@ Array.implement({
 	fromRgb: function(space){
 		var v, hsl = 0, rgb = $A(this);
 		rgb.sort(function(a,b){ return res = a - b });
-		var sort = [], index = $A(rgb);
-		
-		for(var i = 0; i < 3; i++){
-			sort[i] = index.indexOf(this[i]);
-			index[sort[i]] = '';
-		}
 		
 		switch((space||'').toLowerCase().slice(-1)){
 			default : 
 				v = rgb[2] / 2.55; 
 				span = v;  break; 
 			case 'g': 
-				v = rgb[0] / (rgb[0] - rgb[2] + 255) * 100 || 0;
+				v = rgb[0] / (rgb[0] - rgb[2] + 255) * 100;
 				span = 100;  break; 
 			case 'l': 
 				v = (rgb[2]*1 + rgb[0]*1) / 5.1; 
@@ -169,9 +163,16 @@ Array.implement({
 				}
 		}
 
-		var s = 100 * (rgb[0] / 2.55 - v) / (hsl - v) || 0;
+		var s = 100 * (rgb[0] / 2.55 - v) / (hsl - v);
 		var d = ((100 * (rgb[1] / 2.55 - v)) / s + v - hsl) / span;
-		var order = [210,120,21,12,102,201], h = order.indexOf((''+sort[0]+sort[1]+sort[2])*1);
+
+		for(var b, wish = '', i = 0; i < 3; i++){
+			b = rgb.indexOf(this[i]);
+			rgb[b] = '';
+			wish += b;
+		}
+		
+		var h = '210,120,021,012,102,201'.indexOf(wish)/4;
 		h += h%2 ? 1-d : d;
 		return [h*60,s,v].map(function(i){ return Math.round(i||0) });	
 	},
