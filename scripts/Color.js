@@ -165,14 +165,8 @@ Array.implement({
 
 		var s = 100 * (rgb[0] / 2.55 - v) / (hsl - v);
 		var d = ((100 * (rgb[1] / 2.55 - v)) / s + v - hsl) / span;
-
-		for(var b, wish = '', i = 0; i < 3; i++){
-			b = rgb.indexOf(this[i]);
-			rgb[b] = '';
-			wish += b;
-		}
-		
-		var h = '210,120,021,012,102,201'.indexOf(wish)/4;
+		for(var ind = '', i = 0; i < 3; i++) ind += rgb.indexOf(this[i]);
+		var h = '210,120,021,012,102,201,110,020,011,002,101,000'.indexOf(ind)/4%6;
 		h += h%2 ? 1-d : d;
 		return [h*60,s,v].map(function(i){ return Math.round(i||0) });	
 	},
