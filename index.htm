@@ -11,13 +11,13 @@
 				var color = [$('H').get('value'), $('S').get('value'), $('V').get('value')], type = ['g','l','v'], t = 0, rgbColor = color.hsbToRgb(); 
 				for(var i = 11; i > 5; i--){
 					var C = color.toRgb('hs'+type[t++]), hex = C.rgbToHex();
-					$('s'+(i--)).set('text', hex).setStyle('background-color', hex);
+					if (!Browser.Engine.trident) $('s'+(i--)).set('text', hex).setStyle('background-color', hex);
 					$('s'+i).set('text', C);
 				}
 				$('s5').set('text', color);
-				$('v4').setStyle('background-color', 'hsl('+color[0]+', '+color[1]+'%, '+color[2]+'%)').set('text',$('v4').getStyle('background-color'));
+				if (!Browser.Engine.trident) $('v4').setStyle('background-color', 'hsl('+color[0]+', '+color[1]+'%, '+color[2]+'%)').set('text',$('v4').getStyle('background-color'));
 				$('v3').set('text',$('v4').getStyle('background-color').substr(1).hexToRgb());
-				$('v2').set('text', rgbColor.rgbToHex()).setStyle('background-color', rgbColor.rgbToHex());
+				if (!Browser.Engine.trident) $('v2').set('text', rgbColor.rgbToHex()).setStyle('background-color', rgbColor.rgbToHex());
 				$('v1').set('text', rgbColor);
 				$('v0').set('text', color);
 			});

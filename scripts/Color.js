@@ -143,19 +143,24 @@ Array.implement({
 		return false;
 	},
 	
-	fromRgb: function(space){
-		var v, hsl = 0, rgb = $A(this);
-		rgb.sort(function(a,b){ return res = a - b });
+	fromRgb: function(space,decimal){
+		var v, 
+			hsl = 0, 
+			rgb = $A(this).sort(function(a,b){
+				return res = a - b 
+			}),
+			min = rgb[0], 
+			max = rgb[2];
 		
 		switch((space||'').toLowerCase().slice(-1)){
 			default : 
-				v = rgb[2] / 2.55; 
+				v = max / 2.55; 
 				span = v;  break; 
 			case 'g': 
-				v = rgb[0] / (rgb[0] - rgb[2] + 255) * 100;
+				v = min / (min - max + 255) * 100;
 				span = 100;  break; 
 			case 'l': 
-				v = (rgb[2]*1 + rgb[0]*1) / 5.1; 
+				v = (+max + +min) / 5.1; 
 				span = v * 2; 
 				if (v > 50){ 
 					span = 200 - span; 
@@ -163,15 +168,15 @@ Array.implement({
 				}
 		}
 
-		var s = 100 * (rgb[0] / 2.55 - v) / (hsl - v);
-		var d = ((100 * (rgb[1] / 2.55 - v)) / s + v - hsl) / span;
+		var s = 100 * (min / 2.55 - v) / (hsl - v);
+		var d = (100 * (rgb[1] / 2.55 - v) / s + v - hsl) / span;
 		for(var ind = '', i = 0; i < 3; i++) ind += rgb.indexOf(this[i]);
 		var h = '210,120,021,012,102,201,110,020,011,002,101,000'.indexOf(ind)/4%6;
 		h += h%2 ? 1-d : d;
-		return [h*60,s,v].map(function(i){ return Math.round(i||0) });	
+		return [h*60,s,v].map(function(i){ return decimal ? i||0 : Math.round(i||0) });	
 	},
 
-	toRgb: function(space){					
+	toRgb: function(space,decimal){					
 		var val = this[2] * 1, hsl = 0;
 		switch((space||'v').slice(-1).toLowerCase()){
 			default : span = val; break;
@@ -187,7 +192,8 @@ Array.implement({
 		map.each(function(density,i){
 			var index = Math.floor(hue / 2 + 5 + i * (odd||-1))%3;
 			var color = this[1] / 100 * (density * span - val + hsl) + val;
-			rgb[index] = Math.round(color * 2.55);
+			rgb[index] = decimal ? color * 2.55 : Math.round(color * 2.55);
+			//rgb[index] = Math.round(color * 2.55);
 		}, this);
 		return rgb;
 	}
@@ -216,3 +222,8 @@ String.implement({
 	}
 
 });
+/*
+ToDo:
+6,163,0 - infinity
+168,4,4 - 360 / 0
+*/

@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+	<title>ColorRoller</title>
+	<script type="text/javascript" src="../jslibs/moo.124.js"></script>
+	<script type="text/javascript" src="../jslibs/Drag.1242.js"></script>
+	<script type="text/javascript" src="scripts/Color.js"></script>
+	<style type="text/css">
+		body{xbackground-color:cyan; border:0; margin:0;}
+		.colorPicker {
+			xbackground-image:-moz-radial-gradient(rgba(255,255,255,1), rgba(255,255,255,0)), url(color-wheel-small2.png);
+			xbackground-image:url(Transp1.png);
+			position:relative;
+			margin:10px;
+			float:left;
+		}
+		.colorPicker img{
+			width:80px;
+			height:80px;
+			border:double;
+			-moz-border-radius:50%;
+		}
+		.p2{
+			background-image: -moz-radial-gradient(center 45deg, circle closest-side, orange 0%, red 100%);
+			border:1px solid black;
+			height:140px;
+			width:160px;
+		}
+		
+		#colors{
+			width:40%;
+			height:40%;
+			background-image: -moz-radial-gradient(rgba(255,255,255,0),rgba(255,255,255,1)),url('colorwheel.png');
+			-moz-border-radius: 50%;
+			border:solid 1px;
+		}
+		
+		.colorCursor{
+			border:1px solid;
+			height:4px;
+			width:4px;
+			-moz-border-radius:2px;
+			position:absolute;
+			top:37px;
+			left:37px;
+		}
+		
+		.huePicker{
+			float:left;
+			width:10px;
+			height:80px;
+			margin:10px;
+			background-image: -moz-linear-gradient(top, white, black);
+			position:relative;
+		}
+		
+		.hueCursor{
+			position:absolute;
+			left:0;
+			top:0px;
+			height:5px;
+			width:100%;
+			background-color:black;
+		}
+		
+		.ColorRoller{
+			overflow:auto;
+			width:275px;
+			height:130px;
+			xbackground-color:#FAF0E6;
+			background-color:silver;
+		}
+		
+		.colorText input{
+			width:23px;
+		}
+	</style>
+	<script type="text/javascript">
+		
+
+		window.addEvent('load', function init(){
+			$$('.ColorRoller').each(function(CR){
+				var g,
+					hueCursor = CR.getElement('.hueCursor'),
+					huePicker = CR.getElement('.huePicker'),
+					hueHeight = huePicker.getSize().y,
+					colorView = CR.getElement('.colorView'),
+					colorHex = CR.getElement('.colorHex'),
+					colorCursor = CR.getElement('.colorCursor'),
+					colorPicker = CR.getElement('.colorPicker img'),
+					colorHeight = colorPicker.getSize().x,
+					radius = colorHeight / 2,
+					cR = CR.getElement('.colorR'),
+					cG = CR.getElement('.colorG'),
+					cB = CR.getElement('.colorB'),
+					cH = CR.getElement('.colorH'),
+					cS = CR.getElement('.colorS'),
+					cV = CR.getElement('.colorV'),
+					cX = CR.getElement('.colorHex');
+
+				function greyarea(cursor){
+					g = 100 - hueCursor.getPosition(huePicker).y / hueHeight * 100;
+					var	n = (g * 2.5).toString(16);
+					colorPicker.setStyle('background-color', '#'+n+n+n);
+					cV.set('value',g);
+					//colorpick();
+				}
+				function colorpick(){
+					var pos = colorCursor.getPosition(colorPicker),
+						x = pos.x - radius,
+						y = radius - pos.y,
+						h = Math.atan2(x,y) / Math.PI * 180,
+						s = Math.sqrt(x*x+y*y) / radius * 100;
+						
+						if (h < 0) h -= -360;
+						var rgb = [h,s,g].toRgb('hsg');
+						
+						cR.set('value',rgb[0]);
+						cG.set('value',rgb[1]);
+						cB.set('value',rgb[2]);
+						cH.set('value',h);
+						cS.set('value',Math.round(s));
+						cX.set('value',rgb.rgbToHex());
+						colorView.setStyle('background-color','rgb('+rgb+')');
+				}
+				greyarea();
+				new Drag(colorCursor, {
+					snap: 0,
+					limit: {x:0,y:0},
+					onDrag: colorpick
+				});
+				new Drag(hueCursor, {
+					snap: 0,
+					limit: {x:[0,0],y:[0,hueHeight]},
+					onDrag: greyarea
+				});
+			});
+		});
+		
+		/*	
+		*	// The atan2 function is supposed to take y before x, and assume 0" is at the 9:00 position.
+		*	// To use it as intended: turn image 90". change the 180 to -180.
+		*						
+		*	radius = colorHeight / 2,
+		*	x = pos.x - radius, 
+		*	y = pos.y - radius, 
+		*			
+		*	for (var i=0;i<3;i++) c[i] = (((Math.abs((hue+=2)%6 - 3) < 1 ? 1 : hue > 2 ? 0 : -(hue-2)) - brightness) * saturation + brightness) * 255;  
+		*	return hex = [c[0],c[2],c[1]].rgbToHex();
+		*		
+		*	c[i] = ((hue - brightness) * saturation + brightness) * 255;  hue=angle of ColorWheel.  saturation =percent of radius, brightness = scrollWheel.
+		*	for(i=0;i<3;i++) c[i] = ((((h=Math.abs(++hue)) < 1 ? 1 : h > 2 ? 0 : -(h-2)) - brightness) * saturation + brightness) * 255;  
+		*	c[1] = -(c[2] - 255*saturation);var hex = c.rgbToHex();
+		*	var c, radius = this.getSize().x/2, x = mouse.x - radius, y = mouse.y - radius, brightness = hue.y / hue.getSize().y, hue = Math.atan2(x,y)/Math.PI * 3 - 2, saturation = Math.sqrt(x*x+y*y) / radius;
+		*/
+	</script>
+</head>
+<body>
+	<div class="ColorRoller">
+		<div style="background-image: -moz-linear-gradient(top, white, silver);">ColorRoller</div>
+		<div class="colorPicker">
+			<img src="images/Transp.png">
+			<div class="colorCursor"></div>
+		</div>
+		<div class="huePicker">
+			<div class="hueCursor"></div>
+		</div>
+		<div class="" style="float:right; width:125px">
+			<select>
+				<option>HSB</option>
+				<option>HSV/L</option>
+				<option>HSG</option>
+			</select>
+			<select>
+				<option>Color - Wheel</option>
+				<option>Color - Square</option>
+				<option>Grey - Stretched</option>
+				<option>Grey - Literal</option>
+				<option>MooRTE</option>
+			</select>
+			<div class="colorText">
+				R<input class="colorR">
+				G<input class="colorG">
+				B<input class="colorB">
+			</div>
+			<div class="colorText">
+				H<input class="colorH">
+				S<input class="colorS">
+				V<input class="colorV">
+			</div>
+			<div  class="colorText">
+				Hex<input class="colorHex" style="width:50px;">
+				<span class="colorView" style="height:10px; width:30px; display:inline-block"></span>
+			</div>
+		</div>
+	</div>
+	<!--
+	<div id="colors"></div>
+	<div class="p2"></div>
+	-->
+</body>
+</html>
