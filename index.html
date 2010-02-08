@@ -57,7 +57,7 @@
 		.hueCursor{
 			position:absolute;
 			left:0;
-			top:0px;
+			top:50%;
 			height:5px;
 			width:100%;
 			background-color:black;
@@ -103,7 +103,7 @@
 					var	n = (g * 2.5).toString(16);
 					colorPicker.setStyle('background-color', '#'+n+n+n);
 					cV.set('value',g);
-					//colorpick();
+					colorpick();
 				}
 				function colorpick(){
 					var pos = colorCursor.getPosition(colorPicker),
