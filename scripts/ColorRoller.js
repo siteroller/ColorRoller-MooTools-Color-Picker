@@ -50,11 +50,11 @@ var ColorRoller = new Class({
 		els.crIV.addEvent('keyup',this.setBar.bind(self));	
 		els.crIH.addEvent('keyup',this.setBox.bind(self));
 		els.crImg.addEvent('mousedown',this.click.bind(self))		
-		new Drag(els.crBoxSel, {
+		this.BoxSel = new Drag(els.crBoxSel, {
 			snap: 0,
 			onDrag: self.updateBox.bind(self)
 		});
-		new Drag(els.crBarSel, {
+		this.BarSel = new Drag(els.crBarSel, {
 			snap: 0,
 			limit: {x:[-1,-1],y:[0,self.barHeight]},
 			onDrag: self.updateBar.bind(self)
@@ -80,12 +80,12 @@ var ColorRoller = new Class({
 		this.updateBox();
 	},
 	click:function(event){
-		this.e.crBoxSel.setStyles({
-			'top':event.page.y-this.spectrumCoords.y-this.offset,
-			'left':event.page.x-this.spectrumCoords.x-this.offset
+		this.e.crBoxSel.setPosition({
+			y:event.page.y-this.e.crBox.getPosition().y,
+			x:event.page.x-this.e.crBox.getPosition().x,
 		});
+		this.BoxSel.start(event);
 		this.updateBox();
-		this.drag.start(e);
 	},
 	updateBox: function(){
 		var e = this.e;	//needs acces to e, radius, g.Since stored on object for now, needs to maintain this.
@@ -141,6 +141,10 @@ var ColorRoller = new Class({
 	},
 	setSpace: function(){
 		cS.set('text','B');
+	},
+	
+	show: function(){
+		
 	}
 	
 
@@ -152,5 +156,4 @@ var ColorRoller = new Class({
 3. Add support for all color spaces within the sphere.
 4. Add support for other shapes besides sphere.
 5. Allow for smaller color wheel, with just a wheel.
-6. onclick in color wheel, cursor should snap to click
 */
