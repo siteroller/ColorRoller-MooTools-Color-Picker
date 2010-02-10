@@ -95,15 +95,16 @@ var ColorRoller = new Class({
 			h = Math.atan2(x,y) * 180 / Math.PI,
 			s = Math.sqrt(x*x+y*y) * 100 / this.radius;
 			
+		if (s > 99) return this.BoxSel.stop(); 
 		if (h < 0) h -= -360;
 		var rgb = [h,s,this.g].toRgb('hsg');
-	
 		$each(
 			{R:rgb[0],G:rgb[1],B:rgb[2],H:Math.round(h),S:Math.round(s)},
 			function(v,k){ e['crI'+k].set('value',v) }
 		)
-		e.crIHex.set('value',rgb.rgbToHex());
+		e.crIHex.set('value',rgb.rgbToHex().toUpperCase());
 		e.crView.setStyle('background-color','rgb('+rgb+')');
+		
 	},
 	setBox:function(){
 		
