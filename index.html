@@ -5,17 +5,15 @@
 	<script type="text/javascript" src="../jslibs/moo.124.js"></script>
 	<script type="text/javascript" src="../jslibs/Drag.1242.js"></script>
 	<script type="text/javascript" src="scripts/Color.js"></script>
-	<link 	type="text/css" rel="stylesheet" href="scripts/colorroller.css">
-	<style type="text/css">
-		body{
-			border:0; 
-			margin:0;
-		}
-		
-	</style>
+	<script type="text/javascript" src="scripts/ColorRoller.js"></script>
+	<link 	type="text/css" rel="stylesheet" href="scripts/ColorRoller.css">
 	<script type="text/javascript">
+	
+	window.addEvent('load', function init(){
+		new ColorRoller();
+	});	
+/*
 		
-
 		window.addEvent('load', function init(){
 			$$('.ColorRoller').each(function(CR){
 				var g,
@@ -78,7 +76,7 @@
 				});
 			});
 		});
-		
+*/
 		/*	
 		*	// The atan2 function is supposed to take y before x, and assume 0" is at the 9:00 position.
 		*	// To use it as intended: turn image 90". change the 180 to -180.
@@ -98,6 +96,7 @@
 	</script>
 </head>
 <body>
+<!--
 	<div class="ColorRoller">
 		<div class="pickerHeader">
 			ColorRoller
@@ -138,6 +137,7 @@
 			</div>
 		</div>
 	</div>
+	-->
 	<!--
 	<div id="colors"></div>
 	<div class="p2"></div>

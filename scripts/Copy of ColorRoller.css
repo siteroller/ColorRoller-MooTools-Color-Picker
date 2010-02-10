@@ -1,17 +1,16 @@
-.crColorRoller{
+.ColorRoller{
 	overflow:auto;
 	width:290px;
 	height:130px;
 	background-color:silver;
 }
-.crColorRoller  span{
+.ColorRoller  span{
 	display:inline-block;
 }
-.crHead{
+.pickerHeader{
 	background-image: -moz-linear-gradient(top, white, silver);
-	height:10px;
 }
-.crBox {
+.colorPicker {
 	cursor:crosshair;
 	xbackground-image:-moz-radial-gradient(rgba(255,255,255,1), rgba(255,255,255,0)), url(color-wheel-small2.png);
 	xbackground-image:url(Transp1.png);
@@ -22,17 +21,17 @@
 	height:80px;
 	-moz-border-radius:50%;
 }
-.crBox img{
+.colorPicker img{
 	width:100%;
 	height:100%;
 	-moz-border-radius:50%;
 }
-.crBoxSel{
+.colorCursor{
 	position:absolute;
 	top:50%;
 	left:50%;
 }
-.crBoxSel div{
+.colorCursor div{
 	position:absolute;
 	top:-2px;
 	left:-2px;
@@ -41,7 +40,7 @@
 	border:1px solid;
 	-moz-border-radius:50%;
 }
-.crBar{
+.huePicker{
 	float:left;
 	width:10px;
 	height:80px;
@@ -49,32 +48,24 @@
 	background-image: -moz-linear-gradient(top, white, black);
 	position:relative;
 }
-.crBarSel{
+.hueCursor{
 	position:absolute;
-	left:-1px;
+	left:0;
 	top:50%;
 	height:5px;
 	width:100%;
-	background-color:#fff;
-	border:1px solid black;
+	background-color:black;
 }
-.crNums{
-	float:right; 
-	width:135px
+
+.colorText input{
+	width:25px;
 }
-.crNums span{
+.colorText span{
 	padding-right:3px;
 	text-align:right;
 	width:10px;
 }
-.crNums .crHex,.crNums input{
-	width:25px;
-}
- .crNums .crIHex{
-	width:50px;
-}
-.crNums .crView{
-	width:25px; 
-	height:15px; margin-left:3px;
-	vertical-align:middle;
+.amts{
+	float:right; 
+	width:140px
 }
