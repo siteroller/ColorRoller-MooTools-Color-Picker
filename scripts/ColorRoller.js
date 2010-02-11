@@ -49,6 +49,10 @@ var ColorRoller = new Class({
 		
 		els.crIV.addEvent('keyup',this.setBar.bind(self));	
 		els.crIH.addEvent('keyup',this.setBox.bind(self));
+		els.crIS.addEvent('keyup',this.setBox.bind(self));
+		els.crIR.addEvent('keyup',this.updateRGB.bind(self));
+		els.crIG.addEvent('keyup',this.updateRGB.bind(self));
+		els.crIB.addEvent('keyup',this.updateRGB.bind(self));
 		els.crImg.addEvent('mousedown',this.click.bind(self))		
 		this.BoxSel = new Drag(els.crBoxSel, {
 			snap: 0,
@@ -73,11 +77,11 @@ var ColorRoller = new Class({
 		this.setBG(val);
 		this.updateBox();
 	},
-	setBar: function(){
+	setBar: function(set){
 		var val = this.g = this.e.crIV.get('value');
 		this.e.crBarSel.setStyle('top',100-val+'%');
 		this.setBG(val);
-		this.updateBox();
+		if(set)this.updateBox();
 	},
 	click:function(event){
 		this.e.crBoxSel.setPosition({
@@ -97,48 +101,46 @@ var ColorRoller = new Class({
 			
 		if (s > 99) return this.BoxSel.stop(); 
 		if (h < 0) h -= -360;
-		var rgb = [h,s,this.g].toRgb('hsg');
+		this.updateNums(h,s);
+	},
+	setBox:function(set){
+		var hue = this.e.crIH.get('value'),
+			sat = this.e.crIS.get('value'),
+			radius = sat * this.radius / 100,
+			angle = hue * Math.PI / 180;
+		
+		this.e.crBoxSel.setStyles({
+			top :this.radius - radius * Math.cos(angle) ,
+			left:this.radius + radius * Math.sin(angle) 
+		});
+		if(set) this.updateNums(hue,sat)
+	},
+	updateNums: function(hue,sat){
+		var rgb = [hue,sat,this.g].toRgb('hsg'), e = this.e;
 		$each(
-			{R:rgb[0],G:rgb[1],B:rgb[2],H:Math.round(h),S:Math.round(s)},
+			{R:rgb[0],G:rgb[1],B:rgb[2],H:Math.round(hue),S:Math.round(sat)},
 			function(v,k){ e['crI'+k].set('value',v) }
-		)
+		);
+		
 		e.crIHex.set('value',rgb.rgbToHex().toUpperCase());
 		e.crView.setStyle('background-color','rgb('+rgb+')');
-		
 	},
-	setBox:function(){
-		
-		var hypotenuse = this.e.crIS.get('value') * 100 / this.radius;
-		var h = this.e.crIH.get('value');
-		switch(h){
-			case h < 90 : break;
-			//case h < 180: h = 180 - h; break;
-			//case h < 270: h = 270 - h; break;
-			//case h < 360: h = 360 - h; break;
-		}
-		console.log(hypotenuse,h);
-		var opposite = Math.sin(h) * hypotenuse;
-		console.log(opposite)
-		var adjacent = Math.cos(h) * hypotenuse;
-		console.log(hypotenuse,opposite,adjacent);
-		console.log(this.e.crBoxSel.getPosition(this.e.crBox));
-		/*
-		h = Math.atan2(pos.x - this.radius,this.radius - pos.y) / Math.PI * 180,
-		hypotenuse = s * this.radius / 100;
-		
-		sin(a) = opposite / hypotenuse 
-		opposite = sin(h) * hypotenuse;
-		
-		if h = (Math.Atan2(x,y)) * 180 / Math.PI
-		x = ?
-		y = ?
-		x = s*sin(h*Math.PI/180);
-		y = s*cos(h*Math.PI/180);
-		
-		(distance*sin(Angle*Math.PI/180))+Pb.Lat = Pa.Lat
-(distance*cos(Angle*Math.PI/180))/Math.Cos(Pb.Lat*Math.PI/180)+Pb.Lng = Pa.Lng
-		*/
-		
+	updateRGB:function(){
+		var e = this.e,
+			rgb = [
+				e.crIR.get('value'),
+				e.crIG.get('value'),
+				e.crIB.get('value')
+			],
+			hsg = rgb.fromRgb('hsg');
+		$each(
+			{H:hsg[0],S:hsg[1],V:hsg[2]},
+			function(v,k){ e['crI'+k].set('value',v) }
+		);
+		e.crIHex.set('value',rgb.rgbToHex().toUpperCase());
+		e.crView.setStyle('background-color','rgb('+rgb+')');
+		this.setBar(false);
+		this.setBox(false);
 	},
 	setSpace: function(){
 		cS.set('text','B');
@@ -152,9 +154,10 @@ var ColorRoller = new Class({
 });
 /*
 //todo
-1. Stop the cursor when it goes out of bounds.
 2. Add support for other browsers
 3. Add support for all color spaces within the sphere.
 4. Add support for other shapes besides sphere.
 5. Allow for smaller color wheel, with just a wheel.
+6. Allow for rgb to be manually updated.
+7. When Hue or saturation is manually updated, the coordinates are 90 degrees turned to the side.
 */

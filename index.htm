@@ -49,7 +49,7 @@
 				var btn = ['R', 'G', 'B'];
 				for (var i =0; i<3; i++) $(btn[i]).set('value', $random(0, 255));
 				$('fromRgb').fireEvent('click');
-			})
+			});
 			$$('.fromRgb').addEvent('click', function(){
 				var btn = ['R', 'G', 'B'], vals = this.get('text').split(',');
 				for (var i =0; i<3; i++) $(btn[i]).set('value', vals[i]);
