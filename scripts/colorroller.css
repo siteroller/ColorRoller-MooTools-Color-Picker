@@ -78,3 +78,16 @@
 	height:15px; margin-left:3px;
 	vertical-align:middle;
 }
+.crShade{
+	height:100%;
+	width:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	-moz-border-radius:50%;
+}
+.crBoxImg{
+	background-image: -moz-linear-gradient (left, rgb(0,0,0), rgb(255,255,255));
+	width:100%;
+	height:100%;
+}
