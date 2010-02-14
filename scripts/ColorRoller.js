@@ -3,26 +3,27 @@ var ColorRoller = new Class({
 	
 	},
 	
-	initialize: function(elements,options){
-		this.build();
+	initialize: function(element,options){	
+		 this.build().setStyles({'height':22, 'vertical-align':'top'}).injectAfter(element);
+		 this.e.crColorRoller.addClass('crHide')
 	},
 	
 	build: function(){
 		var self = this, i=0, e = this.e = {};
 
 		$each(
-			{Space:'select',Type:'select',Img:'img',View:'span'},
+			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span'},
 			function(v,k){ e['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
 		$each({G:'HSG', B:'HSB/V',L:'HSL/I',CW:'Color - Wheel', CS:'Color - Square',GS:'Grey - Stretched',GL:'Grey - Literal'},
 			function(v,k){
-				new Element('option',{'text':v,'class':'crO'+k}).inject(++i>3 ? e.crType : e.crSpace);
+				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>3 ? e.crType : e.crSpace);
 			});
 		['ColorRoller','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Shade'].each(
 			function(v){
 				e['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
-		$each({R:'updateRGB',G:'updateRGB',B:'updateRGB',H:'setBox',S:'setBox',V:'setBar',Hex:''},
+		$each({R:'updateRGB',G:'updateRGB',B:'updateRGB',H:'setBox',S:'setBox',V:'setBar',Hex:'setHex'},
 			function(v,k){
 				e['cr' +k] = new Element('span',{'text':k,'class':'cr'+k});
 				e['crI'+k] = new Element('input',{'type':'text','class':'crI'+k});
@@ -32,7 +33,7 @@ var ColorRoller = new Class({
 		e.crColorRoller.adopt(
 			e.crHead,
 			e.crBox.adopt(
-				e.crImg.set('src','images/Color-Wheel.png'),//Transp.png
+				e.crImg.set('src','images/Transp.png'),//Color-Wheel.png
 				e.crShade,
 				e.crBoxSel.adopt(e.crBoxSee)
 			),
@@ -46,6 +47,7 @@ var ColorRoller = new Class({
 		).inject(document.body);
 		
 		this.addEvents();
+		return e.crShow.set('src','images/crShow.png');
 	},
 	
 	addEvents: function(){
@@ -53,7 +55,7 @@ var ColorRoller = new Class({
 		
 		this.barHeight = els.crBar.getSize().y;
 		this.radius = els.crBox.getSize().x / 2;
-		this.updateBar();
+		this.setSpace();
 		
 		els.crShade.addEvent('mousedown',this.click.bind(self));		
 		this.BoxSel = new Drag(els.crBoxSel, {
@@ -65,21 +67,18 @@ var ColorRoller = new Class({
 			limit: {x:[-1,-1],y:[0,self.barHeight]},
 			onDrag: self.updateBar.bind(self)
 		});
-		
+		els.crSpace.addEvent('change',this.setSpace.bind(this));
+		els.crShow.addEvent('click',this.show.bind(this));
 	},
-	setBG:function(val){
-		var v = Math.round(val * 2.55), grey = v+','+v+','+v, shape = 'radial';
-		
-		if (Browser.Engine.gecko && window.hasOwnProperty("onhashchange"))
-			this.e.crShade.setStyle('background-image','-moz-'+shape+'-gradient(center center, circle closest-side, rgb('+grey+') '+(100-(this.val||1))+'%,  rgba('+grey+',0)100%)');//rgb('+grey+'),
-		else if (Browser.Engine.trident && shape == 'linear')
-			this.e.crShade.setStyle(
-				Browser.Engine.version < 4 ? 'filter':'-ms-filter',
-				'progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr="#FF'+000000+'", EndColorStr="#00'+000000+'")'
-			);
-		else if (Browser.Engine.webkit)
-			this.e.crShade.setStyle('background','-webkit-gradient('+shape+', center center, 0, center center, '+70.5+', from(rgb('+grey+')), to(rgba('+grey+',0))');
-		else this.e.crBox.setStyle('background-color', 'rgb('+grey+')');
+	setBG: function(val){
+		var v = Math.round(val * 2.55), 
+			grey = v+','+v+','+v, 
+			shape = 'radial', 
+			space = this.space;
+		val = space == 'B' ? val / 100 : 
+			space == 'L' ? 1 - Math.abs(val / 50 - 1) : 1;
+		this.e.crImg.setStyle('opacity',val);
+		this.e.crBox.setStyle('background-color', 'rgb('+grey+')'); 
 	},
 	updateBar: function(){
 		var val = this.val = 100 - this.e.crBarSel.getStyle('top').slice(0,-2) / this.barHeight * 100;// was e.crBarSel.getPosition(e.crBar).y 
@@ -100,6 +99,11 @@ var ColorRoller = new Class({
 		});
 		this.BoxSel.start(event);
 		this.updateBox();
+	},
+	setHex: function(e){
+		this.updateRGB(e.target.get('value'));
+		
+		//this.e.crIHex.
 	},
 	updateBox: function(){
 		var e = this.e;	//needs acces to e, radius, g.Since stored on object for now, needs to maintain this.
@@ -126,7 +130,7 @@ var ColorRoller = new Class({
 		if(set) this.updateNums(hue,sat)
 	},
 	updateNums: function(hue,sat){
-		var rgb = [hue,sat,this.val].toRgb('hsg'), e = this.e;
+		var rgb = [hue,sat,this.val].toRgb('hs'+this.space), e = this.e;
 		$each(
 			{R:rgb[0],G:rgb[1],B:rgb[2],H:Math.round(hue),S:Math.round(sat)},
 			function(v,k){ e['crI'+k].set('value',v) }
@@ -135,36 +139,35 @@ var ColorRoller = new Class({
 		e.crIHex.set('value',rgb.rgbToHex().toUpperCase());
 		e.crView.setStyle('background-color','rgb('+rgb+')');
 	},
-	updateRGB:function(){
+	updateRGB:function(color){
 		var e = this.e,
-			rgb = [
-				e.crIR.get('value'),
-				e.crIG.get('value'),
-				e.crIB.get('value')
-			],
-			hsg = rgb.fromRgb('hsg');
+			rgb = $type(color) != 'event'
+				? color.hexToRgb()
+				: [
+					e.crIR.get('value'),
+					e.crIG.get('value'),
+					e.crIB.get('value')
+				],
+			hsg = rgb.fromRgb('hs'+this.space);
 		$each(
 			{H:hsg[0],S:hsg[1],V:hsg[2]},
 			function(v,k){ e['crI'+k].set('value',v) }
 		);
-		e.crIHex.set('value',rgb.rgbToHex().toUpperCase());
+		if(!color)e.crIHex.set('value',rgb.rgbToHex().toUpperCase());
 		e.crView.setStyle('background-color','rgb('+rgb+')');
 		this.setBar(false);
 		this.setBox(false);
 	},
-	setSpace: function(event){
-		// Change the background and foreground image.
-		//e[].replaces(crImg);
-		cS.set('text','B');
+	setSpace: function(e){
+		this.space = e ? e.target.value : 'G';
+		this.e.crV.set('text',this.space);
+		this.updateBar();
 	},
 	
 	show: function(){
-	
+		this.e.crColorRoller.removeClass('crHide');
 	},
-	shading: function(){
-		var bgs = "background-image: -moz-radial-gradient(rgba(255,255,255,1), rgba(255,255,255,0)),\
-		-webkit-gradient(radial, center center, 0, center center, 70.5, from(green), to(yellow))";
-	},
+
 	
 	boxCoords: function(){
 		var e = this.e;	//needs acces to e, radius, g.Since stored on object for now, needs to maintain this.
@@ -190,43 +193,8 @@ var ColorRoller = new Class({
 });
 /*
 //todo
-2. Add support for other browsers
-3. Add support for all color spaces within the sphere.
-4. Add support for other shapes besides sphere.
-5. Allow for smaller color wheel, with just a wheel.
-6. Allow for rgb to be manually updated.
-7. When Hue or saturation is manually updated, the coordinates are 90 degrees turned to the side.
-*/
-/*
-Notes:
-#1:
-Zero degrees on the sphere is assumed to be at the the 12:00 position.  
-This differs from classic trig, which assumes zero to be at 3:00.
-To switch to classic, make the following changes:
-In updateBox: 
-	h = Math.atan2(y,x) * 180 / Math.PI,
-In setBox:
-	left :this.radius + radius * Math.cos(angle) ,
-	top  :this.radius + radius * Math.sin(angle) 
-
-#2:
-Full support in Firefox 3.6, and webkit.
-Support for linear in trident.
-Fallback hsg support for Opera, Trident/radial, FF 3.5, other browsers.
-Regarding IE support:
-	a. Overview of filters: 
-		http://msdn.microsoft.com/en-us/library/ms532853%28VS.85%29.aspx
-		http://www.ssi-developer.net/css/visual-filters.shtml
-	b. The gradient filter does not support a start [or end] point, and cannot do radial.
-		http://msdn.microsoft.com/en-us/library/ms532997%28VS.85%29.aspx
-	c. The light filter may well be able to do a controlled radial gradient, though I failed to create one.
-		It allows for any numbers of points, cones or ambiences.
-		http://msdn.microsoft.com/en-us/library/ms533011%28VS.85%29.aspx
-		http://www.javascriptkit.com/filters/light.shtml
-	d. The alpha linear filter supports start [and end] points.
-		[It also allows for angle gradients. The gradient is applied to the whole element, not just the background.]  
-		The radial filter does not support start points [though it does support endpoints]
-		http://msdn.microsoft.com/en-us/library/ms532967%28VS.85%29.aspx
-		http://www.javascriptkit.com/filters/alpha.shtml
-	e. [Other useful filters are Composite, which allows for elements to be combined. and BasicImage: Rotation, opacity, greyscale, mirror, xray, etc. 
+1. Add support for other browsers
+2. Add support for other shapes besides sphere.
+3. Allow for smaller color wheel, with just a wheel.
+4. Allow for hex to be manually updated.
 */
