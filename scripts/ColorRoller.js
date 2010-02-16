@@ -37,9 +37,9 @@ var ColorRoller = new Class({
 		e.crColorRoller.adopt(
 			e.crHead,
 			e.crBox.adopt(
-				e.crShade,
 				e.crImg.set('src','images/Transp.png'),
-				e.crBoxSel.adopt(e.crBoxSee)
+				e.crBoxSel.adopt(e.crBoxSee),
+				e.crShade
 			),
 			e.crBar.adopt(e.crBarSel),
 			e.crNums.adopt(
@@ -74,7 +74,6 @@ var ColorRoller = new Class({
 				self.slider(e);
 			}
 		});
-		els.crBoxSel.addEvent('mousedown',mousedown);
 		els.crShade.addEvents({
 			'mousemove':self.picker.bind(self),
 			'mousedown':function(e){
@@ -104,24 +103,26 @@ var ColorRoller = new Class({
 	},
 	picker: function(event){
 		if (!this.mousedown) return;
+		var els = this.e, H, S,
+			X = event.page.x - this.offset.x,
+			Y = event.page.y - this.offset.y;
 		
-		var els = this.e,
-			posX = event.page.x-this.offset.x,
-			posY = event.page.y-this.offset.y;
 		if (this.shape == 'CW'){
-			var x = posX - this.radius,
-			y = this.radius - posY,
-			H = Math.atan2(x,y) * 180 / Math.PI,
-			S = Math.sqrt(x*x+y*y) * 100 / this.radius;
+			var O = X - this.radius,
+				A = this.radius - Y;
+			H = Math.atan2(O,A) * 180 / Math.PI;
+			S = Math.sqrt(O*O+A*A) * 100 / this.radius;
 			if (S > 100) return;
 			if (H < 0) H -= -360;
 		} else {
-			var H = posX * 360 / this.boxHeight,
-			S = 100 - posY * 100 / this.boxHeight; 
+			S = 100 - Y * 100 / this.boxHeight; 
+			if (this.shape == 'CS') H = X * 360 / this.boxHeight;
+			else if (this.shape == '2') H = X * 360 / (this.space == 'G' ? this.boxHeight : Y);
 		}
+		
 		els.crBoxSel.setPosition({
-			y:posY, 
-			x:posX 
+			y:Y, 
+			x:X 
 		});
 		this.setHS(H,S,2);
 	},
@@ -131,12 +132,16 @@ var ColorRoller = new Class({
 		//Steps: #1 - Set inputs. #2 - Set Picker Position. #0 - Set RGB
 		if (step != 1) this.setValues({H:H,S:S});
 		if (step != 2){
-			var	radius = S * this.radius / 100,
-				angle = H * Math.PI / 180;
-			this.e.crBoxSel.setStyles({
-				top :this.radius - radius * Math.cos(angle) ,
-				left:this.radius + radius * Math.sin(angle) 
-			});
+			if(this.shape == 'CW'){
+				var	angle = H * Math.PI / 180,
+					radius = S * this.radius / 100,
+					top  = this.radius - radius * Math.cos(angle),
+					left = this.radius + radius * Math.sin(angle);
+			} else if(this.shape == 'CS'){
+				var top  = S * this.boxHeight / 100,
+					left = H * this.boxHeight / 360 ;
+			}
+			this.e.crBoxSel.setStyles({top:top, left:left});
 		}
 		if (step) this.setRGB([H,S,this.val].toRgb(this.space));
 	},
