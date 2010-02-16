@@ -16,7 +16,7 @@ var ColorRoller = new Class({
 		var self = this, i=0, e = this.e = {};
 
 		$each(
-			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span'},
+			{Space:'select',Type:'select',Img:'img',Shade:'img',Show:'img',View:'span'},
 			function(v,k){ e['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
 		$each({G:'HSG', B:'HSB/V',L:'HSL/I',CW:'Color - Wheel', CS:'Color - Square',GS:'Grey - Stretched',GL:'Grey - Literal'},
@@ -37,6 +37,7 @@ var ColorRoller = new Class({
 		e.crColorRoller.adopt(
 			e.crHead,
 			e.crBox.adopt(
+				e.crShade,
 				e.crImg.set('src','images/Transp.png'),
 				e.crBoxSel.adopt(e.crBoxSee)
 			),
@@ -55,24 +56,32 @@ var ColorRoller = new Class({
 	
 	addEvents: function(){
 		var self = this, els = this.e;
-
 		this.barHeight = els.crBar.getSize().y;
+		this.boxHeight = els.crBox.getSize().y;
 		this.radius = els.crBox.getSize().x / 2;
 		
-		this.BoxSel = new Drag(els.crBoxSel, {
-			snap: 0,
-			onDrag: self.picker.bind(self)
-		});
-		this.BarSel = new Drag(els.crBarSel, {
-			snap: 0,
-			limit: {x:[-1,-1],y:[0,self.barHeight]},
-			onDrag: self.slider.bind(self)
-		});
-
 		this.setRGB(this.options.RGB,3);
-		els.crImg.addEvent('mousedown',this.click.bind(self));
 		els.crSpace.addEvent('change',this.setSpace.bind(this)).fireEvent('change');
+		els.crType.addEvent('change',this.setType.bind(this)).fireEvent('change');
 		els.crShow.addEvent('click',this.show.bind(this));
+		function mousedown(e){ self.mousedown = true; e.stop() }
+		els.crColorRoller.addEvent('mouseup',function(){ self.mousedown = false });
+		els.crBarSel.addEvents('mousedown',mousedown);
+		els.crBar.addEvents({
+			'mousemove':self.slider.bind(self),
+			'mousedown':function(e){
+				mousedown(e);
+				self.slider(e);
+			}
+		});
+		els.crBoxSel.addEvent('mousedown',mousedown);
+		els.crShade.addEvents({
+			'mousemove':self.picker.bind(self),
+			'mousedown':function(e){
+				mousedown(e);
+				self.picker(e);
+			}
+		});
 	},
 	
 	//Inputs:
@@ -89,21 +98,32 @@ var ColorRoller = new Class({
 		var v = this.getValues(['H','S']);
 		this.setHS(v[0],v[1],1);
 	},
-	slider: function(cursor){
-		this.setV(100 - cursor.getStyle('top').slice(0,-2) / this.barHeight * 100,2);
-		//Was e.crBarSel.getPosition(e.crBar).y or cursor.getPosition(arguments[1].originalTarget).y 
+	slider: function(event){
+		var val = 100 - 100 * (event.page.y - this.offset.y) / this.barHeight
+		if(this.mousedown && (val > -1) && (val < 101))this.setV(val, 2);
 	},
-	picker: function(){
-		var els = this.e;	//needs acces to e, radius, g.Since stored on object for now, needs to maintain this.
-		var pos = els.crBoxSel.getPosition(els.crBox), // can this be done cheaper using getStyle or using the event?
-			x = pos.x - this.radius,
-			y = this.radius - pos.y,
-			h = Math.atan2(x,y) * 180 / Math.PI,
-			s = Math.sqrt(x*x+y*y) * 100 / this.radius;
-			
-		if (s > 99) return this.BoxSel.stop(); 
-		if (h < 0) h -= -360;
-		this.setHS(h,s,2);
+	picker: function(event){
+		if (!this.mousedown) return;
+		
+		var els = this.e,
+			posX = event.page.x-this.offset.x,
+			posY = event.page.y-this.offset.y;
+		if (this.shape == 'CW'){
+			var x = posX - this.radius,
+			y = this.radius - posY,
+			H = Math.atan2(x,y) * 180 / Math.PI,
+			S = Math.sqrt(x*x+y*y) * 100 / this.radius;
+			if (S > 100) return;
+			if (H < 0) H -= -360;
+		} else {
+			var H = posX * 360 / this.boxHeight,
+			S = 100 - posY * 100 / this.boxHeight; 
+		}
+		els.crBoxSel.setPosition({
+			y:posY, 
+			x:posX 
+		});
+		this.setHS(H,S,2);
 	},
 	
 	// Set Values
@@ -132,7 +152,7 @@ var ColorRoller = new Class({
 		els.crBox.setStyle('background-color', 'rgb('+grey+')'); 
 		
 		if (step != 1) els.crIV.set('value',Math.round(val));
-		if (step != 2) els.crBarSel.setStyle('top',100-val+'%');
+		els.crBarSel.setStyle('top',100-val+'%');
 		if (step){
 			var rgb = this.getValues(['H','S']);
 			rgb.push(val);
@@ -153,36 +173,34 @@ var ColorRoller = new Class({
 	},
 	
 	// Utilities
-	setValues: function(val){
-		var self = this;
-		$each(val, function(v,k){ self.e['crI'+k].set('value',v) });
-	},
 	getValues:function(val){
 		var self = this;		
 		return val.map(function(el){ return self.e['crI'+el].get('value') });
 	},
-	
-	click:function(event){
-		this.e.crBoxSel.setPosition({
-			y:event.page.y-this.e.crBox.getPosition().y,
-			x:event.page.x-this.e.crBox.getPosition().x,
-		});
-		this.BoxSel.start(event);
-		this.updateBox();
+	setValues: function(val){
+		var self = this;
+		$each(val, function(v,k){ self.e['crI'+k].set('value',Math.round(v)) });
 	},
 	setSpace: function(e){
-		this.space = e.target.value;
+		this.space = e ? e.target.value : 'G';
 		this.e.crV.set('text',this.space);
 		this.options.setspace == 'rgb' 
-			? this.inputRGB(this.getValues(['R','G','B']))
-			: (this.inputHS(this.getValues(['H','S'])) && this.inputV(['V']));
+			? this.inputRGB()
+			: (this.setV(this.getValues(['V'])[0]) && this.inputHS());
 	},
-	setPicker: function(shape){
-		this.shape = shape ? 'linear' : 'radial';
-		this.control = '';
+	setType: function(e){
+		var shape = this.shape =  e ? e.target.value : 'CW';
+		this.e.crShade.set('src',shape == 'CW' ? 'images/border.png' : '');
+		if (shape == 'CS') this.e.crImg.set('src','images/rainbow2.png');
+		else if(shape == 'CW') this.e.crImg.set('src','images/Transp.png');
 	},
 	show: function(){
 		this.e.crColorRoller.removeClass('crHide');
+		this.offset = {
+			y: this.e.crBox.getPosition().y,
+			x: this.e.crBox.getPosition().x
+		};
+		
 	}
 
 });
