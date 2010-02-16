@@ -52,6 +52,7 @@
 .crBarSel{
 	position:absolute;
 	left:-1px;
+	margin-top:-2px;
 	top:50%;
 	height:5px;
 	width:100%;
