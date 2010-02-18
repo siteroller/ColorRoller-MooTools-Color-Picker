@@ -208,12 +208,14 @@ var ColorRoller = new Class({
 			: (this.setV(this.getValues(['V'])[0]) && this.inputHS());
 	},
 	setType: function(e){
-		var type = this.type = e ? e.target.value : 0,
+		var els = this.e,
+			type = this.type = e ? e.target.value : 0,
 			img = ['wheel','paint','gimp','adobe'];
 		this.modify = +(type < 2);
-		this.e.crShade.set('src',!type ? 'images/border.png' : '');
-		this.e.crImg.set('src','images/'+img[type]+'.png');
-		this.e.crBox.setStyle('background-color','');
+		els.crBar.setStyle('background-image', 'url(images/'+ (this.modify ? 'greyscale' : 'rainbow') + '.png)')
+		els.crShade.set('src',!type ? 'images/border.png' : '');
+		els.crImg.set('src','images/'+img[type]+'.png');
+		els.crBox.setStyle('background-color','');
 		this.inputRGB();
 	},
 	show: function(){
