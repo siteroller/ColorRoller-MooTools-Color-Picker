@@ -46,7 +46,6 @@ var ColorRoller = new Class({
 			e.crNums.adopt(
 				e.crSpace,e.crType,e.crVal.adopt(
 					e.crR,e.crIR,e.crG,e.crIG,e.crB,e.crIB,e.cr0,e.crI0,e.crS,e.crIS,e.cr1,e.crI1
-					//e.crR,e.crIR,e.crG,e.crIG,e.crB,e.crIB,e.crH,e.crIH,e.crS,e.crIS,e.crV,e.crIV
 				),
 				e.crHex,e.crIHex,e.crView
 			)
@@ -95,24 +94,14 @@ var ColorRoller = new Class({
 	},
 	input0: function(event){
 		this.inputHSV(0,event.target.value);
-		//this.modify 
-		//	? this.setHS(event.target.value,this.e.crS.get('value'),1)
-		//	: this.setV(event.target.value,1);
 	},
 	inputS: function(event){
 		this.setHS( this.e['crI'+ +(!this.modify)].get('value'), event.target.value, 1)
 	},
 	input1: function(event){
 		this.inputHSV(1,event.target.value);
-		//this.modify 
-		//	? this.setV(event.target.value,1)
-		//	: this.setHS(event.target.value,this.e.crS.get('value'),1);
-		//var v = this.getValues(['H','S']);
-		//var v = this.getValues([0,'S']);
-		//this.setHS(v[0],v[1],1);
 	},
 	inputHSV: function(el,val){
-		//console.log('this.modify == el', this.modify,el,  this.modify == el )
 		this.modify != el 
 			? this.setHS(val,this.getValues(['S']),1)
 			: this.setV(val,1);
@@ -151,19 +140,16 @@ var ColorRoller = new Class({
 	setRGB: function(val,step){
 		//Steps: #1 - Set inputs. #2 - Set Hex. #3 - Set View. #0 - Set HSV
 		var e = this.e;
-		//console.log('setRGB - val',val)
 		this.setValues(['R','G','B'],val);
 		e.crIHex.set('value',val.rgbToHex().toUpperCase());
 		e.crView.setStyle('background-color','rgb('+val+')');
 		if (step){
 			var hsv = val.fromRgb(this.space);
-				//console.log(hsv)
 			this.setHS(hsv[0],hsv[1]);
 			this.setV(hsv[2]);
 		}
 	},
 	setHS: function(H,S,step){
-		//console.log(arguments, 'arguments')
 		//Steps: #1 - Set inputs. #2 - Set Picker Position. #0 - Set RGB
 		if (step != 1) this.setValues([+(!this.modify),'S'],[H,S],5);
 		if (step != 2){
@@ -172,7 +158,7 @@ var ColorRoller = new Class({
 					radius = S * this.radius / 100,
 					top  = this.radius - radius * Math.cos(angle),
 					left = this.radius + radius * Math.sin(angle);
-			} else { //if(this.type == 1)
+			} else { 
 				var top  = this.boxHeight - S * this.boxHeight / 100,
 					left = H * this.boxHeight / (this.modify ? 360 : 100);
 			}
@@ -181,16 +167,13 @@ var ColorRoller = new Class({
 		if (step){ 
 			var hsv = this.modify
 				? [H,S,this.val]
-				: [this.val * 3.59,S,H];// that order should only be if modify is true
-				//console.log('hsv',hsv)
-			//hsv[this.modify ? 'push' : 'unshift'](); // that 3.59 should only be if modify is true
-			//console.log(hsv)
+				: [this.val * 3.59,S,H];
 			this.setRGB(hsv.toRgb(this.space));
 		}
 	},
 	setV: function(val,step){
 		var els = this.e;
-		//console.log('setvV - val',val)
+
 		// Set Opacity if slider is greyscale. 
 		if (this.modify){
 			var v = Math.round(val * 2.55), 
@@ -215,7 +198,6 @@ var ColorRoller = new Class({
 	},
 	setValues: function(key,val){
 		var self = this;
-		//console.log('val',val)
 		val.each(function(v,i){ self.e['crI'+key[i]].set('value',Math.round(v)) });
 	},
 	setSpace: function(e){
@@ -247,6 +229,6 @@ var ColorRoller = new Class({
 /*
 //todo
 1. Add support for other browsers
-2. Add support for Adobe typ color picker.
-3. Allow for smaller color wheel, with just a wheel.
+2. Add support for Adobe color picker.
+3. Allow color picker, without inputs.
 */
