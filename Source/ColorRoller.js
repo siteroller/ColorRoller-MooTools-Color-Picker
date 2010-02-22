@@ -96,7 +96,8 @@ var ColorRoller = new Class({
 		els.crSpace.addEvent('change',this.setSpace.bind(this)).fireEvent('change');
 		els.crType.addEvent('change',this.setType.bind(this)).fireEvent('change');
 		els.crShow.addEvent('click',this.show.bind(this));
-		els.crComplete.addEvent('click',this.close.pass('1',self));
+		els.crComplete.addEvent('click',this.close.pass(1,self));
+		els.crCancel.addEvent('click',this.close.pass(0,self));
 		function mousedown(e){ self.mousedown = true; e.stop() }
 		els.crColorRoller.addEvent('mouseup',function(){ self.mousedown = false });
 		els.crBarSel.addEvents('mousedown',mousedown);
@@ -147,7 +148,7 @@ var ColorRoller = new Class({
 			X = event.page.x - this.offset.x,
 			Y = event.page.y - this.offset.y;
 		
-		if (!this.type){
+		if (!+this.type){
 			var O = X - this.radius,
 				A = this.radius - Y;
 			H = Math.atan2(O,A) * 180 / Math.PI;
@@ -185,7 +186,7 @@ var ColorRoller = new Class({
 		//Steps: #1 - Set inputs. #2 - Set Picker Position. #0 - Set RGB
 		if (step != 1) this.setValues([+(!this.vLast),'S'],[val,S],5);
 		if (step != 2){
-			if(!this.type){
+			if(!+this.type){
 				var	angle = val * Math.PI / 180,
 					radius = S * this.radius / 100,
 					top  = this.radius - radius * Math.cos(angle),
@@ -242,11 +243,11 @@ var ColorRoller = new Class({
 	setType: function(e){
 		var els = this.e,
 			type = this.type = e ? e.target.value : 0,
-			img = ['wheel','paint','gimp','adobe'];
+			img = ['wheel','paint','gimp','photoshop'];
 		this.vLast = +(type < 2);
-		els.crBar.setStyle('background-image', 'url('+CRImages+ (this.vLast ? 'greyscale' : 'rainbow') + '.png)')
-		els.crShade.set('src',!type ? CRImages+'border.png' : '');
-		els.crImg.set('src',CRImages+img[type]+'.png');
+		els.crBar.setStyle('background-image', 'url('+ CRImages + (this.vLast ? 'greyscale' : 'rainbow') + '.png)');
+		els.crShade.set('src',CRImages + (!+type ? 'border.png' : 'clear.png'));
+		els.crImg.set('src',CRImages + img[type] + '.png');
 		els.crBox.setStyle('background-color','');
 		this.inputRGB();
 	},
