@@ -44,9 +44,9 @@ var ColorRoller = new Class({
 			{Space:'select',Type:'select',Img:'img',Shade:'img',Show:'img',View:'span'},
 			function(v,k){ e['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
-		$each({G:'HSG', B:'HSB/V',L:'HSL/I',0:'Color Wheel', 1:'MS Paint',2:'GIMP',3:'Adobe CS'},
+		$each({0:'Color Wheel', 1:'MS Paint',2:'GIMP',3:'Adobe CS',G:'HSG', B:'HSB/V',L:'HSL/I',},
 			function(v,k){
-				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>3 ? e.crType : e.crSpace);
+				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? e.crSpace : e.crType);
 			});
 		['ColorRoller','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel'].each(
 			function(v){
