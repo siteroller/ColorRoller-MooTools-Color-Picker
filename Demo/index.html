@@ -2,13 +2,14 @@
 <html>
 <head>
 	<title>ColorRoller</title>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
+	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>-->
+	<script type="text/javascript" src="../Archive/mootools-1.2.4-core-yc.js"></script>
 	<script type="text/javascript" src="../Color.js/Color.js"></script>
-	<script type="text/javascript" src="..Source/ColorRoller.js"></script>
-	<link 	type="text/css" rel="stylesheet" href="scripts/ColorRoller.css">
+	<script type="text/javascript" src="../Source/ColorRoller.js"></script>
+	<link 	type="text/css" rel="stylesheet" href="../Source/Assets/ColorRoller.css">
 	<script type="text/javascript">
 		window.addEvent('load', function init(){
-			new ColorRoller('colors');
+			new ColorRoller('colors',{onComplete:function(){console.log('q',arguments)}});
 		});	
 	</script>
 </head>
