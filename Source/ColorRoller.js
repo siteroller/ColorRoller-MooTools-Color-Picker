@@ -1,15 +1,40 @@
+/*
+---
+description: Color Picker. Support for HSB / HSL / HSG.  Support For MSPaint, Adobe, GIMP, and Wheel Style pickers.
+
+license: OSL [Open Source License from the Open Source Initiative].
+
+authors:
+- Sam Goody
+
+requires:
+- Core/*
+- More/Utilites: Color
+
+provides: [ColorRoller]
+
+...
+*/
+var CRImages = "../Source/Assets/";
+
 var ColorRoller = new Class({
-	Implements: Options,
+
+	Implements: [Options,Events],
 	
 	options: {
-		setspace: 'rgb',
-		RGB: [127,127,127]
+        onComplete: $empty, 
+        onCancel: $empty,
+		onChange: $empty,
+		space: '',
+		color: [127,127,127],
+		type: '',
+		colorswitch: 'rgb'
 	},
 
 	initialize: function(element,options){
 		this.setOptions(options);
 		this.build().setStyles({'height':22, 'vertical-align':'top'}).injectAfter($(element));
-		this.e.crColorRoller.addClass('crHide')
+		this.e.crColorRoller.addClass('crHide');
 	},
 	
 	build: function(){
@@ -23,7 +48,7 @@ var ColorRoller = new Class({
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>3 ? e.crType : e.crSpace);
 			});
-		['ColorRoller','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val'].each(
+		['ColorRoller','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel'].each(
 			function(v){
 				e['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
@@ -35,24 +60,29 @@ var ColorRoller = new Class({
 				e['crI'+k].addEvent('keyup',self[v].bind(self));
 			});
 		
-		e.crColorRoller.adopt(
-			e.crHead,
-			e.crBox.adopt(
-				e.crImg.set('src','images/Transp.png'),
-				e.crBoxSel.adopt(e.crBoxSee),
-				e.crShade
-			),
-			e.crBar.adopt(e.crBarSel),
-			e.crNums.adopt(
-				e.crSpace,e.crType,e.crVal.adopt(
-					e.crR,e.crIR,e.crG,e.crIG,e.crB,e.crIB,e.cr0,e.crI0,e.crS,e.crIS,e.cr1,e.crI1
-				),
-				e.crHex,e.crIHex,e.crView
-			)
-		).inject(document.body);
 		
+		with(e){ // After a month of sleepless nights, I sold my soul to the evil 'with'. [Ran some tests. Its actually efficient and readable.]
+			crColorRoller.adopt(
+				crHead.adopt(
+					crComplete.set('html', 	'&#8730;'),//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
+					crCancel.set('html','X')//'&#8855;','&#x2717;'
+				),
+				crBox.adopt(
+					crImg.set('src',CRImages+'Transp.png'),
+					crBoxSel.adopt(crBoxSee),
+					crShade
+				),
+				crBar.adopt(crBarSel),
+				crNums.adopt(
+					crSpace,crType,crVal.adopt(
+						crR,crIR,crG,crIG,crB,crIB,cr0,crI0,crS,crIS,cr1,crI1
+					),
+					crHex,crIHex,crView
+				)
+			).inject(document.body);
+		}
 		this.addEvents();
-		return e.crShow.set('src','images/crShow.png');
+		return e.crShow.set('src',CRImages+'crShow.png');
 	},
 	
 	addEvents: function(){
@@ -61,11 +91,12 @@ var ColorRoller = new Class({
 		this.boxHeight = els.crBox.getSize().y;
 		this.radius = els.crBox.getSize().x / 2;
 		
-		this.modify = 1;
-		this.setRGB(this.options.RGB,3);
+		this.vLast = 1;
+		this.setRGB(this.options.color,3);
 		els.crSpace.addEvent('change',this.setSpace.bind(this)).fireEvent('change');
 		els.crType.addEvent('change',this.setType.bind(this)).fireEvent('change');
 		els.crShow.addEvent('click',this.show.bind(this));
+		els.crComplete.addEvent('click',this.close.pass('1',self));
 		function mousedown(e){ self.mousedown = true; e.stop() }
 		els.crColorRoller.addEvent('mouseup',function(){ self.mousedown = false });
 		els.crBarSel.addEvents('mousedown',mousedown);
@@ -96,13 +127,13 @@ var ColorRoller = new Class({
 		this.inputHSV(0,event.target.value);
 	},
 	inputS: function(event){
-		this.setHS( this.e['crI'+ +(!this.modify)].get('value'), event.target.value, 1)
+		this.setHS( this.e['crI'+ +(!this.vLast)].get('value'), event.target.value, 1)
 	},
 	input1: function(event){
 		this.inputHSV(1,event.target.value);
 	},
 	inputHSV: function(el,val){
-		this.modify != el 
+		this.vLast != el 
 			? this.setHS(val,this.getValues(['S']),1)
 			: this.setV(val,1);
 	},
@@ -124,7 +155,7 @@ var ColorRoller = new Class({
 			if (S > 100) return;
 			if (H < 0) H -= -360;
 		} else {
-			var perc = this.modify ? 360 : 100;
+			var perc = this.vLast ? 360 : 100;
 			S = 100 - Y * 100 / this.boxHeight;
 			H = X * perc / (this.type == 1 || this.space == 'G' ? this.boxHeight : Y);
 		}
@@ -139,9 +170,10 @@ var ColorRoller = new Class({
 	// Set Values
 	setRGB: function(val,step){
 		//Steps: #1 - Set inputs. #2 - Set Hex. #3 - Set View. #0 - Set HSV
-		var e = this.e;
+		var e = this.e, hex = val.rgbToHex().toUpperCase();
+		this.fireEvent('change',hex);  
 		this.setValues(['R','G','B'],val);
-		e.crIHex.set('value',val.rgbToHex().toUpperCase());
+		e.crIHex.set('value', hex);
 		e.crView.setStyle('background-color','rgb('+val+')');
 		if (step){
 			var hsv = val.fromRgb(this.space);
@@ -149,25 +181,25 @@ var ColorRoller = new Class({
 			this.setV(hsv[2]);
 		}
 	},
-	setHS: function(H,S,step){
+	setHS: function(val,S,step){
 		//Steps: #1 - Set inputs. #2 - Set Picker Position. #0 - Set RGB
-		if (step != 1) this.setValues([+(!this.modify),'S'],[H,S],5);
+		if (step != 1) this.setValues([+(!this.vLast),'S'],[val,S],5);
 		if (step != 2){
 			if(!this.type){
-				var	angle = H * Math.PI / 180,
+				var	angle = val * Math.PI / 180,
 					radius = S * this.radius / 100,
 					top  = this.radius - radius * Math.cos(angle),
 					left = this.radius + radius * Math.sin(angle);
 			} else { 
 				var top  = this.boxHeight - S * this.boxHeight / 100,
-					left = H * this.boxHeight / (this.modify ? 360 : 100);
+					left = val * this.boxHeight / (this.vLast ? 360 : 100);
 			}
 			this.e.crBoxSel.setStyles({top:top, left:left});
 		}
 		if (step){ 
-			var hsv = this.modify
-				? [H,S,this.val]
-				: [this.val * 3.59,S,H];
+			var hsv = this.vLast
+				? [val,S,this.val]
+				: [this.val * 3.59,S,val];
 			this.setRGB(hsv.toRgb(this.space));
 		}
 	},
@@ -175,7 +207,7 @@ var ColorRoller = new Class({
 		var els = this.e;
 
 		// Set Opacity if slider is greyscale. 
-		if (this.modify){
+		if (this.vLast){
 			var v = Math.round(val * 2.55), 
 			grey = [v,v,v],
 			value = this.space == 'B' ? val / 100 : 
@@ -187,7 +219,7 @@ var ColorRoller = new Class({
 		this.val = val;
 		els.crBarSel.setStyle('top',100-val+'%');
 		els.crBox.setStyle('background-color', 'rgb('+grey+')'); 
-		if (step != 1) els['crI'+this.modify].set('value', Math.round(V||val));
+		if (step != 1) els['crI'+this.vLast].set('value', Math.round(V||val));
 		if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space));
 	}, 
 	
@@ -203,7 +235,7 @@ var ColorRoller = new Class({
 	setSpace: function(e){
 		this.space = e ? e.target.value : 'G';
 		this.e.cr1.set('text',this.space);
-		this.options.setspace == 'rgb' 
+		this.options.colorswitch == 'rgb' 
 			? this.inputRGB()
 			: (this.setV(this.getValues(['V'])[0]) && this.inputHS());
 	},
@@ -211,10 +243,10 @@ var ColorRoller = new Class({
 		var els = this.e,
 			type = this.type = e ? e.target.value : 0,
 			img = ['wheel','paint','gimp','adobe'];
-		this.modify = +(type < 2);
-		els.crBar.setStyle('background-image', 'url(images/'+ (this.modify ? 'greyscale' : 'rainbow') + '.png)')
-		els.crShade.set('src',!type ? 'images/border.png' : '');
-		els.crImg.set('src','images/'+img[type]+'.png');
+		this.vLast = +(type < 2);
+		els.crBar.setStyle('background-image', 'url('+CRImages+ (this.vLast ? 'greyscale' : 'rainbow') + '.png)')
+		els.crShade.set('src',!type ? CRImages+'border.png' : '');
+		els.crImg.set('src',CRImages+img[type]+'.png');
 		els.crBox.setStyle('background-color','');
 		this.inputRGB();
 	},
@@ -224,7 +256,14 @@ var ColorRoller = new Class({
 			y: this.e.crBox.getPosition().y,
 			x: this.e.crBox.getPosition().x
 		};
-		
+	},
+	
+	//Events
+	close: function(action){
+		var hex = this.getValues(['R','G','B']).rgbToHex().toUpperCase();
+		this.e.crColorRoller.addClass('crHide');
+		if (action) this.e.crShow.setStyle('background-color',hex);
+		this.fireEvent(action ? 'complete' : 'cancel',hex); 
 	}
 
 });

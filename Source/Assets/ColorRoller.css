@@ -97,3 +97,7 @@
 .crHide{
 	display:none
 }
+
+.crCancel, .crComplete {
+	width:20px; float:right; cursor:pointer;
+}
