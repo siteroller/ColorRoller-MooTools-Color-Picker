@@ -119,3 +119,19 @@
 	-ms-border-radius:50%; /* IE9+ (cruel joke) */
 	border-radius:50%; /* Opera 10.5+ */
 }
+
+.crIsoc{
+	
+}
+.crEles{
+	
+}
+.crRight{
+	border-bottom:80px solid transparent;
+	border-left:80px solid silver;
+	position:absolute;
+	width:0;
+	height:0;
+	bottom:0;
+	right:0;
+}

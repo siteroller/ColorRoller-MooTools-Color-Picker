@@ -25,7 +25,7 @@ var ColorRoller = new Class({
         onComplete: $empty, 
         onCancel: $empty,
 		onChange: $empty,
-		space: '',
+		space: 'G',
 		color: [127,127,127],
 		type: '',
 		colorswitch: 'rgb'
@@ -41,14 +41,14 @@ var ColorRoller = new Class({
 		var self = this, i=0, e = this.e = {};
 
 		$each(
-			{Space:'select',Type:'select',Img:'img',Shade:'img',Show:'img',View:'span'},
+			{Space:'select',Type:'select',Img:'img',Shade:'div',Show:'img',View:'span'},
 			function(v,k){ e['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
 		$each({0:'Color Wheel', 1:'MS Paint',2:'GIMP',3:'Adobe CS',G:'HSG', B:'HSB/V',L:'HSL/I'},
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? e.crSpace : e.crType);
 			});
-		['ColorRoller','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel'].each(
+		['ColorRoller','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right'].each(
 			function(v){
 				e['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
@@ -62,16 +62,17 @@ var ColorRoller = new Class({
 		
 		if(Browser.Engine.trident && Browser.Engine.version < 5)
 			e.crImg = new Element('span').adopt(e.crImgIE = new Element('img',{'class':'crImg'}));
-		with(e){ // After a month of sleepless nights, I sold my soul to the evil 'with'. [Ran some tests. Its actually efficient and readable.]
+		with(e){ // After a month of sleepless nights, I've sold my soul to the evil 'with'. [Ran some tests. Its actually efficient and readable.]
 			crColorRoller.adopt(
 				crHead.adopt(
 					crComplete.set('html', 	'&#8730;'),//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
 					crCancel.set('html','X')//'&#8855;','&#x2717;'
 				),
 				crBox.adopt(
-					crImg,//.set('src',CRImages+'Transp.png'),
-					crBoxSel.adopt(crBoxSee)//,
-					//crShade
+					crImg,
+					crBoxSel.adopt(crBoxSee),
+					//crIsoceles.set('class','crHide'),crRight.set('class','crHide'),
+					crShade
 				),
 				crBar.adopt(crBarSel),
 				crNums.adopt(
@@ -82,14 +83,9 @@ var ColorRoller = new Class({
 				)
 			).inject(document.body);	
 		}
-		//if (Browser.Engine.trident < 5) e.crColorRoller.getElements('[src]').each(function(el){
-		//	el.setStyles({
-		//		zoom:1,
-		//		filter: 'progid:DXImageTransform.Microsoft.AlphaImageLoader('+el.get('src')+')'
-		//	});
-		//});
+
 		this.addEvents();
-		return e.crShow.set('src',CRImages+'crShow.png');
+		return e.crShow.set('src', CRImages + 'crShow.png');
 	},
 	
 	addEvents: function(){
@@ -241,11 +237,24 @@ var ColorRoller = new Class({
 		val.each(function(v,i){ self.e['crI'+key[i]].set('value',Math.round(v)) });
 	},
 	setSpace: function(e){
-		this.space = e ? e.target.value : 'G';
+		this.space = e ? e.target.value : this.options.space;
 		this.e.cr1.set('text',this.space);
 		this.options.colorswitch == 'rgb' 
 			? this.inputRGB()
 			: (this.setV(this.getValues(['V'])[0]) && this.inputHS());
+		//this.e.crShade..setStyle('width',80).set('src', CRImages + space == 'G' ? 'clear' : 'isoceles' + '.gif' );
+		//console.log(this, this.type, this.space, this.e.crIsoceles);
+		if(this.type == 2 && false){
+			var isoc = 'crHide', right = 'crHide';
+			if (this.space == 'B') right = 'crRight';
+			else if (this.space == 'L'){
+				isoc = 'crIsoc';
+				right = 'crEles';
+			}
+			
+			els.crIsoceles.set('class',isoc);
+			els.crRight.set('class',right);
+		}
 	},
 	setType: function(e){
 		var els = this.e,
