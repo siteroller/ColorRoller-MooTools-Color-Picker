@@ -3,9 +3,13 @@
 	width:290px;
 	height:150px;
 	background-color:silver;
+	position:relative;
 }
 .crColorRoller  span{
 	display:inline-block;
+}
+.xcrColorRoller  img{
+	border:0;
 }
 .crHead{
 	background-image: -moz-linear-gradient(top, white, silver);
@@ -18,11 +22,12 @@
 	position:relative;
 	margin:10px;
 	float:left;
+	position:relative;
 	width:80px;
 	height:80px;
 	x-moz-border-radius:50%;
 }
-.crBox img{
+.xcrBox img{
 	width:100%;
 	height:100%;
 	x-moz-border-radius:50%;
@@ -85,8 +90,14 @@
 	position:absolute;
 	top:0;
 	left:0;
-	xborder:1px solid silver;
-	//-moz-border-radius:50%;
+	border:0;
+	zoom:1;
+}
+
+.crImg, .crImgIE{
+	width:100%;
+	height:100%;
+	position:absolute;
 }
 .crBoxImg{
 	background-image: -moz-linear-gradient (left, rgb(0,0,0), rgb(255,255,255));
@@ -100,4 +111,11 @@
 
 .crCancel, .crComplete {
 	width:20px; float:right; cursor:pointer;
+}
+
+.crRound, .crRound *{
+	-moz-border-radius:50%; /* Firefox 3.5+ */
+	-webkit-border-radius:50%; /*Webkit 3.0+ */
+	-ms-border-radius:50%; /* IE9+ (cruel joke) */
+	border-radius:50%; /* Opera 10.5+ */
 }

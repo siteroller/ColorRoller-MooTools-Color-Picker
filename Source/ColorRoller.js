@@ -44,7 +44,7 @@ var ColorRoller = new Class({
 			{Space:'select',Type:'select',Img:'img',Shade:'img',Show:'img',View:'span'},
 			function(v,k){ e['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
-		$each({0:'Color Wheel', 1:'MS Paint',2:'GIMP',3:'Adobe CS',G:'HSG', B:'HSB/V',L:'HSL/I',},
+		$each({0:'Color Wheel', 1:'MS Paint',2:'GIMP',3:'Adobe CS',G:'HSG', B:'HSB/V',L:'HSL/I'},
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? e.crSpace : e.crType);
 			});
@@ -60,7 +60,8 @@ var ColorRoller = new Class({
 				e['crI'+k].addEvent('keyup',self[v].bind(self));
 			});
 		
-		
+		if(Browser.Engine.trident && Browser.Engine.version < 5)
+			e.crImg = new Element('span').adopt(e.crImgIE = new Element('img',{'class':'crImg'}));
 		with(e){ // After a month of sleepless nights, I sold my soul to the evil 'with'. [Ran some tests. Its actually efficient and readable.]
 			crColorRoller.adopt(
 				crHead.adopt(
@@ -68,9 +69,9 @@ var ColorRoller = new Class({
 					crCancel.set('html','X')//'&#8855;','&#x2717;'
 				),
 				crBox.adopt(
-					crImg.set('src',CRImages+'Transp.png'),
-					crBoxSel.adopt(crBoxSee),
-					crShade
+					crImg,//.set('src',CRImages+'Transp.png'),
+					crBoxSel.adopt(crBoxSee)//,
+					//crShade
 				),
 				crBar.adopt(crBarSel),
 				crNums.adopt(
@@ -79,8 +80,14 @@ var ColorRoller = new Class({
 					),
 					crHex,crIHex,crView
 				)
-			).inject(document.body);
+			).inject(document.body);	
 		}
+		//if (Browser.Engine.trident < 5) e.crColorRoller.getElements('[src]').each(function(el){
+		//	el.setStyles({
+		//		zoom:1,
+		//		filter: 'progid:DXImageTransform.Microsoft.AlphaImageLoader('+el.get('src')+')'
+		//	});
+		//});
 		this.addEvents();
 		return e.crShow.set('src',CRImages+'crShow.png');
 	},
@@ -242,12 +249,15 @@ var ColorRoller = new Class({
 	},
 	setType: function(e){
 		var els = this.e,
-			type = this.type = e ? e.target.value : 0,
-			img = ['wheel','paint','gimp','photoshop'];
+			type = this.type = e ? +(e.target.value) : 0,
+			img = ['wheel','paint','gimp','photoshop'],
+			path = CRImages + img[type] + '.png';
 		this.vLast = +(type < 2);
 		els.crBar.setStyle('background-image', 'url('+ CRImages + (this.vLast ? 'greyscale' : 'rainbow') + '.png)');
-		els.crShade.set('src',CRImages + (!+type ? 'border.png' : 'clear.png'));
-		els.crImg.set('src',CRImages + img[type] + '.png');
+		els.crBox[type ? 'removeClass' : 'addClass']('crRound');
+		Browser.Engine.trident && Browser.Engine.version < 5
+			? els.crImgIE.setStyle('width',80).set('src', CRImages +  (type ? 'clear' : 'crop') + '.gif').setStyle('filter','progid:DXImageTransform.Microsoft.AlphaImageLoader(src='+ path +',sizingMethod="scale")')
+			: els.crImg.set('src',path);
 		els.crBox.setStyle('background-color','');
 		this.inputRGB();
 	},
