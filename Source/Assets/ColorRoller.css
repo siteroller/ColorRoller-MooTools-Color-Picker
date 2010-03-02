@@ -135,3 +135,22 @@
 	bottom:0;
 	right:0;
 }
+
+.crGradientBW {
+	background-image: url('gradient.png');
+	background-image: linear-gradient(left, black, white);
+	background-image: -moz-linear-gradient(left, black, white);
+	background-image: -webkit-gradient(linear, left center, right center, from(black), to(white));
+	    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='black', EndColorStr='white');
+	-ms-filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='black', EndColorStr='white');
+}
+.crAlphaGradient {
+		-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+	    filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100, FinishOpacity=0, Style=1, StartX=100,  FinishX=100, StartY=0, FinishY=100);
+	-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100, FinishOpacity=0, Style=1, StartX=100,  FinishX=100, StartY=0, FinishY=100);
+}
+
+.crAdobeHSL{
+
+
+}

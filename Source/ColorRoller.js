@@ -27,7 +27,7 @@ var ColorRoller = new Class({
 		onChange: $empty,
 		space: 'G',
 		color: [127,127,127],
-		type: '',
+		type: 0,
 		colorswitch: 'rgb'
 	},
 
@@ -71,7 +71,7 @@ var ColorRoller = new Class({
 				crBox.adopt(
 					crImg,
 					crBoxSel.adopt(crBoxSee),
-					//crIsoceles.set('class','crHide'),crRight.set('class','crHide'),
+					crIsoceles.set('class','crHide'),crRight.set('class','crHide'),
 					crShade
 				),
 				crBar.adopt(crBarSel),
@@ -95,7 +95,7 @@ var ColorRoller = new Class({
 		this.radius = els.crBox.getSize().x / 2;
 		
 		this.vLast = 1;
-		this.setRGB(this.options.color,3);
+		this.setRGB($type(this.options.color) == 'String' ? this.options.color.hexToRgb() : this.options.color,3); // fix
 		els.crSpace.addEvent('change',this.setSpace.bind(this)).fireEvent('change');
 		els.crType.addEvent('change',this.setType.bind(this)).fireEvent('change');
 		els.crShow.addEvent('click',this.show.bind(this));
@@ -151,7 +151,7 @@ var ColorRoller = new Class({
 			X = event.page.x - this.offset.x,
 			Y = event.page.y - this.offset.y;
 		
-		if (!+this.type){
+		if (!this.type){
 			var O = X - this.radius,
 				A = this.radius - Y;
 			H = Math.atan2(O,A) * 180 / Math.PI;
@@ -161,9 +161,12 @@ var ColorRoller = new Class({
 		} else {
 			var perc = this.vLast ? 360 : 100;
 			S = 100 - Y * 100 / this.boxHeight;
-			H = X * perc / (this.type == 1 || this.space == 'G' ? this.boxHeight : Y);
+			
+			if (this.type == 2  && this.space == 'B'){
+				H = (X + Y - this.boxHeight) / Y * perc;
+			} else H = X * perc / (this.type == 1 || this.space == 'G' ? this.boxHeight : Y);
 		}
-		
+		console.log(H,S)
 		els.crBoxSel.setPosition({
 			y:Y, 
 			x:X 
@@ -237,6 +240,7 @@ var ColorRoller = new Class({
 		val.each(function(v,i){ self.e['crI'+key[i]].set('value',Math.round(v)) });
 	},
 	setSpace: function(e){
+		var els = this.e;
 		this.space = e ? e.target.value : this.options.space;
 		this.e.cr1.set('text',this.space);
 		this.options.colorswitch == 'rgb' 
@@ -244,7 +248,7 @@ var ColorRoller = new Class({
 			: (this.setV(this.getValues(['V'])[0]) && this.inputHS());
 		//this.e.crShade..setStyle('width',80).set('src', CRImages + space == 'G' ? 'clear' : 'isoceles' + '.gif' );
 		//console.log(this, this.type, this.space, this.e.crIsoceles);
-		if(this.type == 2 && false){
+		if(this.type == 2 ){//&& false
 			var isoc = 'crHide', right = 'crHide';
 			if (this.space == 'B') right = 'crRight';
 			else if (this.space == 'L'){
@@ -258,7 +262,7 @@ var ColorRoller = new Class({
 	},
 	setType: function(e){
 		var els = this.e,
-			type = this.type = e ? +(e.target.value) : 0,
+			type = this.type = e ? +(e.target.value) : this.options.type,
 			img = ['wheel','paint','gimp','photoshop'],
 			path = CRImages + img[type] + '.png';
 		this.vLast = +(type < 2);
