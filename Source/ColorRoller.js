@@ -44,7 +44,7 @@ var ColorRoller = new Class({
 			{Space:'select',Type:'select',Img:'img',Shade:'div',Show:'img',View:'span'},
 			function(v,k){ e['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
-		$each({0:'Color Wheel', 1:'MS Paint',2:'GIMP',3:'Adobe CS',G:'HSG', B:'HSB/V',L:'HSL/I'},
+		$each({0:'Color Wheel', 1:'MS Paint',2:'Adobe CS',3:'GIMP',G:'HSG', B:'HSB/V',L:'HSL/I'},
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? e.crSpace : e.crType);
 			});
@@ -71,7 +71,7 @@ var ColorRoller = new Class({
 				crBox.adopt(
 					crImg,
 					crBoxSel.adopt(crBoxSee),
-					crIsoceles.set('class','crHide'),crRight.set('class','crHide'),
+					//crIsoceles.set('class','crHide'),crRight.set('class','crHide'),
 					crShade
 				),
 				crBar.adopt(crBarSel),
@@ -158,15 +158,13 @@ var ColorRoller = new Class({
 			S = Math.sqrt(O*O+A*A) * 100 / this.radius;
 			if (S > 100) return;
 			if (H < 0) H -= -360;
-		} else {
-			var perc = this.vLast ? 360 : 100;
+		} else if (this.type < 3) {
+			H = (this.vLast ? 360 : 100) * X / this.boxHeight;
 			S = 100 - Y * 100 / this.boxHeight;
-			
-			if (this.type == 2  && this.space == 'B'){
-				H = (X + Y - this.boxHeight) / Y * perc;
-			} else H = X * perc / (this.type == 1 || this.space == 'G' ? this.boxHeight : Y);
+		} else {
+			// Isoceles triangle - being developed in branch.
 		}
-		console.log(H,S)
+		//console.log(H,S)
 		els.crBoxSel.setPosition({
 			y:Y, 
 			x:X 
@@ -197,7 +195,7 @@ var ColorRoller = new Class({
 					radius = S * this.radius / 100,
 					top  = this.radius - radius * Math.cos(angle),
 					left = this.radius + radius * Math.sin(angle);
-			} else { 
+			} else {
 				var top  = this.boxHeight - S * this.boxHeight / 100,
 					left = val * this.boxHeight / (this.vLast ? 360 : 100);
 			}
@@ -246,32 +244,25 @@ var ColorRoller = new Class({
 		this.options.colorswitch == 'rgb' 
 			? this.inputRGB()
 			: (this.setV(this.getValues(['V'])[0]) && this.inputHS());
-		//this.e.crShade..setStyle('width',80).set('src', CRImages + space == 'G' ? 'clear' : 'isoceles' + '.gif' );
-		//console.log(this, this.type, this.space, this.e.crIsoceles);
-		if(this.type == 2 ){//&& false
-			var isoc = 'crHide', right = 'crHide';
-			if (this.space == 'B') right = 'crRight';
-			else if (this.space == 'L'){
-				isoc = 'crIsoc';
-				right = 'crEles';
-			}
-			
-			els.crIsoceles.set('class',isoc);
-			els.crRight.set('class',right);
-		}
+		if (this.type == 2) this.setImg();
+	},
+	setImg: function(img){
+		img = CRImages + (img || 'adobehs' + this.space) + '.png';
+		console.log(img);
+		Browser.Engine.trident && Browser.Engine.version < 5 
+			? this.e.crImgIE.setStyle('width',80).set('src', CRImages +  (this.type ? 'clear' : 'crop') + '.gif').setStyle('filter','progid:DXImageTransform.Microsoft.AlphaImageLoader(src='+ img +',sizingMethod="scale")')
+			: this.e.crImg.set('src', img);
 	},
 	setType: function(e){
 		var els = this.e,
 			type = this.type = e ? +(e.target.value) : this.options.type,
-			img = ['wheel','paint','gimp','photoshop'],
-			path = CRImages + img[type] + '.png';
+			img = ['wheel','paint',false,'gimp'];
 		this.vLast = +(type < 2);
 		els.crBar.setStyle('background-image', 'url('+ CRImages + (this.vLast ? 'greyscale' : 'rainbow') + '.png)');
 		els.crBox[type ? 'removeClass' : 'addClass']('crRound');
-		Browser.Engine.trident && Browser.Engine.version < 5
-			? els.crImgIE.setStyle('width',80).set('src', CRImages +  (type ? 'clear' : 'crop') + '.gif').setStyle('filter','progid:DXImageTransform.Microsoft.AlphaImageLoader(src='+ path +',sizingMethod="scale")')
-			: els.crImg.set('src',path);
 		els.crBox.setStyle('background-color','');
+		this.setImg(img[type]);
+		if (this.type == 2) els.crImg.setStyle('opacity',1);
 		this.inputRGB();
 	},
 	show: function(){
