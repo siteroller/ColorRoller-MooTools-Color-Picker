@@ -3,11 +3,11 @@ ColorRoller - Color Picker
 
 Color Picker for Mootools.
 
-Tiny, Simple, Cross Browser: IE4+, FF1+, Webkit2+
+Tiny, Simple, Cross Browser: IE4+, FF1+, Webkit2+, Opera
 
 Popular formats: HSB / HSV, HSL / HSI, HSG
 
-Various style pickers: Color Wheel, MS Paint, GIMP Triangle, [Adobe Photoshop coming when it is requested].
+Various style pickers: Color Wheel, MS Paint, Adobe Photoshop, [GIMP Triangle under developement].
 
 ## Community
 The Color Picker was devised as part of the MooRTE wysiwyg editor.

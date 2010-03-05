@@ -164,7 +164,6 @@ var ColorRoller = new Class({
 		} else {
 			// Isoceles triangle - being developed in branch.
 		}
-		//console.log(H,S)
 		els.crBoxSel.setPosition({
 			y:Y, 
 			x:X 
@@ -177,11 +176,12 @@ var ColorRoller = new Class({
 		//Steps: #1 - Set inputs. #2 - Set Hex. #3 - Set View. #0 - Set HSV
 		var e = this.e, hex = val.rgbToHex().toUpperCase();
 		this.fireEvent('change',hex);  
-		this.setValues(['R','G','B'],val);
-		e.crIHex.set('value', hex);
+		if (step != 1) this.setValues(['R','G','B'],val);
+		if (step != 2) e.crIHex.set('value', hex);
 		e.crView.setStyle('background-color','rgb('+val+')');
 		if (step){
 			var hsv = val.fromRgb(this.space);
+			if (!this.vLast) hsv.reverse();
 			this.setHS(hsv[0],hsv[1]);
 			this.setV(hsv[2]);
 		}
@@ -190,7 +190,7 @@ var ColorRoller = new Class({
 		//Steps: #1 - Set inputs. #2 - Set Picker Position. #0 - Set RGB
 		if (step != 1) this.setValues([+(!this.vLast),'S'],[val,S],5);
 		if (step != 2){
-			if(!+this.type){
+			if(!this.type){
 				var	angle = val * Math.PI / 180,
 					radius = S * this.radius / 100,
 					top  = this.radius - radius * Math.cos(angle),
@@ -218,14 +218,15 @@ var ColorRoller = new Class({
 			value = this.space == 'B' ? val / 100 : 
 				this.space == 'L' ? 1 - Math.abs(val / 50 - 1) : 1;
 			els.crImg.setStyle('opacity',value);
-		} else var V = val * 3.59, grey = [V,100,100].toRgb();
+		} else var grey = [val,100,100].toRgb(); //V = val * 3.59, 
 		
 		//Set this.val. Set Slider. Set BG Color. #1 - Set inputs. #0 - Set RGB
 		this.val = val;
 		els.crBarSel.setStyle('top',100-val+'%');
 		els.crBox.setStyle('background-color', 'rgb('+grey+')'); 
-		if (step != 1) els['crI'+this.vLast].set('value', Math.round(V||val));
-		if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space));
+		if (step != 1) els['crI'+this.vLast].set('value', Math.round(val)); //V||val
+		//if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space));
+		if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space));//this.vLast ? [0,'S',1] : 
 	}, 
 	
 	// Utilities
@@ -248,7 +249,6 @@ var ColorRoller = new Class({
 	},
 	setImg: function(img){
 		img = CRImages + (img || 'adobehs' + this.space) + '.png';
-		console.log(img);
 		Browser.Engine.trident && Browser.Engine.version < 5 
 			? this.e.crImgIE.setStyle('width',80).set('src', CRImages +  (this.type ? 'clear' : 'crop') + '.gif').setStyle('filter','progid:DXImageTransform.Microsoft.AlphaImageLoader(src='+ img +',sizingMethod="scale")')
 			: this.e.crImg.set('src', img);
