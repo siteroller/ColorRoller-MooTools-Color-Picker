@@ -9,7 +9,7 @@ Popular formats: HSB / HSV, HSL / HSI, HSG
 
 Various style pickers: Color Wheel, MS Paint, Adobe Photoshop, [GIMP Triangle under developement].
 
-![Screenshot](http://siteroller.net/archive/images/ColorRoller/wheelhsl.png)
+![Screenshot](http://siteroller.net/archive/images/ColorRoller/wheelhslthumb.png)
 
 
 ## Community
@@ -48,9 +48,9 @@ Special thanks to [Buriel Webwerx](http://burielwebwerx.com/) for their help wit
     - colorswitch [Boolean] - When switching color spaces or types, should the color be maintained and the cursor updated (true - default) or the position of the the cursor maintained and color be updated (false). 
 
 ### Styling
-All of the styles are stored in a separate stylesheet: assets/CollerRoller.css
-you are encouraged to improve the layout of the picker, and to post on the the MooRTE forum some updated or variant styles.
-The colorpicker uses images instead of background-images so that the color picker can be scaled cross-browser.
+All of the styles are stored in a separate stylesheet: assets/CollerRoller.css<br>
+You are encouraged to improve the layout of the picker, and to post on the the MooRTE forum some updated or variant styles.<br>
+The colorpicker uses images instead of background-images so that the color picker can be scaled cross-browser.<br>
 
 ### Known Issues
 1.  The Triangle / GIMP color picker is not yet supported.  
