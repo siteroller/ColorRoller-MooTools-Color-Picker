@@ -142,8 +142,9 @@ var ColorRoller = new Class({
 			: this.setV(val,1);
 	},
 	slider: function(event){
-		var val = 100 - 100 * (event.page.y - this.offset.y) / this.barHeight;
-		if(this.mousedown && (val > -1) && (val < 101)) this.setV(val, 2);
+		var H = this.vLast ? 100 : 360, 
+			val = H - H * (event.page.y - this.offset.y) / this.barHeight;
+		if (this.mousedown && val > -1 && val < H) this.setV(val, 2);
 	},
 	picker: function(event){
 		if (!this.mousedown) return;
@@ -203,27 +204,27 @@ var ColorRoller = new Class({
 		}
 		if (step){ 
 			var hsv = this.vLast
-				? [val,S,this.val]
-				: [this.val * 3.59,S,val];
+				? [val, S, this.val]
+				: [this.val, S, val];
 			this.setRGB(hsv.toRgb(this.space));
 		}
 	},
 	setV: function(val,step){
 		var els = this.e;
-
 		// Set Opacity if slider is greyscale. 
 		if (this.vLast){
 			var v = Math.round(val * 2.55), 
-			grey = [v,v,v],
+			bg = [v,v,v],
 			value = this.space == 'B' ? val / 100 : 
 				this.space == 'L' ? 1 - Math.abs(val / 50 - 1) : 1;
 			els.crImg.setStyle('opacity',value);
-		} else var grey = [val,100,100].toRgb(); //V = val * 3.59, 
+		} else var bg = [val,100,100].toRgb(); 
 		
 		//Set this.val. Set Slider. Set BG Color. #1 - Set inputs. #0 - Set RGB
 		this.val = val;
-		els.crBarSel.setStyle('top',100-val+'%');
-		els.crBox.setStyle('background-color', 'rgb('+grey+')'); 
+		//els.crBarSel.setStyle('top', 100 - (this.vLast ? val : val / 3.6) + '%');
+		els.crBarSel.setStyle('top', 100 - val / (this.vLast || 3.6) + '%');
+		els.crBox.setStyle('background-color', 'rgb(' + bg + ')'); 
 		if (step != 1) els['crI'+this.vLast].set('value', Math.round(val)); //V||val
 		//if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space));
 		if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space));//this.vLast ? [0,'S',1] : 
