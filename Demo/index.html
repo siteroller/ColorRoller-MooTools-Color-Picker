@@ -10,12 +10,17 @@
 	<script type="text/javascript">
 		window.addEvent('load', function init(){
 			var CRImages = "../Source/Assets/";
-			new ColorRoller('colors',{onComplete:function(){alert('q',arguments)}});
+			new ColorRoller('colors', { 
+				onComplete:function(color){
+					$('colors').set('value', color);
+				}
+			});
 		});	
 	</script>
 </head>
 <body>
-
+Click on box to choose color.<br>
+When done, click check mark in upper right of picker.<br>
 <input id="colors">
 </body>
 </html>
