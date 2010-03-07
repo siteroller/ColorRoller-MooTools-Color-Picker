@@ -61,7 +61,7 @@ The colorpicker uses images instead of background-images so that the color picke
 4.  For all issues, please post to the Github issue page or start a thread on the MooRTE group.
 
 ## Screenshots
-![Photoshop Style, HSG Space](http://siteroller.net/archive/images/ColorRoller/adobehsg.png)
 ![Photoshop Style, HSL Space](http://siteroller.net/archive/images/ColorRoller/adobehsl.png)
 ![Paint Style, HSB Space](http://siteroller.net/archive/images/ColorRoller/painthsb.png)
 ![ColorWheel Style, HSL Space](http://siteroller.net/archive/images/ColorRoller/wheelhsl2.png)
+![Photoshop Style, HSG Space](http://siteroller.net/archive/images/ColorRoller/adobehsg.png)
