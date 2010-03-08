@@ -115,7 +115,7 @@
 
 .crRound, .crRound *{
 	-moz-border-radius:50%; /* Firefox 3.5+ */
-	-webkit-border-radius:50%; /*Webkit 3.0+ */
+	-webkit-border-radius:40px; /*Webkit 3.0+ */
 	-ms-border-radius:50%; /* IE9+ (cruel joke) */
 	border-radius:50%; /* Opera 10.5+ */
 }

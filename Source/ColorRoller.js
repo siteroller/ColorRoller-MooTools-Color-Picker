@@ -73,7 +73,7 @@ var ColorRoller = new Class({
 		if(Browser.Engine.trident && Browser.Engine.version < 5)
 			els.crImg = new Element('span').adopt(els.crImgIE = new Element('img',{'class':'crImg'}));
 		
-		with(els){		// The evil 'with'. Ran tests, found it to be efficient and readable.
+		with(els){		// The evil 'with'. Ran tests, found it efficient and readable.
 			crColorRoller.adopt(
 				crHead.adopt(
 					crComplete.set('html', 	'&#8730;'),//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
