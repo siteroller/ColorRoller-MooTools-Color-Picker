@@ -8,34 +8,23 @@
 .crColorRoller  span{
 	display:inline-block;
 }
-.xcrColorRoller  img{
-	border:0;
-}
 .crHead{
 	background-image: -moz-linear-gradient(top, white, silver);
 	height:10px;
 }
 .crBox {
 	cursor:crosshair;
-	xbackground-image:-moz-radial-gradient(rgba(255,255,255,1), rgba(255,255,255,0)), url(color-wheel-small2.png);
-	xbackground-image:url(Transp1.png);
 	position:relative;
 	margin:10px;
 	float:left;
 	position:relative;
 	width:80px;
 	height:80px;
-	x-moz-border-radius:50%;
-}
-.xcrBox img{
-	width:100%;
-	height:100%;
-	x-moz-border-radius:50%;
 }
 .crBoxSel{
 	position:absolute;
-	top:50%;
-	left:50%;
+	width:1px;
+	height:1px;
 }
 .crBoxSel div{
 	position:absolute;
@@ -44,6 +33,7 @@
 	height:4px;
 	width:4px;
 	border:1px solid;
+	overflow:hidden;
 	-moz-border-radius:50%;
 }
 .crBar{
@@ -93,7 +83,6 @@
 	border:0;
 	zoom:1;
 }
-
 .crImg, .crImgIE{
 	width:100%;
 	height:100%;
@@ -148,11 +137,6 @@
 		-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
 	    filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100, FinishOpacity=0, Style=1, StartX=100,  FinishX=100, StartY=0, FinishY=100);
 	-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100, FinishOpacity=0, Style=1, StartX=100,  FinishX=100, StartY=0, FinishY=100);
-}
-
-.crAdobeHSL{
-
-
 }
 .crShow{
 	height:22;
