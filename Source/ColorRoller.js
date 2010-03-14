@@ -35,23 +35,25 @@ var ColorRoller = new Class({
 		this.setOptions(options);
 		this.build();
 		
-		var els = this.els;
+		var els = this.els, 
+			color = this.options.color;
 		this.barHeight = els.crBar.getSize().y;
 		this.boxHeight = els.crBox.getSize().y;
 		this.radius = els.crBox.getSize().x / 2;
-		this.vLast = +(this.options.type < 2);
-		this.setRGB($type(this.options.color) == 'String' ? this.options.color.hexToRgb(1) : this.options.color, 3);
 		
-		this.addEvents();
+		this.vLast = +(this.options.type < 2);
+		this.setRGB($type(color) == 'String' ? color.hexToRgb(1) : color, 3);
+		els.crShow.setStyle('background-color', color.rgbToHex());
 		els.crShow.set('src', CRImages + 'crShow.png').injectAfter($(element));
-		this.els.crColorRoller.addClass('crHide');
+		els.crColorRoller.addClass('crHide');
+		this.addEvents();
 	},
 	
 	build: function(){
 		var self = this, i=0, els = this.els = {};
 
 		$each(
-			{Space:'select',Type:'select',Img:'img',Shade:'div',Show:'img',View:'span'},
+			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Circle:'div',Triangle:'div',Tri1:'div',Tri2:'div',Shade:'div'},
 			function(v,k){ els['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
 		$each({0:'Color Wheel', 1:'MS Paint',2:'Adobe CS',3:'GIMP',G:'HSG', B:'HSB/V',L:'HSL/I'},
@@ -70,8 +72,8 @@ var ColorRoller = new Class({
 				els['crI'+k].addEvent('keyup',self[v].bind(self));
 			});
 		
-		if(Browser.Engine.trident && Browser.Engine.version < 5)
-			els.crImg = new Element('span').adopt(els.crImgIE = new Element('img',{'class':'crImg'}));
+		if (Browser.Engine.trident && Browser.Engine.version < 5)
+				els.crImg = new Element('span').adopt(els.crImgIE = new Element('img',{'class':'crImg'}));
 		
 		with(els){		// The evil 'with'. Ran tests, found it efficient and readable.
 			crColorRoller.adopt(
@@ -82,7 +84,8 @@ var ColorRoller = new Class({
 				crBox.adopt(
 					crImg,
 					crBoxSel.adopt(crBoxSee),
-					//crIsoceles.set('class','crHide'),crRight.set('class','crHide'),
+					crCircle,
+					crTriangle.adopt(crTri1, crTri2).setStyle('display','none'),
 					crShade
 				),
 				crBar.adopt(crBarSel),
@@ -93,6 +96,25 @@ var ColorRoller = new Class({
 					crHex,crIHex,crView
 				)
 			).inject(document.body);	
+		}
+		
+		if (Browser.Engine.trident) {
+			var H = els.crBox.clientHeight;
+			for (var i=1; i<13; i++){
+				var rad = 7 * i * Math.PI * 2 / 360,
+				cos = Math.cos(rad),
+				sin = Math.sin(rad),
+				filter = 'progid:DXImageTransform.Microsoft.Matrix(sizingMethod="auto expand", M11 = '
+					+ cos + ', M12 = '+ (-sin) + ', M21 = ' + sin + ', M22 = ' + cos +')',
+				obj = new Element('div', { styles:{
+					filter: filter,
+					'-ms-filter': filter
+				}}).inject(els.crCircle);
+				obj.setStyles({
+					top: (H - obj.offsetHeight) / 2,
+					left: (H - obj.offsetWidth) / 2
+				});
+			}
 		}
 	},
 	
@@ -265,8 +287,10 @@ var ColorRoller = new Class({
 	setImg: function(img){
 		img = CRImages + (img || 'adobehs' + this.space) + '.png';
 		Browser.Engine.trident && Browser.Engine.version < 5 
-			? this.els.crImgIE.setStyle('width',80).set('src', CRImages +  (this.type ? 'clear' : 'crop') + '.gif').setStyle('filter','progid:DXImageTransform.Microsoft.AlphaImageLoader(src='+ img +',sizingMethod="scale")')
-			: this.els.crImg.set('src', img);
+			? this.els.crImgIE.setStyle('width',80).set('src', CRImages + 'clear.gif').setStyle('filter','progid:DXImageTransform.Microsoft.AlphaImageLoader(src='+ img +',sizingMethod="scale")')
+			: this.els.crImg.set('src', img);//(this.type ? 'clear' : 'crop')
+		if (Browser.Engine.trident) this.els.crCircle.setStyle('display', this.type ? 'none' : 'block'); 
+		this.els.crTriangle.setStyle('display', this.type == 3 ? 'block' : 'none'); 
 	},
 	
 	//Events

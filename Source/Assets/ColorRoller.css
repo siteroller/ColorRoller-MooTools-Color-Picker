@@ -109,22 +109,6 @@
 	border-radius:50%; /* Opera 10.5+ */
 }
 
-.crIsoc{
-	
-}
-.crEles{
-	
-}
-.crRight{
-	border-bottom:80px solid transparent;
-	border-left:80px solid silver;
-	position:absolute;
-	width:0;
-	height:0;
-	bottom:0;
-	right:0;
-}
-
 .crGradientBW {
 	background-image: url('gradient.png');
 	background-image: linear-gradient(left, black, white);
@@ -141,4 +125,44 @@
 .crShow{
 	height:22;
 	vertical-align:top;
+}
+
+.crCircle{
+	position:relative;
+	overflow:hidden;
+}
+
+.crCircle div{
+	position:absolute;
+	width:80px;
+	height:80px;
+	border:10px solid silver;
+}
+.crTriangle div{
+	position:absolute;
+	border-bottom:80px dotted transparent;
+	width:0;
+	height:0;
+	bottom:0;
+	right:0;
+}
+
+.crTri1{
+	left:0;
+	border-left:40px solid silver;
+}
+
+.crTri2{
+	right:0;
+	border-right:40px solid silver;
+}
+
+.xcrRight{
+	border-bottom:80px solid transparent;
+	border-left:80px solid silver;
+	position:absolute;
+	width:0;
+	height:0;
+	bottom:0;
+	right:0;
 }
