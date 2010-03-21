@@ -144,59 +144,68 @@ Array.implement({
 	},
 	
 	fromRgb: function(space,decimal){
-		var v, 
-			hsl = 0, 
+		var v,
+			hsl = 0,
 			rgb = $A(this).sort(function(a,b){
-				return res = a - b 
+				return res = a - b
 			}),
-			min = rgb[0], 
+			min = rgb[0],
 			max = rgb[2];
 		
 		switch((space||'').toLowerCase().slice(-1)){
-			default : 
-				v = max / 2.55; 
-				span = v;  break; 
-			case 'g': 
+			default :
+				v = max / 2.55;
+				span = v;  break;
+			case 'g':
 				v = min / (min - max + 255) * 100;
-				span = 100;  break; 
-			case 'l': 
-				v = (+max + +min) / 5.1; 
-				span = v * 2; 
-				if (v > 50){ 
-					span = 200 - span; 
-					hsl = 100 - span; 
+				span = 100;  break;
+			case 'l':
+				v = (+max + +min) / 5.1;
+				span = v * 2;
+				if (v > 50){
+					span = 200 - span;
+					hsl = 100 - span;
 				}
 		}
 
 		var s = 100 * (min / 2.55 - v) / (hsl - v);
 		var d = (100 * (rgb[1] / 2.55 - v) / s + v - hsl) / span;
-		for(var ind = '', i = 0; i < 3; i++) ind += rgb.indexOf(this[i]);
-		var h = '210,120,021,012,102,201,110,020,011,002,101,000'.indexOf(ind)/4%6;
+		for (var ind = '', i = 0; i < 3; i++) ind += rgb.indexOf(this[i]);
+		var h = '210,120,021,012,102,201,110,020,011,002,101,000,200'.indexOf(ind)/4%6;
 		h += h%2 ? 1-d : d;
-		return [h*60,s,v].map(function(i){ return decimal ? i||0 : Math.round(i||0) });	
+		return [h*60,s,v].map(function(i){ return decimal ? i||0 : Math.round(i||0) });
 	},
 
-	toRgb: function(space,decimal){					
-		var val = this[2] * 1, hsl = 0;
+	toRgb: function(space,decimal){
+		var val,
+			hsl = 0,
+			rgb = [],
+			span = val = +this[2],
+			hue = this[0] % 360 / 60,
+			f = Math.floor(hue),
+			map = [0, (f % 2 ? 1 + f - hue : hue - f), 1],
+			ind = ['210','201','021','012','102','120'][f];
+		
 		switch((space||'v').slice(-1).toLowerCase()){
-			default : span = val; break;
-			case 'g': span = 100; break;
-			case 'l': span = val * 2; 
+			case 'w': case 'g': span = 100; break;
+			case 'l': case 'i': span *= 2;
 				if (val > 50){
 					span = 200 - span;
 					hsl = 100 - span;
 				}
 		}
-		var hue = this[0]%360/60, rad = Math.floor(hue), odd = rad%2; 
-		var rgb = [], map = [0, (odd ? 1+rad-hue : hue-rad), 1];
-		map.each(function(density,i){
-			var index = Math.floor(hue / 2 + 5 + i * (odd||-1))%3;
-			var color = this[1] / 100 * (density * span - val + hsl) + val;
-			rgb[index] = decimal ? color * 2.55 : Math.round(color * 2.55);
-			//rgb[index] = Math.round(color * 2.55);
+		
+		map.each(function(perc,i){
+			var color = this[1] / 100 * (perc * span - val + hsl) + val;
+			rgb[ind[i]] = decimal ? color * 2.55 : Math.round(color * 2.55);
 		}, this);
+
 		return rgb;
 	}
+	//var hue = (this[0] % 360 / 60 + '').split('.'),
+	//		diff = +('.'+hue[1]),
+	//		map = [0, hue[0] % 2 ? 1 - diff : diff, 1],
+	//		ind = ['210','201','021','012','102','120'][hue[0]];
 });
 
 String.implement({
