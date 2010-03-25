@@ -181,14 +181,30 @@ var ColorRoller = new Class({
 				A = this.radius - Y;
 			val = Math.atan2(O,A) * 180 / Math.PI;
 			S = Math.sqrt(O*O+A*A) * 100 / this.radius;
-			if (S > 100) return;
 			if (val < 0) val -= -360;
 		} else if (this.type < 3) {
 			val = (this.vLast ? 360 : 100) * X / this.boxHeight;
-			S = 100 - Y * 100 / this.boxHeight;
+			S = 100 - 100 * Y / this.boxHeight;
 		} else {
-			// Isoceles triangle - being developed in branch.
+			switch (this.space){
+				case 'G':
+					val = ((Y - this.boxHeight) / 2 + X) / Y;
+					S = 1 - Y / this.boxHeight;
+					break;
+				case 'L':
+					S = ((this.boxHeight - Y) / (2 * (X > this.boxHeight / 2 ? this.boxHeight - X : X)));	
+					val = X / this.boxHeight;
+					break;
+				case 'B':
+					var diff = this.boxHeight - (this.boxHeight - Y) / 2 - X;
+					val = 1 - diff / this.boxHeight;
+					S = 1 - (Y - diff) / (this.boxHeight - diff);
+			}
+			val *= 100;
+			S *= 100;
+			if (val > 100 || val < 0) return;
 		}
+		if (S > 100) return;
 		els.crBoxSel.setPosition({
 			y:Y, 
 			x:X 
