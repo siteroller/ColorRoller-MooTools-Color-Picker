@@ -177,36 +177,34 @@ Array.implement({
 	},
 
 	toRgb: function(space,decimal){
-		var val,
-			hsl = 0,
+		var hsl = 0,
 			rgb = [],
-			span = val = +this[2],
+			max = +this[2],
+			val = max,
 			hue = this[0] % 360 / 60,
 			f = Math.floor(hue),
-			map = [0, (f % 2 ? 1 + f - hue : hue - f), 1],
-			ind = ['210','201','021','012','102','120'][f];
-		
-		switch((space||'v').slice(-1).toLowerCase()){
-			case 'w': case 'g': span = 100; break;
-			case 'l': case 'i': span *= 2;
+			ind = '210201021012102120',
+			map = [0, (f % 2 ? 1 + f - hue : hue - f), 1];
+			
+		switch((space||'').slice(-1).toLowerCase()){
+			case 'w': case 'g': max = 100; break;
+			case 'l': case 'i': max *= 2;
 				if (val > 50){
-					span = 200 - span;
-					hsl = 100 - span;
+					max = 200 - max;
+					hsl = 100 - max;
 				}
 		}
 		
 		map.each(function(perc,i){
-			var color = this[1] / 100 * (perc * span - val + hsl) + val;
-			rgb[ind[i]] = decimal ? color * 2.55 : Math.round(color * 2.55);
+			var tint = 2.55 * (this[1] / 100 * (perc * max - val + hsl) + val);
+			rgb[ind.charAt(i * 6)] = decimal ? tint : Math.round(tint);
 		}, this);
 
 		return rgb;
 	}
-	//var hue = (this[0] % 360 / 60 + '').split('.'),
-	//		diff = +('.'+hue[1]),
-	//		map = [0, hue[0] % 2 ? 1 - diff : diff, 1],
-	//		ind = ['210','201','021','012','102','120'][hue[0]];
 });
+// ind.charAt(i * 6) instead of ind[i * 6] for IE6. The multiplication could be avoided with:
+// ind = ['210','201','021','012','102','120'][f]; ind = [[2,1,0],[2,0,1],[0,2,1],[0,1,2],[1,0,2],[1,2,0]][f]; rgb[ind.charAt(i)] = decimal ? tint : Math.round(tint);
 
 String.implement({
 
@@ -231,8 +229,30 @@ String.implement({
 	}
 
 });
+
 /*
-ToDo:
-6,163,0 - infinity
-168,4,4 - 360 / 0
+Hash.each(inserters, function(inserter, space){
+
+	space = space.capitalize();
+
+	Element.implement('rgbTo' + space, function(el){
+		fromRgb('space');
+		//inserter(this, document.id(el, true));
+		return this;
+	});
+	
+	Element.implement(space + 'ToRgb', function(el){
+		fromRgb('space');
+		//inserter(this, document.id(el, true));
+		return this;
+	});
+
+	Element.implement('grab' + where, function(el){
+		inserter(document.id(el, true), this);
+		return this;
+	});
+
+});
+*//*
+ToDo: 6,163,0 - infinity in HSW
 */
