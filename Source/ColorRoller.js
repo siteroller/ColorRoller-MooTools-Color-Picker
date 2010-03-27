@@ -187,6 +187,18 @@ var ColorRoller = new Class({
 			S = 100 - 100 * Y / this.boxHeight;
 		} else {
 			switch (this.space){
+/*
+	Given Variables: 
+		X - the x coordinate that is clicked.
+		Y - the y coordinate that is clicked.
+		this.boxHeight - the height (and width) of the box containing the triangle.
+		0,0 is the upper left corner of the box.
+		
+	In all, we need S and val.
+	val can be described as the percentage at which the line crosses the bottom (where 0 is the left). 
+	S can be described as the percentage at which the click was of the line , where 0 is the bottom.
+	The lines can be seen at the link I sent you.
+*/
 				case 'G':
 					val = ((Y - this.boxHeight) / 2 + X) / Y;
 					S = 1 - Y / this.boxHeight;
@@ -196,9 +208,13 @@ var ColorRoller = new Class({
 					val = X / this.boxHeight;
 					break;
 				case 'B':
-					var diff = this.boxHeight - (this.boxHeight - Y) / 2 - X;
-					val = 1 - diff / this.boxHeight;
-					S = 1 - (Y - diff) / (this.boxHeight - diff);
+					var boxWidth = this.boxHeight,
+						x0 = boxWidth / 2,
+						m = -this.boxHeight / x0 //-2,
+						b = Y - m * X,
+						x4 = (this.boxHeight - b) / m;
+						S = (boxWidth - x4) / boxWidth;
+						val = (X - x4) / ((boxWidth - x4) / 2);
 			}
 			val *= 100;
 			S *= 100;
