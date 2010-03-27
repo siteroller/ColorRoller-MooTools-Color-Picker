@@ -11,6 +11,8 @@
 		window.addEvent('load', function init(){
 			var CRImages = "../Source/Assets/";
 			new ColorRoller('colors', { 
+				space:'B',
+				type:3,
 				onComplete:function(color){
 					$('colors').set('value', color);
 				}
