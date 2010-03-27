@@ -22,6 +22,12 @@ function Firefox36(){
 	FF36 = Hash.has(window, 'onhashchange');
 }
 
+
+Color.js: toRGB(){
+// ind.charAt(i) instead of ind[i] for IE6.
+ind = '210201021012102120'; 
+ind = [[2,1,0],[2,0,1],[0,2,1],[0,1,2],[1,0,2],[1,2,0]][f]; rgb[ind.charAt(i)] = decimal ? tint : Math.round(tint);
+}
 /*
 Notes:
 #1:

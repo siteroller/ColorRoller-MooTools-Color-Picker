@@ -183,8 +183,8 @@ Array.implement({
 			val = max,
 			hue = this[0] % 360 / 60,
 			f = Math.floor(hue),
-			ind = '210201021012102120',
-			map = [0, (f % 2 ? 1 + f - hue : hue - f), 1];
+			map = [0, (f % 2 ? 1 + f - hue : hue - f), 1],
+			ind = ['210','201','021','012','102','120'][f];
 			
 		switch((space||'').slice(-1).toLowerCase()){
 			case 'w': case 'g': max = 100; break;
@@ -197,14 +197,12 @@ Array.implement({
 		
 		map.each(function(perc,i){
 			var tint = 2.55 * (this[1] / 100 * (perc * max - val + hsl) + val);
-			rgb[ind.charAt(i * 6)] = decimal ? tint : Math.round(tint);
+			rgb[ind.charAt(i)] = decimal ? tint : Math.round(tint);
 		}, this);
 
 		return rgb;
 	}
 });
-// ind.charAt(i * 6) instead of ind[i * 6] for IE6. The multiplication could be avoided with:
-// ind = ['210','201','021','012','102','120'][f]; ind = [[2,1,0],[2,0,1],[0,2,1],[0,1,2],[1,0,2],[1,2,0]][f]; rgb[ind.charAt(i)] = decimal ? tint : Math.round(tint);
 
 String.implement({
 
