@@ -282,6 +282,7 @@ var ColorRoller = new Class({
 	setSpace: function(e){
 		var els = this.els;
 		this.space = e ? e.target.value : this.options.space;
+		this.els.crSpace.set('value',this.space);
 		this.els.cr1.set('text',this.space);
 		this.options.colorswitch == 'rgb' 
 			? this.inputRGB()

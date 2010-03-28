@@ -9,7 +9,6 @@ license: MIT-style license
 
 authors:
 - Valerio Proietti
-- Sam Goody
 
 requires:
 - core:1.2.4/Array
@@ -98,98 +97,63 @@ var $HEX = function(hex){
 
 Array.implement({
 
-	fromRgb: function(space,decimal){
-		var v,
-			hsl = 0,
-			rgb = $A(this).sort(function(a,b){
-				return res = a - b
-			}),
-			min = rgb[0],
-			max = rgb[2];
-		
-		switch((space||'').toLowerCase().slice(-1)){
-			default :
-				v = max / 2.55;
-				span = v;  break;
-			case 'g':
-				v = min / (min - max + 255) * 100;
-				span = 100;  break;
-			case 'l':
-				v = (+max + +min) / 5.1;
-				span = v * 2;
-				if (v > 50){
-					span = 200 - span;
-					hsl = 100 - span;
-				}
+	rgbToHsb: function(){
+		var red = this[0],
+				green = this[1],
+				blue = this[2],
+				hue = 0;
+		var max = Math.max(red, green, blue),
+				min = Math.min(red, green, blue);
+		var delta = max - min;
+		var brightness = max / 255,
+				saturation = (max != 0) ? delta / max : 0;
+		if(saturation != 0) {
+			var rr = (max - red) / delta;
+			var gr = (max - green) / delta;
+			var br = (max - blue) / delta;
+			if (red == max) hue = br - gr;
+			else if (green == max) hue = 2 + rr - br;
+			else hue = 4 + gr - rr;
+			hue /= 6;
+			if (hue < 0) hue++;
 		}
-
-		var s = 100 * (min / 2.55 - v) / (hsl - v);
-		var d = (100 * (rgb[1] / 2.55 - v) / s + v - hsl) / span;
-		for (var ind = '', i = 0; i < 3; i++) ind += rgb.indexOf(this[i]);
-		var h = '210,120,021,012,102,201,110,020,011,002,101,000,200'.indexOf(ind)/4%6;
-		h += h%2 ? 1-d : d;
-		return [h*60,s,v].map(function(i){ return decimal ? i||0 : Math.round(i||0) });
+		return [Math.round(hue * 360), Math.round(saturation * 100), Math.round(brightness * 100)];
 	},
 
-	toRgb: function(space,decimal){
-		var hsl = 0,
-			rgb = [],
-			max = +this[2],
-			val = max,
-			hue = this[0] % 360 / 60,
-			f = Math.floor(hue),
-			map = [0, (f % 2 ? 1 + f - hue : hue - f), 1],
-			ind = ['210','201','021','012','102','120'][f];
-			
-		switch((space||'').slice(-1).toLowerCase()){
-			case 'w': case 'g': max = 100; break;
-			case 'l': case 'i': max *= 2;
-				if (val > 50){
-					max = 200 - max;
-					hsl = 100 - max;
-				}
+	hsbToRgb: function(){
+		var br = Math.round(this[2] / 100 * 255);
+		if (this[1] == 0){
+			return [br, br, br];
+		} else {
+			var hue = this[0] % 360;
+			var f = hue % 60;
+			var p = Math.round((this[2] * (100 - this[1])) / 10000 * 255);
+			var q = Math.round((this[2] * (6000 - this[1] * f)) / 600000 * 255);
+			var t = Math.round((this[2] * (6000 - this[1] * (60 - f))) / 600000 * 255);
+			switch (Math.floor(hue / 60)){
+				case 0: return [br, t, p];
+				case 1: return [q, br, p];
+				case 2: return [p, br, t];
+				case 3: return [p, q, br];
+				case 4: return [t, p, br];
+				case 5: return [br, p, q];
+			}
 		}
-		
-		map.each(function(perc,i){
-			var tint = 2.55 * (this[1] / 100 * (perc * max - val + hsl) + val);
-			rgb[ind.charAt(i)] = decimal ? tint : Math.round(tint);
-		}, this);
-
-		return rgb;
+		return false;
 	}
+
 });
 
 String.implement({
 
-	fromRgb: function(space){
+	rgbToHsb: function(){
 		var rgb = this.match(/\d{1,3}/g);
-		return (rgb) ? rgb.fromRgb(space) : null;
+		return (rgb) ? rgb.rgbToHsb() : null;
 	},
 
-	toRgb: function(space){
+	hsbToRgb: function(){
 		var hsb = this.match(/\d{1,3}/g);
-		return (hsb) ? hsb.toRgb(space) : null;
+		return (hsb) ? hsb.hsbToRgb() : null;
 	}
 
 });
-
-['B','L','W','V','I','G'].each(function(space){
-	
-	String.implement('hs'+space+'ToRgb', function(){
-		var hsb = this.match(/\d{1,3}/g);
-		return (hsb) ? hsb.toRgb(space) : null;
-	});
-	
-	String.implement('rgbToHs'+space, function(){
-		var hsb = this.match(/\d{1,3}/g);
-		return (hsb) ? hsb.fromRgb(space) : null;
-	});
-	
-	Array.alias('toRgb', 'hs'+space.toLowerCase()+'ToRgb');
-	Array.alias('fromRgb', 'rgbToHs'+space.toLowerCase());
-
-});
-
-/*
-ToDo: 6,163,0 - infinity in HSW
-*/
