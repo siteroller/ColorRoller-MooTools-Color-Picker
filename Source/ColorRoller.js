@@ -200,21 +200,25 @@ var ColorRoller = new Class({
 	The lines can be seen at the link I sent you.
 */
 				case 'G':
-					val = ((Y - this.boxHeight) / 2 + X) / Y;
+					val = X / (boxWidth) //((Y - this.boxHeight) / 2 + X) / Y;
 					S = 1 - Y / this.boxHeight;
 					break;
 				case 'L':
-					S = ((this.boxHeight - Y) / (2 * (X > this.boxHeight / 2 ? this.boxHeight - X : X)));	
+				if ( X >= (boxWidth/2)) var x8=X,
+				if ( X <  (boxWidth/w)) var x8= boxWidth-X 
+				var y8 = (m * x8) +b 
+					S =  (boxHeight-Y)/boxHeight					//((this.boxHeight - Y) / (2 * (X > this.boxHeight / 2 ? this.boxHeight - X : X)));	
 					val = X / this.boxHeight;
 					break;
 				case 'B':
 					var boxWidth = this.boxHeight,
-						x0 = boxWidth / 2,
-						m = -this.boxHeight / x0 //-2,
-						b = Y - m * X,
+						m = this.boxHeight / (boxWidth / 2), //= 2,
+						b = Y - (m * X),
 						x4 = (this.boxHeight - b) / m;
-						S = (boxWidth - x4) / boxWidth;
-						val = (X - x4) / ((boxWidth - x4) / 2);
+						
+						S = (x4 - X) / (x4/2);
+						val = (x4) / (boxWidth);
+						
 			}
 			val *= 100;
 			S *= 100;
