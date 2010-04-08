@@ -7,6 +7,10 @@ license: OSL [Open Source License from the Open Source Initiative].
 authors:
 - Sam Goody
 
+credits:
+- eliyahug for the math that was used to get the triangle coordinates.  While I didn't use it all, I'm impressed.
+- burielwebworx for the wheel image.
+
 requires:
 - Core/*
 - More/Utilites: Color
@@ -28,7 +32,7 @@ var ColorRoller = new Class({
 		space: 'G',
 		color: [127,127,127],
 		type: 0,
-		colorswitch: 'rgb'
+		colorswitch: true
 	},
 
 	initialize: function(element,options){
@@ -231,17 +235,36 @@ var ColorRoller = new Class({
 		//steps - 0:RGB, 1:inputs, 2:Picker Position.
 		if (step != 1) this.setValues([+(!this.vLast),'S'],[val,S],5);
 		if (step != 2){
-			if (this.type)
-				var top  = this.boxHeight - S * this.boxHeight / 100,
-					left = val * this.boxHeight / (this.vLast ? 360 : 100);
+			if (!this.type)
+				var m = val * Math.PI / 180
+					, radius = S * this.radius / 100
+					, Y  = this.radius - radius * Math.cos(m)
+					, X = this.radius + radius * Math.sin(m);
 			else if (this.type < 3)
-				var angle = val * Math.PI / 180,
-					radius = S * this.radius / 100,
-					top  = this.radius - radius * Math.cos(angle),
-					left = this.radius + radius * Math.sin(angle);
-			else ;
-				// triangle under developement;
-			this.els.crBoxSel.setStyles({top:top, left:left});
+				var Y = this.boxHeight - S * this.boxHeight / 100
+					, X = val * this.boxHeight / (this.vLast ? 360 : 100);
+			else {
+				var s = S / 100
+					, v = val / 100
+					, boxWidth = this.boxHeight
+					, m = this.boxHeight / (boxWidth / 2)
+					, X = boxWidth * v;
+
+				switch (this.space){
+					case 'L':
+						Y = this.boxHeight - (this.boxHeight - (m * (v < .5 ? boxWidth - X : X) + (- m * (boxWidth / 2)))) * s;
+						break;
+					case 'B':
+						var b = this.boxHeight - m * X;
+						X -= X * s * .5;
+						Y = X * m + b;
+						break;
+					case 'G':
+						X -= s * (X - boxWidth * .5);
+						Y = this.boxHeight - this.boxHeight * s;
+				}
+			}
+			this.els.crBoxSel.setStyles({top:Y, left:X});
 		}
 		if (step){
 			var hsv = this.vLast
