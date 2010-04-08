@@ -5,9 +5,9 @@ Color Picker for Mootools.
 
 Tiny, Simple, Cross Browser: IE4+, FF1+, Webkit2+, Opera
 
-Popular formats: HSB / HSV, HSL / HSI, HSG
+Popular formats: HSB / HSV, HSL / HSI, HSW / HSG
 
-Various style pickers: Color Wheel, MS Paint, Adobe Photoshop, [GIMP Triangle under developement].
+Various style pickers: Color Wheel, MS Paint, Adobe Photoshop, GIMP Triangle.
 
 ![Screenshot](http://siteroller.net/archive/images/ColorRoller/wheelhslthumb.png)
 
@@ -22,7 +22,7 @@ Issues? Ideas? Wanna Join? [We need help!]
  - Watch the [GitHUB page](http://github.com/siteroller/colorpicker) for updates.
  - Leave issues on the [GitHUB Issue Tracker](http://github.com/siteroller/colorpicker/issues).
  - Check out the [Mootools Forge Page](http://mootools.net/forge/p/colorroller%20-%20mootools%20color%20picker).  
-    - As [the Forge is buggy](http://blog.siteroller.net/mootools-forge-gotchas), the info and downloads on this page are probably out of date.
+    - As [I have no control over the state of the forge page](http://blog.siteroller.net/mootools-forge-gotchas), the info and downloads on this page may be out of date.
  - Or email us:
 
         var name = "ColorRoller";
@@ -40,7 +40,7 @@ Special thanks to [Buriel Webwerx](http://burielwebwerx.com/) for their help wit
  - element [string, element] - ID of element or reference to the element object.
  - options [object]
     - color [RGB array or hexadecimal] - color cursor should be on when initialized.
-    - type [string: 'wheel','paint','photoshop','gimp'] - default picker type.
+    - type [number: 0 - Wheel, 1 - Paint, 2 - Photoshop, 3 - Gimp] - default picker type.
     - space [string: 'hsv','hsl','hsg'] - default color space.
     - change [function] - callback every time the color is changed
     - cancel [function] - callback when color picker is closed via the 'x' button.
@@ -51,6 +51,15 @@ Special thanks to [Buriel Webwerx](http://burielwebwerx.com/) for their help wit
 All of the styles are stored in a separate stylesheet: assets/CollerRoller.css<br>
 You are encouraged to improve the layout of the picker, and to post on the the MooRTE forum some updated or variant styles.<br>
 The colorpicker uses images instead of background-images so that the color picker can be scaled cross-browser.<br>
+
+### Dependencies - Color.js
+
+Mootools more includes a file 'Color.js' with support for HSB.<br>
+The included version of Color.js is a complete rewrite, that adds support for HSW and HSL [along with other improvements].<br>
+Our version is roughly the same size and fully backwards compatible - just drop it in and use.<br>
+The Color.js folder has our version, the mootools version, and a page used to compare the two.<br>
+<br>
+If you think this should be part of more, let people know.<br>
 
 ### Known Issues
 1.  The Triangle / GIMP color picker is not yet supported.  

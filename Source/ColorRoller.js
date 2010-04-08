@@ -42,7 +42,7 @@ var ColorRoller = new Class({
 		this.radius = els.crBox.getSize().x / 2;
 		
 		this.vLast = +(this.options.type < 2);
-		this.setRGB($type(color) == 'String' ? color.hexToRgb(1) : color, 3);
+		this.setRGB($type(color) == 'string' ? color.hexToRgb(1) : color, 3);
 		els.crShow.setStyle('background-color', color.rgbToHex());
 		els.crShow.set('src', CRImages + 'crShow.png').injectAfter($(element));
 		els.crColorRoller.addClass('crHide');
@@ -56,7 +56,7 @@ var ColorRoller = new Class({
 			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Circle:'div',Triangle:'div',Tri1:'div',Tri2:'div',Shade:'div'},
 			function(v,k){ els['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
-		$each({0:'Color Wheel', 1:'MS Paint',2:'Adobe CS',3:'GIMP',G:'HSG', B:'HSB/V',L:'HSL/I'},
+		$each({0:'Wheel', 1:'MS Paint',2:'Adobe CS',3:'Triangle',G:'HSG', B:'HSB/V',L:'HSL/I'},
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
@@ -155,7 +155,7 @@ var ColorRoller = new Class({
 		this.inputHSV(0,event.target.value);
 	},
 	inputS: function(event){
-		this.setPicker( this.els['crI'+ +(!this.vLast)].get('value'), event.target.value, 1)
+		this.setPicker( this.els['crI'+ +!this.vLast].get('value'), event.target.value, 1)
 	},
 	input1: function(event){
 		this.inputHSV(1,event.target.value);
@@ -166,7 +166,7 @@ var ColorRoller = new Class({
 			: this.setSlider(val,1);
 	},
 	slider: function(event){
-		var max = this.vLast ? 100 : 360, 
+		var max = this.vLast ? 100 : 360,
 			val = max - max * (event.page.y - this.offset.y) / this.barHeight;
 		if (this.mousedown && val > -1 && val < max) this.setSlider(val, 2);
 	},
@@ -272,7 +272,7 @@ var ColorRoller = new Class({
 	
 	// Utilities
 	getValues:function(val){
-		var self = this;		
+		var self = this;
 		return val.map(function(el){ return self.els['crI'+el].get('value') });
 	},
 	setValues: function(key,val){
@@ -280,19 +280,20 @@ var ColorRoller = new Class({
 		val.each(function(v,i){ self.els['crI'+key[i]].set('value',Math.round(v)) });
 	},
 	setSpace: function(e){
-		var els = this.els;
+		var els = this.els, vFirst = +!this.vLast;
 		this.space = e ? e.target.value : this.options.space;
-		this.els.crSpace.set('value',this.space);
+		if (!e) this.els.crSpace.set('value',this.space);
 		this.els.cr1.set('text',this.space);
-		this.options.colorswitch == 'rgb' 
+		this.options.colorswitch
 			? this.inputRGB()
-			: (this.setSlider(this.getValues(['V'])[0]) && this.inputHS());
+			: (this.setSlider(this.getValues([this.vLast])) || this.inputHSV(vFirst,this.getValues([vFirst])));//
 		if (this.type == 2) this.setImg();
 	},
 	setType: function(e){
 		var els = this.els,
 			type = this.type = e ? +(e.target.value) : this.options.type,
-			img = ['wheel','paint',false,'gimp'];
+			img = ['wheel','paint',false,'triangle'];
+		if (!e) this.els.crType.set('value',type);
 		this.vLast = +(type < 2);
 		els.crBar.setStyle('background-image', 'url('+ CRImages + (this.vLast ? 'greyscale' : 'rainbow') + '.png)');
 		els.crBox[type ? 'removeClass' : 'addClass']('crRound');
