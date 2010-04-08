@@ -19,7 +19,7 @@ Issues? Ideas? Wanna Join? [We need help!]
 
 
  - Open threads regarding the color picker on the [MooRTE Google Group](http://groups.google.com/group/moorte).
- - Watch the [GitHUB page](http://github.com/siteroller/colorpicker) for updates.
+ - Watch the [GitHUB page](http://github.com/siteroller/ColorRoller-MooTools-Color-Picker) for updates.
  - Leave issues on the [GitHUB Issue Tracker](http://github.com/siteroller/colorpicker/issues).
  - Check out the [Mootools Forge Page](http://mootools.net/forge/p/colorroller%20-%20mootools%20color%20picker).  
     - As [I have no control over the state of the forge page](http://blog.siteroller.net/mootools-forge-gotchas), the info and downloads on this page may be out of date.
