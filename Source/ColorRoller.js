@@ -280,13 +280,15 @@ var ColorRoller = new Class({
 		val.each(function(v,i){ self.els['crI'+key[i]].set('value',Math.round(v)) });
 	},
 	setSpace: function(e){
-		var els = this.els, vFirst = +!this.vLast;
+		var els = this.els, 
+			vFirst = +!this.vLast, 
+			vals = this.getValues([this.vLast,vFirst]);
 		this.space = e ? e.target.value : this.options.space;
 		if (!e) this.els.crSpace.set('value',this.space);
 		this.els.cr1.set('text',this.space);
 		this.options.colorswitch
 			? this.inputRGB()
-			: (this.setSlider(this.getValues([this.vLast])) || this.inputHSV(vFirst,this.getValues([vFirst])));//
+			: (this.setSlider(vals[0]) || this.inputHSV(vFirst,vals[1]));
 		if (this.type == 2) this.setImg();
 	},
 	setType: function(e){
