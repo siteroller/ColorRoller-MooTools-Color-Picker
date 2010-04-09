@@ -245,14 +245,13 @@ var ColorRoller = new Class({
 					, X = val * this.boxHeight / (this.vLast ? 360 : 100);
 			else {
 				var s = S / 100
-					, v = val / 100
-					, boxWidth = this.boxHeight
-					, m = this.boxHeight / (boxWidth / 2)
-					, X = boxWidth * v;
+					, boxWidth = this.boxHeight // incase we change angle.
+					, m = 2 * this.boxHeight / boxWidth //2, unless we change angle.
+					, X = boxWidth * val / 100;
 
 				switch (this.space){
 					case 'L':
-						Y = this.boxHeight - (this.boxHeight - (m * (v < .5 ? boxWidth - X : X) + (- m * (boxWidth / 2)))) * s;
+						Y = this.boxHeight - (this.boxHeight - m * ((val < 50 ? boxWidth - X : X) - boxWidth / 2)) * s;
 						break;
 					case 'B':
 						var b = this.boxHeight - m * X;

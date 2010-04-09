@@ -173,7 +173,7 @@ String.implement({
 
 });
 
-['B','L','W','V','I','G'].each(function(space){
+['b','l','w','v','i','g'].each(function(space){
 	
 	String.implement('hs'+space+'ToRgb', function(){
 		var hsb = this.match(/\d{1,3}/g);
@@ -185,9 +185,12 @@ String.implement({
 		return (hsb) ? hsb.fromRgb(space) : null;
 	});
 	
-	Array.alias('toRgb', 'hs'+space.toLowerCase()+'ToRgb');
-	Array.alias('fromRgb', 'rgbToHs'+space.toLowerCase());
-
+	Array.implement('rgbToHs'+space, function(dec){ 
+		return this.fromRgb(space,dec);
+	});
+	Array.implement('hs'+space+'ToRgb', function(dec){ 
+		return this.toRgb(space,dec); 
+	});
 });
 
 /*
