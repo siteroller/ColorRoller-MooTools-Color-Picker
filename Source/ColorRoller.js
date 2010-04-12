@@ -36,7 +36,7 @@ var ColorRoller = new Class({
 		colorswitch: true
 	},
 
-	initialize: function(element,options){
+	initialize: function(options){
 		this.setOptions(options);
 		this.build();
 		
@@ -48,10 +48,10 @@ var ColorRoller = new Class({
 		
 		this.vLast = +(this.options.type < 2);
 		this.setRGB($type(color) == 'string' ? color.hexToRgb(1) : color, 3);
-		els.crShow.setStyle('background-color', color.rgbToHex());
-		els.crShow.set('src', CRImages + 'crShow.png').injectAfter($(element));
+		els.crShow.setStyle('background-color', color.rgbToHex()).set('src', CRImages + 'crShow.png');
 		els.crColorRoller.addClass('crHide');
 		this.addEvents();
+		return els.crShow;
 	},
 	
 	build: function(){

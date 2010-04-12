@@ -10,11 +10,13 @@
 	<script type="text/javascript">
 		window.addEvent('load', function init(){
 			var CRImages = "../Source/Assets/";
-			new ColorRoller('colors', {
+			var picker = new ColorRoller({
 				onComplete:function(color){
 					$('colors').set('value', color);
 				}
 			});
+			picker.injectAfter('colors');
+			
 		});	
 	</script>
 </head>
