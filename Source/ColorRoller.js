@@ -29,6 +29,7 @@ var ColorRoller = new Class({
         onComplete: $empty, 
         onCancel: $empty,
 		onChange: $empty,
+		onShow: $empty,
 		space: 'G',
 		color: [127,127,127],
 		type: 0,
@@ -73,7 +74,11 @@ var ColorRoller = new Class({
 				if (k == 0) k = 0; // Yes, I know this is odd.
 				els['cr' +k] = new Element('span',{'text':k||'H','class':'cr'+k||'H'});
 				els['crI'+k] = new Element('input',{'type':'text','class':'crI'+k});
-				els['crI'+k].addEvent('keyup',self[v].bind(self));
+				els['crI'+k].addEvent('keyup',self[v].bind(self));  // combine with previous line
+				
+				els['crA1'+k] = new Element('span');
+				els['crA2'+k] = new Element('span');
+				els['crD'+k] = new Element('span',{'class':'crD'}).adopt(els['cr' +k], els['crI'+k]);
 			});
 		
 		if (Browser.Engine.trident && Browser.Engine.version < 5)
@@ -95,9 +100,10 @@ var ColorRoller = new Class({
 				crBar.adopt(crBarSel),
 				crNums.adopt(
 					crSpace,crType,crVal.adopt(
-						crR,crIR,crG,crIG,crB,crIB,cr0,crI0,crS,crIS,cr1,crI1
+//						crR,crIR,crG,crIG,crB,crIB,cr0,crI0,crS,crIS,cr1,crI1
+						crDR,crDG,crDB,crD0,crDS,crD1
 					),
-					crHex,crIHex,crView
+					crDHex,crView
 				)
 			).inject(document.body);	
 		}
@@ -319,7 +325,8 @@ var ColorRoller = new Class({
 			img = ['wheel','paint',false,'triangle'];
 		if (!e) this.els.crType.set('value',type);
 		this.vLast = +(type < 2);
-		els.crBar.setStyle('background-image', 'url('+ CRImages + (this.vLast ? 'greyscale' : 'rainbow') + '.png)');
+		//els.crBar.setStyle('background-image', 'url('+ CRImages + (this.vLast ? 'greyscale' : 'rainbow') + '.png)');
+		els.crBar.addClass('bar'+this.vLast).removeClass('bar'+ +!this.vLast);
 		els.crBox[type ? 'removeClass' : 'addClass']('crRound');
 		els.crBox.setStyle('background-color','');
 		this.setImg(img[type]);

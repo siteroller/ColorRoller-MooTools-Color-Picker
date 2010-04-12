@@ -1,9 +1,13 @@
 .crColorRoller{
-	overflow:auto;
-	width:290px;
+	width:300px;
 	height:150px;
 	background-color:silver;
 	position:relative;
+	border: solid 1px grey;
+	-moz-border-radius:5px; /* Firefox 3.5+ */
+	-webkit-border-radius:5px; /*Webkit 3.0+ */
+	-ms-border-radius:5px; /* IE9+ (cruel joke) */
+	border-radius:5px; /* Opera 10.50+ */
 }
 .crColorRoller  span{
 	display:inline-block;
@@ -11,16 +15,27 @@
 .crHead{
 	background-image: -moz-linear-gradient(top, white, silver);
 	height:10px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
 }
+
 .crBox {
 	cursor:crosshair;
 	position:relative;
-	margin:10px;
+	margin:5px;
 	float:left;
 	position:relative;
-	width:80px;
-	height:80px;
+	width:100px;
+	height:100px;
 }
+.bar0{
+	background-image: -moz-linear-gradient(top, rgb(255,0,0),rgb(255,0,255),rgb(0,0,255),rgb(0,255,255),rgb(0,255,0),rgb(255,255,0),rgb(255,0,0));
+}
+.bar1{
+	background-image: -moz-linear-gradient(top, white, black);
+}
+
 .crBoxSel{
 	position:absolute;
 	width:1px;
@@ -37,11 +52,12 @@
 	-moz-border-radius:50%;
 }
 .crBar{
+	cursor:n-resize;
 	float:left;
-	width:10px;
-	height:80px;
-	margin:10px;
-	background-image: -moz-linear-gradient(top, white, black);
+	width:20px;
+	xheight:80px;
+	height:100px;
+	margin:5px;
 	position:relative;
 }
 .crBarSel{
@@ -56,15 +72,58 @@
 }
 .crNums{
 	float:right; 
-	width:135px
+	width:150px
 }
-.crNums span{
-	padding-right:3px;
-	text-align:right;
-	width:10px;
-}
+
 .crNums .crHex,.crNums input{
 	width:25px;
+	background-color:transparent;
+	border:1px solid grey;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:10px;
+	height:11px;
+	margin:0;
+	padding:0;
+	top:4px;
+	right:6px;
+	color:#778398;
+}
+select{
+	width:63px;
+	height:18px;
+	padding:0;
+	font:12px Tahoma;
+	color:black;
+	border:1px solid #E2E5E9;
+	background-image: -moz-linear-gradient(top, #eee, #C9CED6, #ccc, #CACED6);
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	margin:3px;
+	background-color:#eee
+}
+option{
+	background-color:#fff;
+}
+span.crD {
+	width:50px;
+	height:15px;
+	padding:2px 6px;
+	font:12px Tahoma;
+	color:black;
+	border:1px solid #E2E5E9;
+	xbackground-image: -moz-linear-gradient(top, white, #CACED6);
+	background-image: -moz-linear-gradient(top, #eee, #C9CED6, #ccc, #CACED6);
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	margin:3px;
+}
+span.crD span{
+	text-shadow: #fff 0 1px;
+	width:15px;
+	vertical-align:baseline;
+
 }
  .crNums .crIHex{
 	width:60px;
@@ -103,10 +162,9 @@
 }
 
 .crRound, .crRound *{
-	-moz-border-radius:50%; /* Firefox 3.5+ */
-	-webkit-border-radius:40px; /*Webkit 3.0+ */
-	-ms-border-radius:50%; /* IE9+ (cruel joke) */
-	border-radius:50%; /* Opera 10.5+ */
+	-moz-border-radius:50%;
+	-webkit-border-radius:40px; 
+	border-radius:50%;
 }
 
 .crGradientBW {
@@ -140,7 +198,7 @@
 }
 .crTriangle div{
 	position:absolute;
-	border-bottom:80px dotted transparent;
+	border-bottom:100px dotted transparent;
 	width:0;
 	height:0;
 	bottom:0;
@@ -149,20 +207,11 @@
 
 .crTri1{
 	left:0;
-	border-left:40px solid silver;
+	border-left:50px solid silver;
 }
 
 .crTri2{
 	right:0;
-	border-right:40px solid silver;
+	border-right:50px solid silver;
 }
 
-.xcrRight{
-	border-bottom:80px solid transparent;
-	border-left:80px solid silver;
-	position:absolute;
-	width:0;
-	height:0;
-	bottom:0;
-	right:0;
-}
