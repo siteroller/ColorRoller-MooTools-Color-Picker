@@ -47,25 +47,26 @@ var ColorRoller = new Class({
 		this.radius = els.crBox.getSize().x / 2;
 		
 		this.vLast = +(this.options.type < 2);
+		// Todo: The next two lines should probably become a function that can be called from outside the class.
 		this.setRGB($type(color) == 'string' ? color.hexToRgb(1) : color, 3);
-		els.crIcon0.setStyle('background-color', color.rgbToHex())//.set('src', CRImages + 'crShow.png');
-		//els.crColorRoller.addClass('crHide');
+		els.crIcon0.setStyle('background-color', color.rgbToHex());
+		els.crFrame.setStyle('height',0); //('.crClose')
 		this.addEvents();
-		return els.crIcon;
+		return els.crColorRoller;
 	},
 	
 	build: function(){
 		var self = this, i=0, els = this.els = {};
 
 		$each(
-			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Icon:'span'},
+			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Icon:'span',ColorRoller:'span'},
 			function(v,k){ els['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
 		$each({0:'Wheel', 1:'MS Paint',2:'Adobe CS',3:'Triangle',G:'HSG', B:'HSB/V',L:'HSL/I'},
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
-		['ColorRoller','ColorPicker','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade'].each(
+		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade'].each(
 			function(v){
 				els['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
@@ -89,24 +90,26 @@ var ColorRoller = new Class({
 				crIcon.adopt(
 					crIcon0, crIcon1.adopt(crIcon2)
 				),
-				crColorPicker.adopt(
-					crHead.adopt(
-						crComplete.set('html', 	'&#8730;'),//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
-						crCancel.set('html','X')//'&#8855;','&#x2717;'
-					),
-					crBox.adopt(
-						crImg,
-						crBoxSel.adopt(crBoxSee),
-						crCircle,
-						crTriangle.adopt(crTri1, crTri2).setStyle('display','none'),
-						crShade
-					),
-					crBar.adopt(crBarSel),
-					crNums.adopt(
-						crSpace,crType,crVal.adopt(
-							crDR,crDG,crDB,crD0,crDS,crD1
+				crFrame.set('morph', {duration: 'long', link: 'cancel'}).adopt(
+					crColorPicker.adopt(
+						crHead.adopt(
+							crComplete.set('html', 	'&#8730;'),//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
+							crCancel.set('html','X')//'&#8855;','&#x2717;'
 						),
-						crDHex,crView
+						crBox.adopt(
+							crImg,
+							crBoxSel.adopt(crBoxSee),
+							crCircle,
+							crTriangle.adopt(crTri1, crTri2).setStyle('display','none'),
+							crShade
+						),
+						crBar.adopt(crBarSel),
+						crNums.adopt(
+							crSpace,crType,crVal.adopt(
+								crDR,crDG,crDB,crD0,crDS,crD1
+							),
+							crDHex,crView
+						)
 					)
 				)
 			).inject(document.body);
@@ -136,7 +139,7 @@ var ColorRoller = new Class({
 		var self = this, els = this.els;
 		els.crSpace.addEvent('change',this.setSpace.bind(this)).fireEvent('change');
 		els.crType.addEvent('change',this.setType.bind(this)).fireEvent('change');
-		els.crIcon.addEvent('click',this.show.bind(this));
+		els.crIcon.addEvent('click',this.toggle.bind(this));
 		els.crComplete.addEvent('click',this.close.pass(1,self));
 		els.crCancel.addEvent('click',this.close.pass(0,self));
 		function mousedown(e){ self.mousedown = true; e.stop() }
@@ -347,17 +350,20 @@ var ColorRoller = new Class({
 	},
 	
 	//Events
+	toggle: function(){
+		this[this.els.crFrame.getStyle('height') == '0px' ? 'show' : 'close']();  
+	},
 	show: function(){
-		//this.els.crColorRoller.removeClass('crHide');
-		this.els.crColorRoller.morph('.crHide');
+		this.els.crFrame.morph({height:152}); //'.crOpen'
 		this.offset = {
 			y: this.els.crBox.getPosition().y,
 			x: this.els.crBox.getPosition().x
 		};
+		this.fireEvent('show');
 	},
 	close: function(action){
 		var hex = this.getValues(['R','G','B']).rgbToHex().toUpperCase();
-		this.els.crColorRoller.addClass('crHide');
+		this.els.crFrame.morph({height:0});//'.crClose'
 		if (action) this.els.crIcon0.setStyle('background-color',hex);
 		this.fireEvent(action ? 'complete' : 'cancel',hex); 
 	}

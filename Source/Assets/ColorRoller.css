@@ -1,12 +1,20 @@
-.crColorRoller{
+.crColorRoller{}
+.crFrame{
 	overflow:hidden;
 }
+/* To change the display effect, modify the closed and opened state. */
 .crClosed{
-	height:25px;
+	height:0;
 }
 .crOpen{
-	height:175px;
+	height:152px;
 }
+
+/* 
+* Icon graphic.  
+* The size is set in .crIcon0, or can be modified dynamically:
+*	new CollorRoller().getFirst().setSize({my:size}).inject('myLocation'); 
+*/
 .crIcon{
 	padding: 1px;
 	position:relative;
@@ -104,7 +112,6 @@
 	cursor:n-resize;
 	float:left;
 	width:20px;
-	xheight:80px;
 	height:100px;
 	margin:5px;
 	position:relative;
@@ -245,6 +252,8 @@ span.crD span{
 	height:80px;
 	border:10px solid silver;
 }
+
+/* Triangle picker. Buggy in IE6 */
 .crTriangle div{
 	position:absolute;
 	border-bottom:100px dotted transparent;
@@ -253,12 +262,10 @@ span.crD span{
 	bottom:0;
 	right:0;
 }
-
 .crTri1{
 	left:0;
 	border-left:50px solid silver;
 }
-
 .crTri2{
 	right:0;
 	border-right:50px solid silver;
