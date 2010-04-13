@@ -48,24 +48,24 @@ var ColorRoller = new Class({
 		
 		this.vLast = +(this.options.type < 2);
 		this.setRGB($type(color) == 'string' ? color.hexToRgb(1) : color, 3);
-		els.crShow.setStyle('background-color', color.rgbToHex()).set('src', CRImages + 'crShow.png');
-		els.crColorRoller.addClass('crHide');
+		els.crIcon0.setStyle('background-color', color.rgbToHex())//.set('src', CRImages + 'crShow.png');
+		//els.crColorRoller.addClass('crHide');
 		this.addEvents();
-		return els.crShow;
+		return els.crIcon;
 	},
 	
 	build: function(){
 		var self = this, i=0, els = this.els = {};
 
 		$each(
-			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Circle:'div',Triangle:'div',Tri1:'div',Tri2:'div',Shade:'div'},
+			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Icon:'span'},
 			function(v,k){ els['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
 		$each({0:'Wheel', 1:'MS Paint',2:'Adobe CS',3:'Triangle',G:'HSG', B:'HSB/V',L:'HSL/I'},
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
-		['ColorRoller','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right'].each(
+		['ColorRoller','ColorPicker','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade'].each(
 			function(v){
 				els['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
@@ -86,26 +86,30 @@ var ColorRoller = new Class({
 		
 		with(els){		// The evil 'with'. Ran tests, found it efficient and readable.
 			crColorRoller.adopt(
-				crHead.adopt(
-					crComplete.set('html', 	'&#8730;'),//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
-					crCancel.set('html','X')//'&#8855;','&#x2717;'
+				crIcon.adopt(
+					crIcon0, crIcon1.adopt(crIcon2)
 				),
-				crBox.adopt(
-					crImg,
-					crBoxSel.adopt(crBoxSee),
-					crCircle,
-					crTriangle.adopt(crTri1, crTri2).setStyle('display','none'),
-					crShade
-				),
-				crBar.adopt(crBarSel),
-				crNums.adopt(
-					crSpace,crType,crVal.adopt(
-//						crR,crIR,crG,crIG,crB,crIB,cr0,crI0,crS,crIS,cr1,crI1
-						crDR,crDG,crDB,crD0,crDS,crD1
+				crColorPicker.adopt(
+					crHead.adopt(
+						crComplete.set('html', 	'&#8730;'),//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
+						crCancel.set('html','X')//'&#8855;','&#x2717;'
 					),
-					crDHex,crView
+					crBox.adopt(
+						crImg,
+						crBoxSel.adopt(crBoxSee),
+						crCircle,
+						crTriangle.adopt(crTri1, crTri2).setStyle('display','none'),
+						crShade
+					),
+					crBar.adopt(crBarSel),
+					crNums.adopt(
+						crSpace,crType,crVal.adopt(
+							crDR,crDG,crDB,crD0,crDS,crD1
+						),
+						crDHex,crView
+					)
 				)
-			).inject(document.body);	
+			).inject(document.body);
 		}
 		
 		if (Browser.Engine.trident) {
@@ -132,11 +136,11 @@ var ColorRoller = new Class({
 		var self = this, els = this.els;
 		els.crSpace.addEvent('change',this.setSpace.bind(this)).fireEvent('change');
 		els.crType.addEvent('change',this.setType.bind(this)).fireEvent('change');
-		els.crShow.addEvent('click',this.show.bind(this));
+		els.crIcon.addEvent('click',this.show.bind(this));
 		els.crComplete.addEvent('click',this.close.pass(1,self));
 		els.crCancel.addEvent('click',this.close.pass(0,self));
 		function mousedown(e){ self.mousedown = true; e.stop() }
-		els.crColorRoller.addEvent('mouseup',function(){ self.mousedown = false });
+		els.crColorPicker.addEvent('mouseup',function(){ self.mousedown = false });
 		els.crBarSel.addEvents('mousedown',mousedown);
 		els.crBar.addEvents({
 			'mousemove':self.slider.bind(self),
@@ -344,7 +348,8 @@ var ColorRoller = new Class({
 	
 	//Events
 	show: function(){
-		this.els.crColorRoller.removeClass('crHide');
+		//this.els.crColorRoller.removeClass('crHide');
+		this.els.crColorRoller.morph('.crHide');
 		this.offset = {
 			y: this.els.crBox.getPosition().y,
 			x: this.els.crBox.getPosition().x
@@ -353,7 +358,7 @@ var ColorRoller = new Class({
 	close: function(action){
 		var hex = this.getValues(['R','G','B']).rgbToHex().toUpperCase();
 		this.els.crColorRoller.addClass('crHide');
-		if (action) this.els.crShow.setStyle('background-color',hex);
+		if (action) this.els.crIcon0.setStyle('background-color',hex);
 		this.fireEvent(action ? 'complete' : 'cancel',hex); 
 	}
 

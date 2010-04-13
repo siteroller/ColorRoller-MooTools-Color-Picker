@@ -1,4 +1,53 @@
 .crColorRoller{
+	overflow:hidden;
+}
+.crClosed{
+	height:25px;
+}
+.crOpen{
+	height:175px;
+}
+.crIcon{
+	padding: 1px;
+	position:relative;
+	background-color: #f0f0f0;
+	border:2px #d3d3d3 solid;
+	display:inline-block;
+	vertical-align:top;
+	-moz-border-radius:3px;
+	cursor:pointer;
+}
+.crIcon0{
+	height:11px;
+	width:15px;
+	background-color:#f00;
+	border: 3px solid rgba(127,127,127,.3);
+	-moz-border-radius:3px;
+}
+.crIcon1{
+	width:6px;
+	height:5px;
+	bottom:0;
+	right:0;
+	position:absolute;
+	margin:1px;
+	overflow:hidden;
+	-moz-border-radius:2px;
+	border:3px solid rgba(127,127,127,.3);
+}
+.crIcon2{
+	width:6px;
+	height:6px;
+	bottom:-1px;
+	right:-3px;
+	position:absolute;
+	-moz-transform: rotate(45deg);
+	border:3px solid white;
+	background-color:#000;
+}
+
+
+.crColorPicker{
 	width:300px;
 	height:150px;
 	background-color:silver;
@@ -9,7 +58,7 @@
 	-ms-border-radius:5px; /* IE9+ (cruel joke) */
 	border-radius:5px; /* Opera 10.50+ */
 }
-.crColorRoller  span{
+.crColorPicker  span{
 	display:inline-block;
 }
 .crHead{
@@ -214,4 +263,3 @@ span.crD span{
 	right:0;
 	border-right:50px solid silver;
 }
-
