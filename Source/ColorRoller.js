@@ -43,7 +43,7 @@ var ColorRoller = new Class({
 		var els = this.els, 
 			color = this.options.color;
 		this.barHeight = els.crBar.getSize().y;
-		this.boxHeight = els.crBox.getSize().y;
+		this.boxH = this.boxW = els.crBox.getSize().y;
 		this.radius = els.crBox.getSize().x / 2;
 		
 		this.vLast = +(this.options.type < 2);
@@ -200,22 +200,22 @@ var ColorRoller = new Class({
 			S = Math.sqrt(O*O+A*A) * 100 / this.radius;
 			if (val < 0) val -= -360;
 		} else if (this.type < 3) {
-			val = (this.vLast ? 360 : 100) * X / this.boxHeight;
-			S = 100 - 100 * Y / this.boxHeight;
+			val = (this.vLast ? 360 : 100) * X / this.boxH;
+			S = 100 - 100 * Y / this.boxH;
 		} else {
 			switch (this.space){
 				case 'G':
-					val = ((Y - this.boxHeight) / 2 + X) / Y;
-					S = 1 - Y / this.boxHeight;
+					val = ((Y - this.boxH) / 2 + X) / Y;
+					S = 1 - Y / this.boxH;
 					break;
 				case 'L':
-					S = ((this.boxHeight - Y) / (2 * (X > this.boxHeight / 2 ? this.boxHeight - X : X)));	
-					val = X / this.boxHeight;
+					S = ((this.boxH - Y) / (2 * (X > this.boxH / 2 ? this.boxH - X : X)));	
+					val = X / this.boxH;
 					break;
 				case 'B':
-					var diff = this.boxHeight - (this.boxHeight - Y) / 2 - X;
-					val = 1 - diff / this.boxHeight;
-					S = 1 - (Y - diff) / (this.boxHeight - diff);
+					var diff = this.boxH - (this.boxH - Y) / 2 - X;
+					val = 1 - diff / this.boxH;
+					S = 1 - (Y - diff) / (this.boxH - diff);
 			}
 			val *= 100;
 			S *= 100;
@@ -254,26 +254,26 @@ var ColorRoller = new Class({
 					, Y  = this.radius - radius * Math.cos(m)
 					, X = this.radius + radius * Math.sin(m);
 			else if (this.type < 3)
-				var Y = this.boxHeight - S * this.boxHeight / 100
-					, X = val * this.boxHeight / (this.vLast ? 360 : 100);
+				var Y = this.boxH - S * this.boxH / 100
+					, X = val * this.boxH / (this.vLast ? 360 : 100);
 			else {
 				var s = S / 100
-					, boxWidth = this.boxHeight // incase we change angle.
-					, m = 2 * this.boxHeight / boxWidth //2, unless we change angle.
-					, X = boxWidth * val / 100;
+					, m = 2 //If angle is changed, this would be: m = 2 * this.boxH / this.boxW,
+					, X = this.boxW * val / 100;
 
 				switch (this.space){
 					case 'L':
-						Y = this.boxHeight - (this.boxHeight - m * ((val < 50 ? boxWidth - X : X) - boxWidth / 2)) * s;
+						Y = this.boxH - (this.boxH - m * ((val < 50 ? this.boxW - X : X) - this.boxW / 2)) * s;
+						//Y = this.boxH + s * (m * ((val < 50 ? this.boxW - X : X) - this.boxW / 2) - this.boxH);
 						break;
 					case 'B':
-						var b = this.boxHeight - m * X;
+						var b = this.boxH - m * X;
 						X -= X * s * .5;
 						Y = X * m + b;
 						break;
 					case 'G':
-						X -= s * (X - boxWidth * .5);
-						Y = this.boxHeight - this.boxHeight * s;
+						X -= s * (X - this.boxW * .5);
+						Y = this.boxH - this.boxH * s;
 				}
 			}
 			this.els.crBoxSel.setStyles({top:Y, left:X});
@@ -300,7 +300,12 @@ var ColorRoller = new Class({
 		//Set this.val, Slider, BG Color, steps - 0:RGB, 1:inputs.
 		this.val = val;
 		els.crBarSel.setStyle('top', 100 - val / (this.vLast || 3.6) + '%'); //100 - (this.vLast ? val : val / 3.6) + '%'
-		els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
+		//els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
+		
+		Browser.Engine.gecko 
+			? els.crTri.setStyle('background-image','-moz-radial-gradient(top,rgb(' + bg + '),transparent)')
+			: els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
+		
 		if (step != 1) els['crI'+this.vLast].set('value', Math.round(val));
 		if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space)); 
 	}, 
