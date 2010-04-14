@@ -66,7 +66,7 @@ var ColorRoller = new Class({
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
-		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade'].each(
+		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade','L0','L1','L2'].each(
 			function(v){
 				els['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
@@ -97,11 +97,14 @@ var ColorRoller = new Class({
 							crCancel.set('html','X')//'&#8855;','&#x2717;'
 						),
 						crBox.adopt(
-							crImg,
-							crBoxSel.adopt(crBoxSee),
-							crCircle,
-							crTriangle.adopt(crTri1, crTri2).setStyle('display','none'),
-							crShade
+							crL0
+							, crL1
+							, crL2
+							//crImg,
+							//crBoxSel.adopt(crBoxSee),
+							//crCircle,
+							, crTriangle.adopt(crTri1, crTri2).setStyle('display','none')
+							, crShade
 						),
 						crBar.adopt(crBarSel),
 						crNums.adopt(
@@ -302,8 +305,13 @@ var ColorRoller = new Class({
 		els.crBarSel.setStyle('top', 100 - val / (this.vLast || 3.6) + '%'); //100 - (this.vLast ? val : val / 3.6) + '%'
 		//els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
 		
+		//In FF: Triangle / Adobe - bottom layer is greyscale left right. middle is gradient color to transparent, top is gradient black -> left right.
+		// MS - bottom layer is rainbow left right, middle is whiteness to transparent. Top is whitness with opacity.
+		// wheel - bottom layer is color wheel, middle whiteness to transparent, top is whiteness with opacity. 
+		// IN FF: if triangle, change gradient. If Adobe, change gradient.  If change
+		// This makes the code so much more complex!!
 		Browser.Engine.gecko 
-			? els.crTri.setStyle('background-image','-moz-radial-gradient(top,rgb(' + bg + '),transparent)')
+			? els.crL1.setStyle('background-image', '-moz-linear-gradient(top,' + (this.type > 1 ? 'rgb(' + bg + '),transparent' : 'transparent,rgb(' + bg + '))'))
 			: els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
 		
 		if (step != 1) els['crI'+this.vLast].set('value', Math.round(val));
@@ -342,15 +350,32 @@ var ColorRoller = new Class({
 		els.crBox[type ? 'removeClass' : 'addClass']('crRound');
 		els.crBox.setStyle('background-color','');
 		this.setImg(img[type]);
-		if (this.type == 2) els.crImg.setStyle('opacity',1);
+		//if (this.type == 2) els.crImg.setStyle('opacity',1);
 		this.inputRGB();
 	},
 	setImg: function(img){
+		var els = this.els;
+		[0,1,2].each(function(num){
+			els['crL'+num].set('class','crL' + num + ' crL' + num + this.type + ' crL' + num + this.space);
+		}, this);
+		//this.els.crL1.set('class','crL1 crL1'+this.type+' crL1'+this.space);
+		
+		/*
+		this.els.crL0.removeClass('crL00').removeClass('crL01').removeClass('crL02').removeClass('crL03').addClass();
+		if (this.type == 3){
+			this.els.crL0.addClass('crL0W').removeClass('crL0B').removeClass('crL0L');
+			this.els.crL1.addClass('crL1W').removeClass('crL1B').removeClass('crL1L');			
+		}else if(this.type == 2){
+			this.els.crL0.removeClass('crL0B').removeClass('crL0L').removeClass('crL0W').addClass();
+			this.els.crL1.addClass('crL1W').removeClass('crL1B').removeClass('crL1L');		
+		
+		}
 		img = CRImages + (img || 'adobehs' + this.space) + '.png';
 		Browser.Engine.trident && Browser.Engine.version < 5 
 			? this.els.crImgIE.setStyle('width',80).set('src', CRImages + 'clear.gif').setStyle('filter','progid:DXImageTransform.Microsoft.AlphaImageLoader(src='+ img +',sizingMethod="scale")')
 			: this.els.crImg.set('src', img);//(this.type ? 'clear' : 'crop')
 		if (Browser.Engine.trident) this.els.crCircle.setStyle('display', this.type ? 'none' : 'block'); 
+		*/
 		this.els.crTriangle.setStyle('display', this.type == 3 ? 'block' : 'none'); 
 	},
 	
