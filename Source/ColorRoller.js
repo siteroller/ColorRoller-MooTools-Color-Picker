@@ -94,27 +94,21 @@ var ColorRoller = new Class({
 				crFrame.set('morph', {duration: 'long', link: 'cancel'}).adopt(
 					crColorPicker.adopt(
 						crHead.adopt(
-							crComplete.set('html', 	'&#8730;'),//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
-							crCancel.set('html','X')//'&#8855;','&#x2717;'
-						),
-						crBox.adopt(
-							crDraw
-							, crL0
-							, crL1
-							, crL2
-							//crImg,
-							//crBoxSel.adopt(crBoxSee),
-							//crCircle,
-			
-							, crTriangle.adopt(crTri1, crTri2).setStyle('display','none')
+							crComplete.set('html', 	'&#8730;')//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
+							, crCancel.set('html','X')//'&#8855;','&#x2717;'
+						)
+						, crBox.adopt(
+							crDraw, crL0, crL1, crL2
+							, crBoxSel.adopt(crBoxSee)
+							, crTriangle.adopt(crTri1, crTri2).setStyle('display','none') //This should be able to be done in one element.
 							, crShade
-						),
-						crBar.adopt(crBarSel),
-						crNums.adopt(
-							crSpace,crType,crVal.adopt(
-								crDR,crDG,crDB,crD0,crDS,crD1
-							),
-							crDHex,crView
+						)
+						, crBar.adopt(crBarSel)
+						, crNums.adopt(
+							crSpace, crType, crVal.adopt(
+								crDR, crD0, crDG, crDS, crDB, crD1
+							)
+							, crDHex, crView
 						)
 					)
 				)
@@ -195,10 +189,10 @@ var ColorRoller = new Class({
 	},
 	picker: function(event){
 		if (!this.mousedown) return;
+	
 		var els = this.els, val, S,
 			X = event.page.x - this.offset.x,
 			Y = event.page.y - this.offset.y;
-		
 		if (!this.type){
 			var O = X - this.radius,
 				A = this.radius - Y;
@@ -318,7 +312,7 @@ var ColorRoller = new Class({
 			? els.crL1.setStyle('background-image', '-moz-' +
 				(this.type 
 					? 'linear-gradient(' + (this.vLast ? 'bottom' : 'top') 
-					: 'radial-gradient(center'
+					: 'radial-gradient(center center, circle closest-side'	
 				) + ',rgb(' + bg + '),transparent)'
 			): els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
 		
@@ -398,6 +392,7 @@ var ColorRoller = new Class({
 			y: this.els.crBox.getPosition().y,
 			x: this.els.crBox.getPosition().x
 		};
+		//console.log('offset',this.offset)
 		this.fireEvent('show');
 	},
 	close: function(action){
@@ -413,18 +408,14 @@ var ColorRoller = new Class({
 	
 		var y = 0
 		, x = -1
-		, context = this.els.crDraw.getContext('2d')
-		, imgd = context.createImageData(this.boxH,this.boxH)
-		, pix = imgd.data
+		, draw = this.els.crDraw.getContext('2d')
+		, img = draw.createImageData(this.boxH,this.boxW)
+		, pix = img.data
 		, r = this.radius
 		, d = this.boxH - 1;
-console.log(r,d)
+
 		for (var l = 0; l < pix.length; l+=4){
-			if (++x > d){
-				x = 0;
-				++y;
-			}
-			
+			if (++x > d){ x = 0; ++y; }
 			var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
 			if (hue < 0) hue += 6;
 			var f = Math.floor(hue),
@@ -434,11 +425,11 @@ console.log(r,d)
 			for (var m = 0; m < 3; m++)	pix[l + +ind[m]] = map[m];
 			pix[l + 3] = 255;
 		}
-//		console.log(pix)
-		context.putImageData(imgd, 0,0);
-		context.globalCompositeOperation = 'destination-in';
-		context.arc(r,r,r,0,6.3,true);
-		context.fill();
+
+		draw.putImageData(img, 0,0);
+		draw.globalCompositeOperation = 'destination-in';
+		draw.arc(r,r,r,0,6.3,true);
+		draw.fill();
 	}
 });
 

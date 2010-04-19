@@ -1,6 +1,10 @@
-.crColorRoller{}
+.crColorRoller{
+	position:relative;
+	z-index:100;
+}
 .crFrame{
 	overflow:hidden;
+	xposition:absolute;
 }
 /* To change the display effect, modify the closed and opened state. */
 .crClosed{
@@ -101,13 +105,20 @@
 }
 .crBoxSel div{
 	position:absolute;
-	top:-2px;
-	left:-2px;
-	height:4px;
-	width:4px;
-	border:1px solid;
+	top:-3px;
+	left:-3px;
+	height:6px;
+	width:6px;
 	overflow:hidden;
+	border:1px solid #000;
+	outline: 1px solid #fff;
+	-moz-outline-radius:50%;
 	-moz-border-radius:50%;
+	
+	/* The same effect can be done using:
+	*	border:2px solid #fff;
+	*	-moz-border-top-colors: #000 #fff; etc.
+	*/
 }
 .crBar{
 	cursor:n-resize;
