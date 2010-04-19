@@ -300,7 +300,8 @@ var ColorRoller = new Class({
 			bg = [v,v,v],
 			value = this.space == 'B' ? val / 100 : 
 				this.space == 'L' ? 1 - Math.abs(val / 50 - 1) : 1;
-			els.crImg.setStyle('opacity',value);
+			//els.crImg.setStyle('opacity',value);
+			els.crL2.setStyles({'background-color':bg, opacity:1-value});
 		} else var bg = [val,100,100].toRgb(); 
 		
 		//Set this.val, Slider, BG Color, steps - 0:RGB, 1:inputs.
@@ -319,7 +320,6 @@ var ColorRoller = new Class({
 					? 'linear-gradient(' + (this.vLast ? 'bottom' : 'top') 
 					: 'radial-gradient(center'
 				) + ',rgb(' + bg + '),transparent)'
-				//(this.type != 2 ? 'rgb(' + bg + '),transparent' : 'transparent,rgb(' + bg + '))')
 			): els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
 		
 		if (step != 1) els['crI'+this.vLast].set('value', Math.round(val));
@@ -359,6 +359,7 @@ var ColorRoller = new Class({
 		els.crBox.setStyle('background-color','');
 		this.setImg(img[type]);
 		//if (this.type == 2) els.crImg.setStyle('opacity',1);
+		if (!this.vLast) els.crL2.setStyles({'background-color':'','opacity':1});
 		this.inputRGB();
 	},
 	setImg: function(img){
