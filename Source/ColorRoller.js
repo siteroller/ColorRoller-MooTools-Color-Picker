@@ -52,6 +52,7 @@ var ColorRoller = new Class({
 		els.crIcon0.setStyle('background-color', color.rgbToHex());
 		els.crFrame.setStyle('height',0); //('.crClose')
 		this.addEvents();
+		this.draw();
 		return els.crColorRoller;
 	},
 	
@@ -59,7 +60,7 @@ var ColorRoller = new Class({
 		var self = this, i=0, els = this.els = {};
 
 		$each(
-			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Icon:'span',ColorRoller:'span'},
+			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Icon:'span',ColorRoller:'span',Draw:'canvas'},
 			function(v,k){ els['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
 		$each({0:'Wheel', 1:'MS Paint',2:'Adobe CS',3:'Triangle',G:'HSG', B:'HSB/V',L:'HSL/I'},
@@ -97,12 +98,14 @@ var ColorRoller = new Class({
 							crCancel.set('html','X')//'&#8855;','&#x2717;'
 						),
 						crBox.adopt(
-							crL0
+							crDraw
+							, crL0
 							, crL1
 							, crL2
 							//crImg,
 							//crBoxSel.adopt(crBoxSee),
 							//crCircle,
+			
 							, crTriangle.adopt(crTri1, crTri2).setStyle('display','none')
 							, crShade
 						),
@@ -201,7 +204,7 @@ var ColorRoller = new Class({
 				A = this.radius - Y;
 			val = Math.atan2(O,A) * 180 / Math.PI;
 			S = Math.sqrt(O*O+A*A) * 100 / this.radius;
-			if (val < 0) val -= -360;
+			if (val < 0) val -= -360;// simplify to  val += 360;
 		} else if (this.type < 3) {
 			val = (this.vLast ? 360 : 100) * X / this.boxH;
 			S = 100 - 100 * Y / this.boxH;
@@ -310,9 +313,14 @@ var ColorRoller = new Class({
 		// wheel - bottom layer is color wheel, middle whiteness to transparent, top is whiteness with opacity. 
 		// IN FF: if triangle, change gradient. If Adobe, change gradient.  If change
 		// This makes the code so much more complex!!
-		Browser.Engine.gecko 
-			? els.crL1.setStyle('background-image', '-moz-linear-gradient(top,' + (this.type > 1 ? 'rgb(' + bg + '),transparent' : 'transparent,rgb(' + bg + '))'))
-			: els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
+		Browser.Engine.gecko
+			? els.crL1.setStyle('background-image', '-moz-' +
+				(this.type 
+					? 'linear-gradient(' + (this.vLast ? 'bottom' : 'top') 
+					: 'radial-gradient(center'
+				) + ',rgb(' + bg + '),transparent)'
+				//(this.type != 2 ? 'rgb(' + bg + '),transparent' : 'transparent,rgb(' + bg + '))')
+			): els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
 		
 		if (step != 1) els['crI'+this.vLast].set('value', Math.round(val));
 		if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space)); 
@@ -396,7 +404,40 @@ var ColorRoller = new Class({
 		this.els.crFrame.morph({height:0});//'.crClose'
 		if (action) this.els.crIcon0.setStyle('background-color',hex);
 		this.fireEvent(action ? 'complete' : 'cancel',hex); 
+	},
+	
+	// Canvas Draw Function - circle in Firefox:
+	draw: function(){
+		this.els.crDraw.set({width:this.boxH,height:this.boxH});
+	
+		var y = 0
+		, x = -1
+		, context = this.els.crDraw.getContext('2d')
+		, imgd = context.createImageData(this.boxH,this.boxH)
+		, pix = imgd.data
+		, r = this.radius
+		, d = this.boxH - 1;
+console.log(r,d)
+		for (var l = 0; l < pix.length; l+=4){
+			if (++x > d){
+				x = 0;
+				++y;
+			}
+			
+			var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
+			if (hue < 0) hue += 6;
+			var f = Math.floor(hue),
+				map = [0, Math.round(255 * (f % 2 ? 1 + f - hue : hue - f)), 255],
+				ind = ['210','201','021','012','102','120'][f];
+			
+			for (var m = 0; m < 3; m++)	pix[l + +ind[m]] = map[m];
+			pix[l + 3] = 255;
+		}
+//		console.log(pix)
+		context.putImageData(imgd, 0,0);
+		context.globalCompositeOperation = 'destination-in';
+		context.arc(r,r,r,0,6.3,true);
+		context.fill();
 	}
-
 });
 
