@@ -30,7 +30,7 @@ var ColorRoller = new Class({
         onCancel: $empty,
 		onChange: $empty,
 		onShow: $empty,
-		space: 'G',
+		space: 'W',
 		color: [127,127,127],
 		type: 0,
 		colorswitch: true
@@ -63,7 +63,7 @@ var ColorRoller = new Class({
 			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Icon:'span',ColorRoller:'span',Draw:'canvas'},
 			function(v,k){ els['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
-		$each({0:'Wheel', 1:'MS Paint',2:'Adobe CS',3:'Triangle',G:'HSG', B:'HSB/V',L:'HSL/I'},
+		$each({0:'Wheel', 1:'MS Paint',2:'Adobe CS',3:'Triangle',W:'HSW', B:'HSB/V',L:'HSL/I'},
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
@@ -198,13 +198,13 @@ var ColorRoller = new Class({
 				A = this.radius - Y;
 			val = Math.atan2(O,A) * 180 / Math.PI;
 			S = Math.sqrt(O*O+A*A) * 100 / this.radius;
-			if (val < 0) val -= -360;// simplify to  val += 360;
+			if (val < 0) val += 360;
 		} else if (this.type < 3) {
 			val = (this.vLast ? 360 : 100) * X / this.boxH;
 			S = 100 - 100 * Y / this.boxH;
 		} else {
 			switch (this.space){
-				case 'G':
+				case 'W':
 					val = ((Y - this.boxH) / 2 + X) / Y;
 					S = 1 - Y / this.boxH;
 					break;
@@ -271,7 +271,7 @@ var ColorRoller = new Class({
 						X -= X * s * .5;
 						Y = X * m + b;
 						break;
-					case 'G':
+					case 'W':
 						X -= s * (X - this.boxW * .5);
 						Y = this.boxH - this.boxH * s;
 				}
@@ -392,7 +392,7 @@ var ColorRoller = new Class({
 			y: this.els.crBox.getPosition().y,
 			x: this.els.crBox.getPosition().x
 		};
-		//console.log('offset',this.offset)
+		//console.log('offset',this.offset) 14,87 / 160,127
 		this.fireEvent('show');
 	},
 	close: function(action){
@@ -415,7 +415,7 @@ var ColorRoller = new Class({
 		, d = this.boxH - 1;
 
 		for (var l = 0; l < pix.length; l+=4){
-			if (++x > d){ x = 0; ++y; }
+			if (++x > d && ++y) x = 0;
 			var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
 			if (hue < 0) hue += 6;
 			var f = Math.floor(hue),
