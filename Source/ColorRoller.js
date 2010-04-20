@@ -67,7 +67,7 @@ var ColorRoller = new Class({
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
-		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade','L0','L1','L2','X','V','Bot'].each(
+		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade','L0','L1','L2','X','V','Bot','Circle'].each(
 			function(v){
 				els['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
@@ -94,12 +94,10 @@ var ColorRoller = new Class({
 				crFrame.set('morph', {duration: 'long', link: 'cancel'}).adopt(
 					crColorPicker.adopt(
 						crHead.adopt(
-							//crComplete.set('html', 	'&#8730;')//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
-							//, 
 							crCancel.adopt( crX.set('html','+'))//X'&#8855;','&#x2717;'
 						)
 						, crBox.adopt(
-							crDraw, crL0, crL1, crL2
+							crCircle, crL0, crL1, crL2
 							, crBoxSel.adopt(crBoxSee)
 							, crTriangle.adopt(crTri1, crTri2).setStyle('display','none') //This should be able to be done in one element.
 							, crShade
@@ -110,7 +108,8 @@ var ColorRoller = new Class({
 								crDR, crD0, crDG, crDS, crDB, crD1
 							)
 						), crBot.adopt(
-							crDHex, crView
+							crDHex, crView, crComplete.set('html', 	'&#8730;')//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
+
 						)
 					)
 				)
@@ -406,32 +405,37 @@ var ColorRoller = new Class({
 	
 	// Canvas Draw Function - circle in Firefox:
 	draw: function(){
-		this.els.crDraw.set({width:this.boxH,height:this.boxH});
-	
-		var y = 0
-		, x = -1
-		, draw = this.els.crDraw.getContext('2d')
-		, img = draw.createImageData(this.boxH,this.boxW)
-		, pix = img.data
-		, r = this.radius
-		, d = this.boxH - 1;
+		if (Browser.Engine.gecko && Browser.Engine.version > 1.9){
+			this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crCircle);
+		
+			var y = 0
+			, x = -1
+			, draw = this.els.crDraw.getContext('2d')
+			, img = draw.createImageData(this.boxH,this.boxW)
+			, pix = img.data
+			, r = this.radius
+			, d = this.boxH - 1;
 
-		for (var l = 0; l < pix.length; l+=4){
-			if (++x > d && ++y) x = 0;
-			var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
-			if (hue < 0) hue += 6;
-			var f = Math.floor(hue),
-				map = [0, Math.round(255 * (f % 2 ? 1 + f - hue : hue - f)), 255],
-				ind = ['210','201','021','012','102','120'][f];
+			for (var l = 0; l < pix.length; l+=4){
+				if (++x > d && ++y) x = 0;
+				var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
+				if (hue < 0) hue += 6;
+				var f = Math.floor(hue)
+					, map = [0, Math.round(255 * (f % 2 ? 1 + f - hue : hue - f)), 255]
+					, ind = ['210','201','021','012','102','120'][f];
+				
+				for (var m = 0; m < 3; m++)	pix[l + +ind[m]] = map[m];
+				pix[l + 3] = 255;
+			}
+
+			draw.putImageData(img, 0,0);
+			draw.globalCompositeOperation = 'destination-in';
+			draw.arc(r,r,r,0,6.3,true);
+			draw.fill();
+		} else if (Browser.Engine.webkit){
 			
-			for (var m = 0; m < 3; m++)	pix[l + +ind[m]] = map[m];
-			pix[l + 3] = 255;
+		
 		}
-
-		draw.putImageData(img, 0,0);
-		draw.globalCompositeOperation = 'destination-in';
-		draw.arc(r,r,r,0,6.3,true);
-		draw.fill();
 	}
 });
 

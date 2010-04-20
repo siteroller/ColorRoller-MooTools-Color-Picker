@@ -88,10 +88,13 @@
 	height:100px;
 }
 .bar0{
-	background-image: -moz-linear-gradient(top, rgb(255,0,0),rgb(255,0,255),rgb(0,0,255),rgb(0,255,255),rgb(0,255,0),rgb(255,255,0),rgb(255,0,0));
+	xbackground-image: -moz-linear-gradient(top, rgb(255,0,0),rgb(255,0,255),rgb(0,0,255),rgb(0,255,255),rgb(0,255,0),rgb(255,255,0),rgb(255,0,0));
+	background-image: -moz-linear-gradient(top, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
+	background-image: -webkit-gradient(linear, center bottom, center top, from(#f00), color-stop(0.166, #ff0),color-stop(0.333, #0f0),color-stop(0.5, #0ff),color-stop(0.666, #00f),color-stop(0.833, #f0f), to(#f00) );
 }
 .bar1{
 	background-image: -moz-linear-gradient(top, white, black);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(white), to(black));
 }
 
 .crBoxSel{
@@ -107,9 +110,13 @@
 	width:6px;
 	overflow:hidden;
 	border:1px solid #000;
+	xborder-width:13px;
 	outline: 1px solid #fff;
 	-moz-outline-radius:50%;
 	-moz-border-radius:50%;
+	x-webkit-border-image:-webkit-gradient(radial, 0% 0%, 0% 100%, from(red), to(blue)) 0 4 0 0 repeat repeat;
+	x: -webkit-gradient(linear, center top, center bottom, from(white), to(black));
+	-webkit-border-radius:3px;
 	
 	/* The same effect can be done using:
 	*	border:2px solid #fff;
@@ -246,11 +253,12 @@ background-image:-moz-linear-gradient(top,#FBB1B1,#A53232 49%,#901515 51%, #CC4B
 
 }
 .crView{
-	width:50px;
-	height:15px;
-	border:2px solid grey;
+	width:58px;
+	height:16px;
+	border:2px solid black;
+	outline:1px solid white;
 	vertical-align:middle;
-	margin:0 10px;
+	margin-left:15px;
 }
 .crX{
 	-moz-transform:rotate(45deg);
@@ -330,7 +338,11 @@ background-image:-moz-linear-gradient(top,#FBB1B1,#A53232 49%,#901515 51%, #CC4B
 	top:0;
 }
 
-.crL01{	background-image: -moz-linear-gradient(left, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00) }
+.crL01{	
+	background-image: -moz-linear-gradient(left, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
+	background-image: -webkit-gradient(linear, left center, right center, from(#f00), color-stop(0.166, #ff0),color-stop(0.333, #0f0),color-stop(0.5, #0ff),color-stop(0.666, #00f),color-stop(0.833, #f0f), to(#f00) );
+	-webkit-mask-image: -webkit-gradient(linear, center top, center bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+}
 .crL02,.crL03{background-image:-moz-linear-gradient(left, #000, #fff) }
 
 .crL12.crL1B{ background-color:#fff }
@@ -338,6 +350,18 @@ background-image:-moz-linear-gradient(top,#FBB1B1,#A53232 49%,#901515 51%, #CC4B
 .crL22.crL2B{ background-image:-moz-linear-gradient(left, #000, transparent) }
 .crL22.crL2L{ background-image:-moz-linear-gradient(left, #000, transparent, #fff) }
 
+alt.crL1L{
+	background-image:-moz-linear-gradient(left, #000, transparent, #fff), -moz-linear-gradient(bottom, grey, transparent);
+	background-image:-webkit-gradient(linear, left center, right center, from(#000), color-stop(0.5,transparent) to(#fff)), -webkit-gradient(linear, center bottom, center top, from(grey), to(transparent));
+}
+alt.crL1B{
+	background-image:-moz-linear-gradient(left, #000, transparent), -moz-linear-gradient(bottom, white, transparent);
+	background-image:-webkit-gradient(linear, left center, right center, from(#000), to(transparent)), -webkit-gradient(linear, center bottom, center top, from(#fff), to(transparent));
+}
+
+webkit.crL1L{
+	
+}
 
 
 .t1, .t2{
