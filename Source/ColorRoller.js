@@ -67,7 +67,7 @@ var ColorRoller = new Class({
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
-		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade','L0','L1','L2'].each(
+		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade','L0','L1','L2','X','V','Bot'].each(
 			function(v){
 				els['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
@@ -94,8 +94,9 @@ var ColorRoller = new Class({
 				crFrame.set('morph', {duration: 'long', link: 'cancel'}).adopt(
 					crColorPicker.adopt(
 						crHead.adopt(
-							crComplete.set('html', 	'&#8730;')//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
-							, crCancel.set('html','X')//'&#8855;','&#x2717;'
+							//crComplete.set('html', 	'&#8730;')//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
+							//, 
+							crCancel.adopt( crX.set('html','+'))//X'&#8855;','&#x2717;'
 						)
 						, crBox.adopt(
 							crDraw, crL0, crL1, crL2
@@ -108,7 +109,8 @@ var ColorRoller = new Class({
 							crSpace, crType, crVal.adopt(
 								crDR, crD0, crDG, crDS, crDB, crD1
 							)
-							, crDHex, crView
+						), crBot.adopt(
+							crDHex, crView
 						)
 					)
 				)

@@ -84,10 +84,6 @@
 
 .crBox {
 	cursor:crosshair;
-	position:relative;
-	margin:5px;
-	float:left;
-	position:relative;
 	width:100px;
 	height:100px;
 }
@@ -122,11 +118,8 @@
 }
 .crBar{
 	cursor:n-resize;
-	float:left;
 	width:20px;
 	height:100px;
-	margin:5px;
-	position:relative;
 }
 .crBarSel{
 	position:absolute;
@@ -139,21 +132,22 @@
 	border:1px solid black;
 }
 .crNums{
-	float:right; 
-	width:150px
+	width:150px;
+	margin:5px;
 }
-
-.crNums .crHex,.crNums input{
+.crD span.crHex{
+	width:30px;
+}
+.crD input.crIHex{
+	width:70px;
+}
+.crD input{
 	width:25px;
 	background-color:transparent;
 	border:1px solid grey;
 	font-family:Arial,Helvetica,sans-serif;
 	font-size:10px;
 	height:11px;
-	margin:0;
-	padding:0;
-	top:4px;
-	right:6px;
 	color:#778398;
 }
 select{
@@ -196,11 +190,7 @@ span.crD span{
  .crNums .crIHex{
 	width:60px;
 }
-.crNums .crView{
-	width:25px; 
-	height:15px; margin-left:3px;
-	vertical-align:middle;
-}
+
 .crShade{
 	height:100%;
 	width:100%;
@@ -225,7 +215,53 @@ span.crD span{
 	display:none
 }
 
-.crCancel, .crComplete {
+.crCancel{
+-moz-border-radius:50% 50% 50% 50%;
+background-color:#E99999;
+cursor:pointer;
+width:18px;
+height:18px;
+right:3px;
+top:2px;
+position:absolute;
+text-align:center;
+background-image:-moz-linear-gradient(top,#FBB1B1,#A53232 49%,#901515 51%, #CC4B4B);
+}
+
+.crBox, .crBar, .crNums, .crBot{
+	float:left;
+	position:relative;
+	margin:5px 5px 0;
+	/* Would love to use column-count, but no IE support */
+}
+
+.crBot{
+	width:100%;
+	height:30px;
+	margin:0 5px;
+}
+.crBot .crD{
+	width:115px;
+	margin:0;
+
+}
+.crView{
+	width:50px;
+	height:15px;
+	border:2px solid grey;
+	vertical-align:middle;
+	margin:0 10px;
+}
+.crX{
+	-moz-transform:rotate(45deg);
+	font:bold 25px Helvetica;
+	color:white;
+	text-shadow: #000 0 1px;
+	margin-left:1px;
+	margin-top:-7px;
+}
+
+.crComplete {
 	width:20px; float:right; cursor:pointer;
 }
 
