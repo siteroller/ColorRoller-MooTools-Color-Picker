@@ -2,8 +2,9 @@
 <html>
 <head>
 	<title>ColorRoller</title>
-	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>-->
-	<script type="text/javascript" src="../Archive/mootools-1.2.4-core-yc.js"></script>
+	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
+	<script type="text/javascript" src="../Archive/mootools-1.2.4-core-yc.js"></script>-->
+	<script type="text/javascript" src="../Archive/moo.124.js"></script>
 	<script type="text/javascript" src="../Color.js/Color.js"></script>
 	<script type="text/javascript" src="../Source/ColorRoller.js"></script>
 	<link 	type="text/css" rel="stylesheet" href="../Source/Assets/ColorRoller.css">
@@ -23,7 +24,10 @@
 <body>
 Click on box to choose color.<br>
 When done, click check mark in upper right of picker.<br>
-<input id="colors">
+
+<div style="width:250px; height:250px; background-color:green; -webkit-mask-image: -webkit-gradient(radial, center center, 0, center center, 100, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)) );"></div>-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0))) 
+ 
+<input id="colors">background:-webkit-gradient( radial, 50% 50%, 0, 50% 50%, 250, from(orange), color-stop(0.2, #fff), to(lightblue) );-webkit-gradient( radial, 500 25%, 20, 500 25%, 40, from(blue), to(#eee));
 <div class="t1">
 	<div class="test1"></div>
 	<div class="test1a"></div>

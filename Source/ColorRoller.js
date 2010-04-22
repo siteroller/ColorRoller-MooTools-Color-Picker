@@ -60,18 +60,18 @@ var ColorRoller = new Class({
 		var self = this, i=0, els = this.els = {};
 
 		$each(
-			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Icon:'span',ColorRoller:'span',Draw:'canvas'},
+			{Space:'select',Type:'select',Img:'img',Show:'img',View:'span',Icon:'span',ColorRoller:'span',Apply:'span',Draw:'canvas'},
 			function(v,k){ els['cr'+k] = new Element(v,{'class':'cr'+k}) }
 		);
 		$each({0:'Wheel', 1:'MS Paint',2:'Adobe CS',3:'Triangle',W:'HSW', B:'HSB/V',L:'HSL/I'},
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
-		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Complete','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade','L0','L1','L2','X','V','Bot','Circle'].each(
+		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade','L0','L1','L2','X','V','Bot','Circle'].each(
 			function(v){
 				els['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
-		$each({R:'inputRGB',G:'inputRGB',B:'inputRGB',0:'input0',S:'inputS',1:'input1',Hex:'inputRGBHex'},
+		$each({R:'inputRGB',G:'inputRGB',B:'inputRGB',0:'input0',S:'inputS',1:'input1',Hex:'inputRGBHex'},//Apply:'close'
 			function(v,k){
 				if (k == 0) k = 0; // Yes, I know this is odd.
 				els['cr' +k] = new Element('span',{'text':k||'H','class':'cr'+k||'H'});
@@ -97,7 +97,8 @@ var ColorRoller = new Class({
 							crCancel.adopt( crX.set('html','+'))//X'&#8855;','&#x2717;'
 						)
 						, crBox.adopt(
-							crCircle, crL0, crL1, crL2
+							//crCircle, 
+							crL0, crL1, crL2
 							, crBoxSel.adopt(crBoxSee)
 							, crTriangle.adopt(crTri1, crTri2).setStyle('display','none') //This should be able to be done in one element.
 							, crShade
@@ -108,15 +109,18 @@ var ColorRoller = new Class({
 								crDR, crD0, crDG, crDS, crDB, crD1
 							)
 						), crBot.adopt(
-							crDHex, crView, crComplete.set('html', 	'&#8730;')//'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
-
+							crDHex, crView, crApply.addClass('crD').set('html','Apply')//.set('html', 	'&#8730;')'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
 						)
 					)
 				)
 			).inject(document.body);
 		}
 		
-		if (Browser.Engine.trident) {
+		if (Browser.Engine.trident)
+			for (var grad = 0; grad < 12; grad++ )
+				new Element('div',{'class':'crIE'+grad}).inject(els[grad < 6 ? 'crL1' : 'crBar']);
+		
+		if (Browser.Engine.trident && false) {
 			var H = els.crBox.clientHeight;
 			for (var i=1; i<13; i++){
 				var rad = 7 * i * Math.PI * 2 / 360,
@@ -141,7 +145,7 @@ var ColorRoller = new Class({
 		els.crSpace.addEvent('change',this.setSpace.bind(this)).fireEvent('change');
 		els.crType.addEvent('change',this.setType.bind(this)).fireEvent('change');
 		els.crIcon.addEvent('click',this.toggle.bind(this));
-		els.crComplete.addEvent('click',this.close.pass(1,self));
+		els.crApply.addEvent('click',this.close.pass(1,self));
 		els.crCancel.addEvent('click',this.close.pass(0,self));
 		function mousedown(e){ self.mousedown = true; e.stop() }
 		els.crColorPicker.addEvent('mouseup',function(){ self.mousedown = false });
@@ -291,12 +295,15 @@ var ColorRoller = new Class({
 		
 		// Set Opacity if slider is greyscale. 
 		if (this.vLast){
-			var v = Math.round(val * 2.55), 
-			bg = [v,v,v],
-			value = this.space == 'B' ? val / 100 : 
-				this.space == 'L' ? 1 - Math.abs(val / 50 - 1) : 1;
+			var v = Math.round(val * 2.55) 
+				, bg = [v,v,v];
+			//value = this.space == 'B' ? val / 100 : 
+			//	this.space == 'L' ? 1 - Math.abs(val / 50 - 1) : 1;
 			//els.crImg.setStyle('opacity',value);
-			els.crL2.setStyles({'background-color':bg, opacity:1-value});
+			els.crL2.setStyles({'background-color':bg, opacity:1-( //reverse 1 and simplify - opacity:this.space == b ? 1 - val / 100 : 'L' ? Math.abs() - 1 : 0
+				this.space == 'B' ? val / 100 
+					: this.space == 'L' ? 1 - Math.abs(val / 50 - 1) 
+						: 1)});//value});
 		} else var bg = [val,100,100].toRgb(); 
 		
 		//Set this.val, Slider, BG Color, steps - 0:RGB, 1:inputs.
@@ -315,7 +322,8 @@ var ColorRoller = new Class({
 					? 'linear-gradient(' + (this.vLast ? 'bottom' : 'top') 
 					: 'radial-gradient(center center, circle closest-side'	
 				) + ',rgb(' + bg + '),transparent)'
-			): els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
+			): els.crL0.setStyle('background-color', 'rgb(' + bg + ')');
+			// ): els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
 		
 		if (step != 1) els['crI'+this.vLast].set('value', Math.round(val));
 		if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space)); 
@@ -381,6 +389,7 @@ var ColorRoller = new Class({
 		if (Browser.Engine.trident) this.els.crCircle.setStyle('display', this.type ? 'none' : 'block'); 
 		*/
 		this.els.crTriangle.setStyle('display', this.type == 3 ? 'block' : 'none'); 
+		//this.els.crDraw.setStyle('display', this.type ? 'none' : 'block'); 
 	},
 	
 	//Events
@@ -405,12 +414,17 @@ var ColorRoller = new Class({
 	
 	// Canvas Draw Function - circle in Firefox:
 	draw: function(){
-		if (Browser.Engine.gecko && Browser.Engine.version > 1.9){
-			this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crCircle);
+		if (Browser.Engine.trident || (Browser.Engine.gecko && Browser.Engine.version > 1.9)){} 
+		else {
+			//this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject('crCircle');
+			
+
+			//this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els[Browser.Engine.trident ? 'crCircle' : 'crL1']);
 		
 			var y = 0
 			, x = -1
-			, draw = this.els.crDraw.getContext('2d')
+			, draw = document.getCSSCanvasContext('2d', 'circle', 100, 100)
+			//, draw = this.els.crDraw.getContext('2d')
 			, img = draw.createImageData(this.boxH,this.boxW)
 			, pix = img.data
 			, r = this.radius
@@ -432,9 +446,6 @@ var ColorRoller = new Class({
 			draw.globalCompositeOperation = 'destination-in';
 			draw.arc(r,r,r,0,6.3,true);
 			draw.fill();
-		} else if (Browser.Engine.webkit){
-			
-		
 		}
 	}
 });
