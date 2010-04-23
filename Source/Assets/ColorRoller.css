@@ -286,10 +286,12 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 	cursor:pointer;
 }
 
-.crRound, .crRound *{
+.crRound, .crRound .crL2, .crRound .crL0, .xcrRound *{
 	-moz-border-radius:50%;
 	-webkit-border-radius:50px; 
 	border-radius:50%;
+	xoverflow:hidden;
+	xborder:3px solid black;
 }
 
 .crGradientBW {
@@ -414,13 +416,14 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 		progid:DXImageTransform.Microsoft.Alpha(Opacity=0, FinishOpacity=100, Style=1, StartX=50,  FinishX=50, StartY=0, FinishY=100);
 }
 .crL10{
-	xbackground-image: -webkit-gradient(linear, left center, right center, from(#000), to(#fff));
-	background-color:green;
-	-webkit-mask-image: -webkit-gradient(radial, center center, 0, center center, 100, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)) );
-	height:100px;
-	width:100px;
-	display:block;
-	x:-webkit-canvas(circle);
+	background-image: -webkit-canvas(circle);
+	x:-webkit-gradient(linear, left center, right center, from(#000), to(#fff));
+	xbackground-color:green;
+	-webkit-mask-image: -webkit-gradient(radial, center center, 0, center center, 50, from(rgba(0,0,0,0)), to(rgba(0,0,0,1)) );
+	xheight:100px;
+	xwidth:100px;
+	xdisplay:block;
+	x:
 	
 }
 .crL11{

@@ -423,13 +423,23 @@ var ColorRoller = new Class({
 		
 			var y = 0
 			, x = -1
-			, draw = document.getCSSCanvasContext('2d', 'circle', 100, 100)
+			, draw = document.getCSSCanvasContext('2d', 'circle', 100, 100);
 			//, draw = this.els.crDraw.getContext('2d')
-			, img = draw.createImageData(this.boxH,this.boxW)
+		//draw.globalCompositeOperation = 'destination-out';
+	//ctx.fillStyle = "#f30";
+
+		//draw.beginPath();	
+		//draw.arc(r,r,r,0,6.3,true);
+		//draw.clip();
+		
+		
+		//draw.fill();
+			var img = draw.createImageData(this.boxH,this.boxW)
 			, pix = img.data
 			, r = this.radius
 			, d = this.boxH - 1;
 
+			
 			for (var l = 0; l < pix.length; l+=4){
 				if (++x > d && ++y) x = 0;
 				var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
@@ -442,10 +452,19 @@ var ColorRoller = new Class({
 				pix[l + 3] = 255;
 			}
 
+			
+			
+			//
 			draw.putImageData(img, 0,0);
-			draw.globalCompositeOperation = 'destination-in';
-			draw.arc(r,r,r,0,6.3,true);
+			draw.globalCompositeOperation = 'destination-out';
+			
+			draw.beginPath();
+			draw.arc(r,r,r,6.2,0,true);
+			draw.arc(r,r,r+20,0.5,0,false);
+			draw.closePath();
 			draw.fill();
+			
+			//
 		}
 	}
 });
