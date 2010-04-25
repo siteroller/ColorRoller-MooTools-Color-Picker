@@ -112,10 +112,10 @@ var ColorRoller = new Class({
 							crDHex, crView, crApply.addClass('crD').set('html','Apply')//.set('html', 	'&#8730;')'&#9745;'+'&#10003;'+'&#x2713;'+ '<span style="font-family: verdana; letter-spacing: -8px; font-weight: bold;">v/</span>'), //,
 						)
 					)
-				)
+				).addClass(Browser.Engine.name)
 			).inject(document.body);
 		}
-		
+
 		if (Browser.Engine.trident)
 			for (var grad = 0; grad < 12; grad++ )
 				new Element('div',{'class':'crIE'+grad}).inject(els[grad < 6 ? 'crL1' : 'crBar']);
@@ -316,7 +316,7 @@ var ColorRoller = new Class({
 		// wheel - bottom layer is color wheel, middle whiteness to transparent, top is whiteness with opacity. 
 		// IN FF: if triangle, change gradient. If Adobe, change gradient.  If change
 		// This makes the code so much more complex!!
-		Browser.Engine.gecko
+		Browser.Engine.gecko && (this.space == 'W' || this.type != 2)
 			? els.crL1.setStyle('background-image', '-moz-' +
 				(this.type 
 					? 'linear-gradient(' + (this.vLast ? 'bottom' : 'top') 
@@ -349,6 +349,7 @@ var ColorRoller = new Class({
 			? this.inputRGB()
 			: (this.setSlider(vals[0]) || this.inputHSV(vFirst,vals[1]));
 		if (this.type == 2) this.setImg();
+		//if(Browser.Engine.gecko && this.space != 'W') this.els.crL1.setStyle('background-image','');
 	},
 	setType: function(e){
 		var els = this.els,
@@ -414,16 +415,18 @@ var ColorRoller = new Class({
 	
 	// Canvas Draw Function - circle in Firefox:
 	draw: function(){
-		if (Browser.Engine.trident || (Browser.Engine.gecko && Browser.Engine.version > 1.9)){} 
+		if (Browser.Engine.trident){} //|| (Browser.Engine.gecko && Browser.Engine.version > 1.9)
 		else {
 			//this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject('crCircle');
 			
 
 			//this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els[Browser.Engine.trident ? 'crCircle' : 'crL1']);
-		
-			var y = 0
+			var draw = Browser.Engine.gecko 
+				? this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crL0, 'before').getContext('2d')
+				: document.getCSSCanvasContext('2d', 'circle', 100, 100)
+			, y = 0
 			, x = -1
-			, draw = document.getCSSCanvasContext('2d', 'circle', 100, 100);
+			
 			//, draw = this.els.crDraw.getContext('2d')
 		//draw.globalCompositeOperation = 'destination-out';
 	//ctx.fillStyle = "#f30";
@@ -434,7 +437,7 @@ var ColorRoller = new Class({
 		
 		
 		//draw.fill();
-			var img = draw.createImageData(this.boxH,this.boxW)
+			, img = draw.createImageData(this.boxH,this.boxW)
 			, pix = img.data
 			, r = this.radius
 			, d = this.boxH - 1;
