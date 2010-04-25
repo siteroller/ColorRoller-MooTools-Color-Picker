@@ -63,6 +63,7 @@
 .crColorPicker{
 	width:300px;
 	height:150px;
+	overflow:hidden;
 	background-color:silver;
 	position:relative;
 	border: solid 1px grey;
@@ -145,7 +146,7 @@
 	background-color:#fff;
 	border:1px solid black;
 }
-.crNums{
+.xcrNums{
 	width:150px;
 	margin:5px;
 }
@@ -175,7 +176,7 @@ select{
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
 	border-radius:3px;
-	margin:3px;
+	margin:0 3px 3px;
 	background-color:#eee
 }
 option{
@@ -184,6 +185,7 @@ option{
 .crApply, span.crD {
 	width:50px;
 	height:15px;
+	overflow:hidden;
 	padding:2px 6px;
 	font:12px Tahoma;
 	color:black;
@@ -197,7 +199,7 @@ option{
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
 	border-radius:3px;
-	margin:3px;
+	margin:2px 3px 3px;
 }
 span.crD span{
 	text-shadow: #fff 0 1px;
@@ -247,18 +249,21 @@ text-align:center;
 background-image:-moz-linear-gradient(top,#FBB1B1,#A53232 49%,#901515 51%, #CC4B4B);
 background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B1), color-stop(0.49, #A53232), color-stop(0.51, #901515), to(#CC4B4B));
 }
-
+.crNums{
+	width:145px;
+}
 .crBox, .crBar, .crNums, .crBot{
 	float:left;
 	position:relative;
 	margin:5px 5px 0;
+	
 	/* Would love to use column-count, but no IE support */
 }
 
 .crBot{
 	width:100%;
 	height:30px;
-	margin:0 5px;
+	xmargin:0 5px;
 }
 .crBot .crD{
 	width:115px;
