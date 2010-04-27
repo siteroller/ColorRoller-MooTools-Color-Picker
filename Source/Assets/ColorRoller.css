@@ -190,6 +190,7 @@ option{
 	font:12px Tahoma;
 	color:black;
 	border:1px solid #E2E5E9;
+	vertical-align:top;
 	xbackground-image: -moz-linear-gradient(top, white, #CACED6);
 	background-image: -moz-linear-gradient(top, #eee, #C9CED6, #ccc, #CACED6);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#eee), color-stop(0.33, #C9CED6), color-stop(0.66, #ccc), to(#CACED6));

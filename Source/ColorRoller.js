@@ -414,7 +414,6 @@ var ColorRoller = new Class({
 			, y = 100;
 
 			for (var l = pix.length - 4; l > 0; l -= 4){
-				if (!x-- && y--) x = d;
 				var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
 				if (hue < 0) hue += 6;
 				var f = Math.floor(hue)
@@ -423,6 +422,7 @@ var ColorRoller = new Class({
 				
 				for (var m = 0; m < 3; m++)	pix[l + +ind[m]] = map[m];
 				pix[l + 3] = 255;
+				if (!x-- && y--) x = d;
 			}
 
 			draw.putImageData(img, 0,0);
