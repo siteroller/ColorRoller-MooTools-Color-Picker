@@ -293,29 +293,18 @@ var ColorRoller = new Class({
 	setSlider: function(val,step){
 		var els = this.els;
 		
-		// Set Opacity if slider is greyscale. 
+		// Set opacity if slider is greyscale. 
 		if (this.vLast){
 			var v = Math.round(val * 2.55) 
 				, bg = [v,v,v];
-			//value = this.space == 'B' ? val / 100 : 
-			//	this.space == 'L' ? 1 - Math.abs(val / 50 - 1) : 1;
-			//els.crImg.setStyle('opacity',value);
-			els.crL2.setStyles({'background-color':bg, opacity:1-( //reverse 1 and simplify - opacity:this.space == b ? 1 - val / 100 : 'L' ? Math.abs() - 1 : 0
-				this.space == 'B' ? val / 100 
-					: this.space == 'L' ? 1 - Math.abs(val / 50 - 1) 
-						: 1)});//value});
+			els.crL2.setStyles({'background-color':bg, opacity: this.space == 'B' ? 1 - val / 100 
+				: this.space == 'L' ? Math.abs(val / 50 - 1) : 0});
 		} else var bg = [val,100,100].toRgb(); 
 		
 		//Set this.val, Slider, BG Color, steps - 0:RGB, 1:inputs.
 		this.val = val;
 		els.crBarSel.setStyle('top', 100 - val / (this.vLast || 3.6) + '%'); //100 - (this.vLast ? val : val / 3.6) + '%'
-		//els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
 		
-		//In FF: Triangle / Adobe - bottom layer is greyscale left right. middle is gradient color to transparent, top is gradient black -> left right.
-		// MS - bottom layer is rainbow left right, middle is whiteness to transparent. Top is whitness with opacity.
-		// wheel - bottom layer is color wheel, middle whiteness to transparent, top is whiteness with opacity. 
-		// IN FF: if triangle, change gradient. If Adobe, change gradient.  If change
-		// This makes the code so much more complex!!
 		Browser.Engine.gecko && (this.space == 'W' || this.type != 2)
 			? els.crL1.setStyle('background-image', '-moz-' +
 				(this.type 
@@ -323,7 +312,6 @@ var ColorRoller = new Class({
 					: 'radial-gradient(center center, circle closest-side'	
 				) + ',rgb(' + bg + '),transparent)'
 			): els.crL0.setStyle('background-color', 'rgb(' + bg + ')');
-			// ): els.crBox.setStyle('background-color', 'rgb(' + bg + ')');
 		
 		if (step != 1) els['crI'+this.vLast].set('value', Math.round(val));
 		if (step) this.setRGB(this.getValues([0,'S',1]).toRgb(this.space)); 
@@ -358,11 +346,11 @@ var ColorRoller = new Class({
 		if (!e) this.els.crType.set('value',type);
 		this.vLast = +(type < 2);
 		//els.crBar.setStyle('background-image', 'url('+ CRImages + (this.vLast ? 'greyscale' : 'rainbow') + '.png)');
+		//if (this.type == 2) els.crImg.setStyle('opacity',1);
 		els.crBar.addClass('bar'+this.vLast).removeClass('bar'+ +!this.vLast);
 		els.crBox[type ? 'removeClass' : 'addClass']('crRound');
 		els.crBox.setStyle('background-color','');
 		this.setImg(img[type]);
-		//if (this.type == 2) els.crImg.setStyle('opacity',1);
 		if (!this.vLast) els.crL2.setStyles({'background-color':'','opacity':1});
 		this.inputRGB();
 	},
@@ -390,7 +378,6 @@ var ColorRoller = new Class({
 		if (Browser.Engine.trident) this.els.crCircle.setStyle('display', this.type ? 'none' : 'block'); 
 		*/
 		this.els.crTriangle.setStyle('display', this.type == 3 ? 'block' : 'none'); 
-		//this.els.crDraw.setStyle('display', this.type ? 'none' : 'block'); 
 	},
 	
 	//Events
@@ -398,12 +385,11 @@ var ColorRoller = new Class({
 		this[this.els.crFrame.getStyle('height') == '0px' ? 'show' : 'close']();  
 	},
 	show: function(){
-		this.els.crFrame.morph({height:152}); //'.crOpen'
+		this.els.crFrame.morph({height:152});
 		this.offset = {
 			y: this.els.crBox.getPosition().y,
 			x: this.els.crBox.getPosition().x
 		};
-		//console.log('offset',this.offset) 14,87 / 160,127
 		this.fireEvent('show');
 	},
 	close: function(action){
@@ -413,38 +399,22 @@ var ColorRoller = new Class({
 		this.fireEvent(action ? 'complete' : 'cancel',hex); 
 	},
 	
-	// Canvas Draw Function - circle in Firefox:
+	// Create color wheel
 	draw: function(){
 		if (Browser.Engine.trident){} //|| (Browser.Engine.gecko && Browser.Engine.version > 1.9)
 		else {
-			//this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject('crCircle');
-			
-
-			//this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els[Browser.Engine.trident ? 'crCircle' : 'crL1']);
 			var draw = Browser.Engine.gecko 
 				? this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crL0, 'before').getContext('2d')
 				: document.getCSSCanvasContext('2d', 'circle', 100, 100)
-			, y = 0
-			, x = -1
-			
-			//, draw = this.els.crDraw.getContext('2d')
-		//draw.globalCompositeOperation = 'destination-out';
-	//ctx.fillStyle = "#f30";
-
-		//draw.beginPath();	
-		//draw.arc(r,r,r,0,6.3,true);
-		//draw.clip();
-		
-		
-		//draw.fill();
 			, img = draw.createImageData(this.boxH,this.boxW)
 			, pix = img.data
 			, r = this.radius
-			, d = this.boxH - 1;
+			, d = this.boxH - 1
+			, x = d
+			, y = 100;
 
-			
-			for (var l = 0; l < pix.length; l+=4){
-				if (++x > d && ++y) x = 0;
+			for (var l = pix.length - 4; l > 0; l -= 4){
+				if (!x-- && y--) x = d;
 				var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
 				if (hue < 0) hue += 6;
 				var f = Math.floor(hue)
@@ -455,19 +425,12 @@ var ColorRoller = new Class({
 				pix[l + 3] = 255;
 			}
 
-			
-			
-			//
 			draw.putImageData(img, 0,0);
 			draw.globalCompositeOperation = 'destination-out';
 			
-			draw.beginPath();
-			draw.arc(r,r,r,6.2,0,true);
-			draw.arc(r,r,r+20,0.5,0,false);
-			draw.closePath();
-			draw.fill();
-			
-			//
+			draw.arc(r,r,r+10,6.2,0,true);
+			draw.lineWidth = 20;
+			draw.stroke();
 		}
 	}
 });
