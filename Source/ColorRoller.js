@@ -53,6 +53,7 @@ var ColorRoller = new Class({
 		els.crFrame.setStyle('height',0); //('.crClose')
 		this.addEvents();
 		this.draw();
+		//this.wheel();
 		return els.crColorRoller;
 	},
 	
@@ -428,10 +429,47 @@ var ColorRoller = new Class({
 			draw.putImageData(img,0,0);
 			draw.globalCompositeOperation = 'destination-out';
 			
+			draw.beginPath();
 			draw.arc(r,r,r+10,6.2,0,true);
 			draw.lineWidth = 20;
 			draw.stroke();
 		}
+	},
+	
+	wheel: function(){
+		var draw = Browser.Engine.gecko 
+				? this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crL0, 'before').getContext('2d')
+				: document.getCSSCanvasContext('2d', 'circle', 100, 100)
+			, r = this.radius
+			, d = this.boxH - 1
+			, x = d
+			, y = d
+			, up = false
+			, rgb = [];
+	
+		for (var l = d * 4; l > 0; l--){
+			var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
+			if (hue < 0) hue += 6;
+			var f = Math.floor(hue)
+				, map = [0, Math.round(255 * (f % 2 ? 1 + f - hue : hue - f)), 255]
+				, ind = ['210','201','021','012','102','120'][f];
+			for (var m = 0; m < 3; m++) rgb[ind[m]]=map[m];
+			
+			draw.beginPath();
+			draw.strokeStyle = 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';  
+			draw.moveTo(r,r);
+			draw.lineTo(x,y);
+			draw.stroke(); 
+	
+			if (!(x || y)) up = true;
+			up ? (x < d ? ++x : ++y) : (x ? --x : --y);	
+		}
+		
+		draw.globalCompositeOperation = 'destination-out';
+		draw.beginPath(); 
+		draw.arc(r,r,r+10,6.2,0,true);
+		draw.lineWidth = 20;
+		draw.stroke();
 	}
 });
 
