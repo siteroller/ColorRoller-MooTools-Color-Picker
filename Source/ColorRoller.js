@@ -411,7 +411,7 @@ var ColorRoller = new Class({
 			, r = this.radius
 			, d = this.boxH - 1
 			, x = d
-			, y = 100;
+			, y = d;
 
 			for (var l = pix.length - 4; l > 0; l -= 4){
 				var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
@@ -425,7 +425,7 @@ var ColorRoller = new Class({
 				if (!x-- && y--) x = d;
 			}
 
-			draw.putImageData(img, 0,0);
+			draw.putImageData(img,0,0);
 			draw.globalCompositeOperation = 'destination-out';
 			
 			draw.arc(r,r,r+10,6.2,0,true);
