@@ -358,7 +358,8 @@ var ColorRoller = new Class({
 	setImg: function(img){
 		var els = this.els;
 		[0,1,2].each(function(num){
-			els['crL'+num].set('class','crL' + num + ' crL' + num + this.type + ' crL' + num + this.space);
+			var classname = 'crL' + num;
+			els['crL'+num].set('class', classname + ' ' + (classname += this.type) + ' ' + classname + this.space);
 		}, this);
 		//this.els.crL1.set('class','crL1 crL1'+this.type+' crL1'+this.space);
 		
@@ -447,7 +448,8 @@ var ColorRoller = new Class({
 			//$$('head')[0].adopt(new Element('style',{'text':'v\:*{behavior:url(#default#VML)}'}));
 		switch (Browser.Engine.name){
 			case 'webkit': draw = document.getCSSCanvasContext('2d', 'circle', 100, 100); break;
-			case 'trident':  draw = '<v:group style="width:'+this.boxW+';height:'+this.boxH+'" coordsize="'+this.boxW+','+this.boxH+'">';break;
+			case 'trident': this.els.crL1.adopt(this.els.crCircle); 
+			draw = '<v:group style="width:'+this.boxW+';height:'+this.boxH+'" coordsize="'+this.boxW+','+this.boxH+'">';break;
 			case 'gecko': draw = this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crL0, 'before').getContext('2d'); 
 				draw.mozImageSmoothingEnabled = false;  
 		}
@@ -479,7 +481,7 @@ var ColorRoller = new Class({
 		
 		if (Browser.Engine.trident)
 			// entire function take 350 ms to run, except this line, which moves it to 3900ms to run
-			this.els.crL1.innerHTML = draw+'</v:group>';
+			this.els.crCircle.innerHTML = draw+'</v:group>';
 		else {
 			draw.globalCompositeOperation = 'destination-out';
 			draw.beginPath();

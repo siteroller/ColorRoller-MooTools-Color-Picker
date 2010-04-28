@@ -376,11 +376,14 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 .ff.crL22.crL2B{ background-image:-moz-linear-gradient(left, #000, transparent) }
 .ff.crL22.crL2L{ background-image:-moz-linear-gradient(left, #000, transparent, #fff) }
 */
-.gecko .crL02.crL0W, .gecko .crL03{ background-image:-moz-linear-gradient(left, #000, #fff); }
+v\:*{behavior:url(#default#VML)}
+
+.gecko .crL03,
+.gecko .crL02W{ background-image:-moz-linear-gradient(left, #000, #fff); }
 .gecko .crL01{	background-image: -moz-linear-gradient(left, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); }
 .gecko .crL00{	background-color: transparent !important; }
 
-.crL12.crL1L{
+.crL12L{
 	background-image:
 		-webkit-gradient(linear, left center, right center, from(#000), color-stop(0.5,transparent), to(#fff)), 
 		-webkit-gradient(linear, center bottom, center top, from(grey), to(transparent));
@@ -390,21 +393,21 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00676767, endColorstr=#FF676767);
 	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00676767, endColorstr=#FF676767);
 }
-.crL12.crL1L .crIE0{
+.crL12L .crIE0{
 	height:100%;
 	width:50%;
 	float:left;
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FF000000, endColorstr=#00000000, GradientType=1);
 	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FF000000, endColorstr=#00000000, GradientType=1);
 }
-.crL12.crL1L .crIE1{
+.crL12L .crIE1{
 	height:100%;
 	width:50%;
 	float:right;
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF, endColorstr=#FFFFFFFF, GradientType=1);
 	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF, endColorstr=#FFFFFFFF, GradientType=1);
 }
-.crL12.crL1B{
+.crL12B{
 	background-image:
 		-webkit-gradient(linear, left center, right center, from(#000), to(transparent)), 
 		-webkit-gradient(linear, center bottom, center top, from(#fff), to(transparent)); 
@@ -418,7 +421,7 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 		progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF, endColorstr=#FFFFFFFF)
 		progid:DXImageTransform.Microsoft.gradient(startColorstr=#FF000000, endColorstr=#00000000, GradientType=1);
 }
-.crL12.crL1W, .crL13{ 
+.crL12W, .crL13{ 
 	background-image:-webkit-gradient(linear, left center, right center, from(#000), to(#fff));
 	-webkit-mask-image: -webkit-gradient(linear, center top, center bottom, from(rgba(0,0,0,0)), to(rgba(0,0,0,1)));
 	filter:
@@ -504,6 +507,12 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 	-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFF00FF, endColorstr=#FFFF0000);
 }
 
+.crL1 .crCircle{
+	display:none;
+}
+.crL10 .crCircle{
+	display:block;
+}
 .t1, .t2{
 position:relative;
 height:300px;
