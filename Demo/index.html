@@ -4,6 +4,7 @@
 	<title>ColorRoller</title>
 	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
 	<script type="text/javascript" src="../Archive/mootools-1.2.4-core-yc.js"></script>-->
+	<style>v\:*{behavior:url(#default#VML)}</style>
 	<script type="text/javascript" src="../Archive/moo.124.js"></script>
 	<script type="text/javascript" src="../Color.js/Color.js"></script>
 	<script type="text/javascript" src="../Source/ColorRoller.js"></script>
@@ -11,22 +12,26 @@
 	<script type="text/javascript">
 		window.addEvent('load', function init(){
 			var CRImages = "../Source/Assets/";
+			var start = new Date().getTime();
 			var picker = new ColorRoller({
 				onComplete:function(color){
 					$('colors').set('value', color);
 				}
 			});
 			picker.injectAfter('colors');
-			
+			var stop = new Date().getTime();
+			var executionTime = stop - start;
+			alert("myJavascriptFunction() executed in " + stop+'\n'+start+'\n'+executionTime + " milliseconds");
 		});	
 	</script>
 </head>
 <body>
 Click on box to choose color.<br>
 When done, click check mark in upper right of picker.<br>
-
-<div style="width:250px; height:250px; background-color:green; -webkit-mask-image: -webkit-gradient(radial, center center, 0, center center, 100, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)) );"></div>-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0))) 
- 
+<!--
+<div class="crL1 crL10 crL1W" style="width:250px; height:250px; background-color:green; -webkit-mask-image: -webkit-gradient(radial, center center, 0, center center, 100, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)) );"></div>-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0))) 
+<div class="crL1 crL10 crL1W" style="opacity:0; background-color:#676767; width:250px; height:250px;" ></div>
+-->
 <input id="colors">background:-webkit-gradient( radial, 50% 50%, 0, 50% 50%, 250, from(orange), color-stop(0.2, #fff), to(lightblue) );-webkit-gradient( radial, 500 25%, 20, 500 25%, 40, from(blue), to(#eee));
 <div class="t1">
 	<div class="test1"></div>
@@ -38,3 +43,5 @@ When done, click check mark in upper right of picker.<br>
 </div>
 </body>
 </html>
+
+3.7 -4 seconds !! for the entire function

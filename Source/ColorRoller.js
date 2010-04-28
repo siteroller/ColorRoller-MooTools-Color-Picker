@@ -52,8 +52,8 @@ var ColorRoller = new Class({
 		els.crIcon0.setStyle('background-color', color.rgbToHex());
 		els.crFrame.setStyle('height',0); //('.crClose')
 		this.addEvents();
-		this.draw();
-		//this.wheel();
+		//this.draw();
+		this.wheel();
 		return els.crColorRoller;
 	},
 	
@@ -437,39 +437,55 @@ var ColorRoller = new Class({
 	},
 	
 	wheel: function(){
-		var draw = Browser.Engine.gecko 
-				? this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crL0, 'before').getContext('2d')
-				: document.getCSSCanvasContext('2d', 'circle', 100, 100)
+		var draw
 			, r = this.radius
 			, d = this.boxH - 1
 			, x = d
 			, y = d
-			, up = false
-			, rgb = [];
-	
+			, up = false;
+			//, rgb = [];
+			//$$('head')[0].adopt(new Element('style',{'text':'v\:*{behavior:url(#default#VML)}'}));
+		switch (Browser.Engine.name){
+			case 'webkit': draw = document.getCSSCanvasContext('2d', 'circle', 100, 100); break;
+			case 'trident':  draw = '<v:group style="width:'+this.boxW+';height:'+this.boxH+'" coordsize="'+this.boxW+','+this.boxH+'">';break;
+			case 'gecko': draw = this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crL0, 'before').getContext('2d'); 
+				draw.mozImageSmoothingEnabled = false;  
+		}
+		draw.lineWidth = 3;
+			
 		for (var l = d * 4; l > 0; l--){
 			var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
 			if (hue < 0) hue += 6;
 			var f = Math.floor(hue)
+				, rgb = []
 				, map = [0, Math.round(255 * (f % 2 ? 1 + f - hue : hue - f)), 255]
 				, ind = ['210','201','021','012','102','120'][f];
-			for (var m = 0; m < 3; m++) rgb[ind[m]]=map[m];
+			for (var m = 0; m < 3; m++) rgb[ind.charAt(m)]=map[m];
+			rgb = rgb[0]+','+rgb[1]+','+rgb[2]; //rgb.toString();
 			
-			draw.beginPath();
-			draw.strokeStyle = 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';  
-			draw.moveTo(r,r);
-			draw.lineTo(x,y);
-			draw.stroke(); 
-	
+			if (Browser.Engine.trident) 
+				draw += '<v:line from="'+r+','+r+'" to="'+x+','+y+'" strokecolor=rgb('+rgb+') />'
+			else {			//|| (Browser.Engine.gecko && Browser.Engine.version > 1.9)
+				draw.beginPath();
+				draw.strokeStyle = 'rgb('+rgb+')';  
+				draw.moveTo(r,r);
+				draw.lineTo(x,y);
+				draw.stroke(); 	
+			}
+			
 			if (!(x || y)) up = true;
 			up ? (x < d ? ++x : ++y) : (x ? --x : --y);	
 		}
 		
-		draw.globalCompositeOperation = 'destination-out';
-		draw.beginPath(); 
-		draw.arc(r,r,r+10,6.2,0,true);
-		draw.lineWidth = 20;
-		draw.stroke();
+		if (Browser.Engine.trident)
+			// entire function take 350 ms to run, except this line, which moves it to 3900ms to run
+			this.els.crL1.innerHTML = draw+'</v:group>';
+		else {
+			draw.globalCompositeOperation = 'destination-out';
+			draw.beginPath();
+			draw.lineWidth = 20;
+			draw.arc(r,r,r+10,Math.PI*2,0,true);
+			draw.stroke();
+		}
 	}
 });
-
