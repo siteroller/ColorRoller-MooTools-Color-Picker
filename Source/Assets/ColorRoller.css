@@ -303,7 +303,9 @@ span.crD span{
 	top:0;
 }
 
-v\:*{behavior:url(#default#VML)}
+
+v\:*{behavior: url(#default#VML); antialias: false;}
+
 v:line{width:3px;}
 .gecko .crL03,
 .gecko .crL02W{ background-image:-moz-linear-gradient(left, #000, #fff); }

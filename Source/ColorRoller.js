@@ -444,7 +444,7 @@ var ColorRoller = new Class({
 			, y = d
 			, up = false;
 			//, rgb = [];
-			//$$('head')[0].adopt(new Element('style',{'text':'v\:*{behavior:url(#default#VML)}'}));
+
 		switch (Browser.Engine.name){
 			case 'webkit': draw = document.getCSSCanvasContext('2d', 'circle', 100, 100); break;
 			case 'trident': this.els.crL1.adopt(this.els.crCircle); 
