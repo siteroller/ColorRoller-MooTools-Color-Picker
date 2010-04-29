@@ -54,11 +54,10 @@
 /* Parent Styles */
 .crColorRoller{
 	position:relative;
-	z-index:100;
 }
 .crFrame{
 	overflow:hidden;
-	xposition:absolute;
+	position:absolute;
 }
 .crColorPicker{
 	width:300px;
@@ -152,7 +151,7 @@
 	*/
 }
 .crShade{
-	height:100%;
+	height:100px;
 	width:100%;
 	position:absolute;
 	top:0;

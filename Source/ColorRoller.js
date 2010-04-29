@@ -98,7 +98,6 @@ var ColorRoller = new Class({
 							crCancel.adopt( crX.set('html','+'))//X'&#8855;','&#x2717;'
 						)
 						, crBox.adopt(
-							//crCircle, 
 							crL0, crL1, crL2
 							, crBoxSel.adopt(crBoxSee)
 							, crTriangle.adopt(crTri1, crTri2).setStyle('display','none') //This should be able to be done in one element.
@@ -481,7 +480,8 @@ var ColorRoller = new Class({
 		
 		if (Browser.Engine.trident)
 			// entire function take 350 ms to run, except this line, which moves it to 3900ms to run
-			this.els.crCircle.innerHTML = draw+'</v:group>';
+			this.els.crCircle.innerHTML = draw+'</v:group>\
+				<v:oval style="width:120;height:120;left:-10;top:-10;position:absolute; display:inline-block" filled="false" stroked=t strokeweight=20 strokecolor=silver  />';
 		else {
 			draw.globalCompositeOperation = 'destination-out';
 			draw.beginPath();
