@@ -1,11 +1,3 @@
-.crColorRoller{
-	position:relative;
-	z-index:100;
-}
-.crFrame{
-	overflow:hidden;
-	xposition:absolute;
-}
 /* To change the display effect, modify the closed and opened state. */
 .crClosed{
 	height:0;
@@ -59,7 +51,15 @@
 	background-color:#000;
 }
 
-
+/* Parent Styles */
+.crColorRoller{
+	position:relative;
+	z-index:100;
+}
+.crFrame{
+	overflow:hidden;
+	xposition:absolute;
+}
 .crColorPicker{
 	width:300px;
 	height:150px;
@@ -75,35 +75,55 @@
 .crColorPicker  span{
 	display:inline-block;
 }
+.crBox, .crBar, .crNums, .crBot{
+	float:left;
+	position:relative;
+	margin:5px 5px 0;	
+	/* Would love to use column-count, but no IE support */
+}
+
+
+/* Head */
 .crHead{
+	height:10px;
 	background-image: -moz-linear-gradient(top, white, silver);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(white), to(silver));
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFFFF, endColorstr='silver');
 	-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFFFF, endColorstr='silver');
-	height:10px;
+	border-radius:5px;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
-	border-radius:5px;
+}
+.crCancel{
+	-moz-border-radius:50%;
+	-webkit-border-radius:5px;
+	background-color:#E99999;
+	cursor:pointer;
+	width:18px;
+	height:18px;
+	right:3px;
+	top:2px;
+	position:absolute;
+	text-align:center;
+	background-image:-moz-linear-gradient(top,#FBB1B1,#A53232 49%,#901515 51%, #CC4B4B);
+	background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B1), color-stop(0.49, #A53232), color-stop(0.51, #901515), to(#CC4B4B));
+}
+.crX{
+	-moz-transform:rotate(45deg);
+	-webkit-transform:rotate(45deg);
+	font:bold 25px Helvetica;
+	color:white;
+	text-shadow: #000 0 1px;
+	margin-left:1px;
+	margin-top:-7px;
 }
 
+/* Box */
 .crBox {
 	cursor:crosshair;
 	width:100px;
 	height:100px;
 }
-.bar0{
-	xbackground-image: -moz-linear-gradient(top, rgb(255,0,0),rgb(255,0,255),rgb(0,0,255),rgb(0,255,255),rgb(0,255,0),rgb(255,255,0),rgb(255,0,0));
-	xbackground-image: -moz-linear-gradient(top, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
-	background-image: -moz-linear-gradient(top, #f00,#f0f,#00f,#0ff,#0f0,#ff0,#f00);
-	background-image: -webkit-gradient(linear, center bottom, center top, from(#f00), color-stop(0.166, #ff0),color-stop(0.333, #0f0),color-stop(0.5, #0ff),color-stop(0.666, #00f),color-stop(0.833, #f0f), to(#f00) );
-}
-.bar1{
-	background-image: -moz-linear-gradient(top, white, black);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(white), to(black));
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFFFF, endColorstr=#FF000000);
-	-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFFFF, endColorstr=#FF000000);
-}
-
 .crBoxSel{
 	position:absolute;
 	width:1px;
@@ -131,12 +151,28 @@
 	*	-moz-border-top-colors: #000 #fff; etc.
 	*/
 }
+.crShade{
+	height:100%;
+	width:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	border:0;
+	zoom:1;
+}
+.crRound, .crRound .crL2, .crRound .crL0{
+	-moz-border-radius:50%;
+	-webkit-border-radius:50px; 
+	border-radius:50%;
+}
+
+/* Bar */
 .crBar{
 	cursor:n-resize;
 	width:20px;
 	height:100px;
 }
-.bar0 div.crBarSel,.bar1 div.crBarSel{
+.crBar div.crBarSel{
 	position:absolute;
 	left:-1px;
 	margin-top:-2px;
@@ -145,10 +181,39 @@
 	width:100%;
 	background-color:#fff;
 	border:1px solid black;
+	overflow:hidden;
 }
-.xcrNums{
-	width:150px;
-	margin:5px;
+.bar0{
+	background-image: -moz-linear-gradient(top, #f00,#f0f,#00f,#0ff,#0f0,#ff0,#f00);
+	background-image: -webkit-gradient(linear, center bottom, center top, from(#f00), color-stop(0.166, #ff0),color-stop(0.333, #0f0),color-stop(0.5, #0ff),color-stop(0.666, #00f),color-stop(0.833, #f0f), to(#f00) );
+}
+.bar1{
+	background-image: -moz-linear-gradient(top, white, black);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(white), to(black));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFFFF, endColorstr=#FF000000);
+	-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFFFF, endColorstr=#FF000000);
+}
+
+/* Nums */
+.crNums{
+	width:145px;
+}
+.crNums select{
+	width:63px;
+	height:18px;
+	padding:0;
+	font:12px Tahoma;
+	color:black;
+	border:1px solid #E2E5E9;
+	background-image: -moz-linear-gradient(top, #eee, #C9CED6, #ccc, #CACED6);
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	margin:0 3px 3px;
+	background-color:#eee
+}
+.crNums option{
+	background-color:#fff;
 }
 .crD span.crHex{
 	width:30px;
@@ -165,24 +230,7 @@
 	height:11px;
 	color:#778398;
 }
-select{
-	width:63px;
-	height:18px;
-	padding:0;
-	font:12px Tahoma;
-	color:black;
-	border:1px solid #E2E5E9;
-	background-image: -moz-linear-gradient(top, #eee, #C9CED6, #ccc, #CACED6);
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-	border-radius:3px;
-	margin:0 3px 3px;
-	background-color:#eee
-}
-option{
-	background-color:#fff;
-}
-.crApply, span.crD {
+span.crD, .crApply{
 	width:50px;
 	height:15px;
 	overflow:hidden;
@@ -196,71 +244,18 @@ option{
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#eee), color-stop(0.33, #C9CED6), color-stop(0.66, #ccc), to(#CACED6));
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFFFF, endColorstr='silver');
 	-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFFFF, endColorstr='silver');
-	
+	border-radius:3px;
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
-	border-radius:3px;
 	margin:2px 3px 3px;
 }
 span.crD span{
 	text-shadow: #fff 0 1px;
 	width:15px;
 	vertical-align:baseline;
-
-}
- .crNums .crIHex{
-	width:60px;
 }
 
-.crShade{
-	height:100%;
-	width:100%;
-	position:absolute;
-	top:0;
-	left:0;
-	border:0;
-	zoom:1;
-}
-.crImg, .crImgIE{
-	width:100%;
-	height:100%;
-	position:absolute;
-}
-.crBoxImg{
-	background-image: -moz-linear-gradient (left, rgb(0,0,0), rgb(255,255,255));
-	width:100%;
-	height:100%;
-}
-
-.crHide{
-	display:none
-}
-
-.crCancel{
--moz-border-radius:50%;
--webkit-border-radius:5px;
-background-color:#E99999;
-cursor:pointer;
-width:18px;
-height:18px;
-right:3px;
-top:2px;
-position:absolute;
-text-align:center;
-background-image:-moz-linear-gradient(top,#FBB1B1,#A53232 49%,#901515 51%, #CC4B4B);
-background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B1), color-stop(0.49, #A53232), color-stop(0.51, #901515), to(#CC4B4B));
-}
-.crNums{
-	width:145px;
-}
-.crBox, .crBar, .crNums, .crBot{
-	float:left;
-	position:relative;
-	margin:5px 5px 0;
-	
-	/* Would love to use column-count, but no IE support */
-}
-
+/* Bottom */
 .crBot{
 	width:100%;
 	height:30px;
@@ -279,56 +274,8 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 	vertical-align:middle;
 	margin-left:15px;
 }
-.crX{
-	-moz-transform:rotate(45deg);
-	-webkit-transform:rotate(45deg);
-	font:bold 25px Helvetica;
-	color:white;
-	text-shadow: #000 0 1px;
-	margin-left:1px;
-	margin-top:-7px;
-}
-
-.crComplete {
-	cursor:pointer;
-}
-
-.crRound, .crRound .crL2, .crRound .crL0, .xcrRound *{
-	-moz-border-radius:50%;
-	-webkit-border-radius:50px; 
-	border-radius:50%;
-	xoverflow:hidden;
-	xborder:3px solid black;
-}
-
-.crGradientBW {
-	background-image: url('gradient.png');
-	background-image: linear-gradient(left, black, white);
-	background-image: -moz-linear-gradient(left, black, white);
-	background-image: -webkit-gradient(linear, left center, right center, from(black), to(white));
-	    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='black', EndColorStr='white');
-	-ms-filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='black', EndColorStr='white');
-}
-.crAlphaGradient {
-		-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
-	    filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100, FinishOpacity=0, Style=1, StartX=100,  FinishX=100, StartY=0, FinishY=100);
-	-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100, FinishOpacity=0, Style=1, StartX=100,  FinishX=100, StartY=0, FinishY=100);
-}
-.crShow{
-	height:22;
-	vertical-align:top;
-}
-
-.crCircle{
-	position:relative;
-	overflow:hidden;
-}
-
-.crCircle div{
-	position:absolute;
-	width:80px;
-	height:80px;
-	border:10px solid silver;
+.crBot .crD.crApply {
+	width:50px; vertical-align:middle; margin: 0 5px; cursor:pointer;
 }
 
 /* Triangle picker. Buggy in IE6 */
@@ -349,10 +296,6 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 	border-right:50px solid silver;
 }
 
-.cr3{
-	background-image:-moz-linear-gradient(right, blue, -moz-linear-gradient(top, white, silver));
-}
-
 .crL0, .crL1, .crL2{
 	width:100%;
 	xheight:100%;
@@ -361,23 +304,8 @@ background-image:-webkit-gradient(linear, center top, center bottom, from(#FBB1B
 	top:0;
 }
 
-.crBot .crD.crApply {
-	width:50px; vertical-align:middle; margin: 0 5px; cursor:pointer;
-}
-
-/*
-.gecko .crL02.crL0W, .gecko .crL03.crL0W{ background-image:-moz-linear-gradient(left, #000, #fff) }
-
-.gecko .crL1[style]{background-image:url('abc.png'); }
-
-.gecko .crL12.crL1B{ background-color:#fff }
-.gecko .crL12.crL1L{ background-color:grey }
-
-.ff.crL22.crL2B{ background-image:-moz-linear-gradient(left, #000, transparent) }
-.ff.crL22.crL2L{ background-image:-moz-linear-gradient(left, #000, transparent, #fff) }
-*/
 v\:*{behavior:url(#default#VML)}
-
+v:line{width:3px;}
 .gecko .crL03,
 .gecko .crL02W{ background-image:-moz-linear-gradient(left, #000, #fff); }
 .gecko .crL01{	background-image: -moz-linear-gradient(left, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); }
@@ -434,6 +362,8 @@ v\:*{behavior:url(#default#VML)}
 .crL10{
 	background-image: -webkit-canvas(circle);
 	-webkit-mask-image: -webkit-gradient(radial, center center, 0, center center, 50, from(rgba(0,0,0,0)), to(rgba(0,0,0,1)) );
+	filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0, FinishOpacity=100, Style=2, StartX=0,  FinishX=100, StartY=0, FinishY=100);
+	-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0, FinishOpacity=100, Style=2, StartX=0,  FinishX=100, StartY=0, FinishY=100);
 }
 .crL11{
 	height:100px;
@@ -476,12 +406,14 @@ v\:*{behavior:url(#default#VML)}
 	-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFF00FF, endColorstr=#FFFF0000, GradientType=1);
 }
 
-.bar0 div{
+.crBar div{
 	height:17px;
 	width:100%;
 }
-.bar0 div.crIE6{
+.crBar div.crIE6, .crBar div.crIE11{
 	height:16px;
+}
+.bar0 div.crIE6{
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFF0000, endColorstr=#FFFFFF00);
 	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFF0000, endColorstr=#FFFFFF00);
 }
@@ -502,7 +434,6 @@ v\:*{behavior:url(#default#VML)}
 	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FF0000FF, endColorstr=#FFFF00FF);
 }
 .bar0 div.crIE11{
-	height:16px;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFF00FF, endColorstr=#FFFF0000);
 	-ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFF00FF, endColorstr=#FFFF0000);
 }
@@ -510,32 +441,7 @@ v\:*{behavior:url(#default#VML)}
 .crL1 .crCircle{
 	display:none;
 }
-.crL10 .crCircle{
+div.crL10 div.crCircle{
 	display:block;
-}
-.t1, .t2{
-position:relative;
-height:300px;
-}
-
-.t1 div, .t2 div{
-	position:absolute; 
-	width:200px;
-	height:200px;
-	top:0;
-	left:0;
-}
-.test1{
-	background-image:-moz-linear-gradient(left, #000, #fff);
-}
-.test1a{
-	background-image:-moz-radial-gradient(top right, #f00, transparent);
-}
-
-.test2{
-	background-image:-moz-linear-gradient(top, #f00, transparent);
-	background-color:#fff;
-}
-.test2a{
-	background-image:-moz-linear-gradient(left, #000, transparent);
+	height:100px;
 }
