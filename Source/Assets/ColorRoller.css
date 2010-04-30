@@ -6,6 +6,9 @@
 	height:152px;
 }
 .crColorRoller{
+	display:inline-block;
+	vertical-align:top;
+	min-width:22px;
 	position:relative;
 }
 
