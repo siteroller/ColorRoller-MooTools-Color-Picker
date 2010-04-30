@@ -68,7 +68,7 @@ var ColorRoller = new Class({
 			function(v,k){
 				new Element('option',{'value':k,'text':v,'class':'crO'+k}).inject(++i>4 ? els.crSpace : els.crType);
 			});
-		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Cancel','Isoceles','Right','Icon0','Icon1','Icon2','Circle','Triangle','Tri1','Tri2','Shade','L0','L1','L2','X','V','Bot','Circle'].each(
+		['ColorPicker','Frame','Head','Box','BoxSel','BoxSee','Bar','BarSel','Nums','Val','Icon0','Icon1','Icon2','Circle','Shape','Shade','L0','L1','L2','Cancel','X','V','Bot'].each(
 			function(v){
 				els['cr'+v] = new Element('div',{'class':'cr'+v});
 			});
@@ -83,10 +83,10 @@ var ColorRoller = new Class({
 				els['crA2'+k] = new Element('span');
 				els['crD'+k] = new Element('span',{'class':'crD'}).adopt(els['cr' +k], els['crI'+k]);
 			});
-		
+		/*
 		if (Browser.Engine.trident && Browser.Engine.version < 5)
 				els.crImg = new Element('span').adopt(els.crImgIE = new Element('img',{'class':'crImg'}));
-		
+		*/
 		with(els){		// The evil 'with'. Ran tests, found it efficient and readable.
 			crColorRoller.adopt(
 				crIcon.adopt(
@@ -100,7 +100,7 @@ var ColorRoller = new Class({
 						, crBox.adopt(
 							crL0, crL1, crL2
 							, crBoxSel.adopt(crBoxSee)
-							, crTriangle.adopt(crTri1, crTri2).setStyle('display','none') //This should be able to be done in one element.
+							, crShape //.adopt(crTri1, crTri2).setStyle('display','none') //This should be able to be done in one element.
 							, crShade
 						)
 						, crBar.adopt(crBarSel)
@@ -119,7 +119,7 @@ var ColorRoller = new Class({
 		if (Browser.Engine.trident)
 			for (var grad = 0; grad < 12; grad++ )
 				new Element('div',{'class':'crIE'+grad}).inject(els[grad < 6 ? 'crL1' : 'crBar']);
-		
+		/*
 		if (Browser.Engine.trident && false) {
 			var H = els.crBox.clientHeight;
 			for (var i=1; i<13; i++){
@@ -138,6 +138,7 @@ var ColorRoller = new Class({
 				});
 			}
 		}
+		*/
 	},
 	
 	addEvents: function(){
@@ -378,7 +379,7 @@ var ColorRoller = new Class({
 			: this.els.crImg.set('src', img);//(this.type ? 'clear' : 'crop')
 		if (Browser.Engine.trident) this.els.crCircle.setStyle('display', this.type ? 'none' : 'block'); 
 		*/
-		this.els.crTriangle.setStyle('display', this.type == 3 ? 'block' : 'none'); 
+		this.els.crShape.set('class', 'crShape crShape' + this.type); 
 	},
 	
 	//Events
@@ -447,8 +448,10 @@ var ColorRoller = new Class({
 
 		switch (Browser.Engine.name){
 			case 'webkit': draw = document.getCSSCanvasContext('2d', 'circle', 100, 100); break;
-			case 'trident': this.els.crL1.adopt(this.els.crCircle); 
-			draw = '<v:group style="width:'+this.boxW+';height:'+this.boxH+'" coordsize="'+this.boxW+','+this.boxH+'">';break;
+			case 'trident': 
+				this.els.crL1.adopt(this.els.crCircle); 
+				this.els.crTriangle.set('html', '<v:oval style="width:120;height:120;left:-10;top:-10;position:absolute; display:inline-block" filled="false" stroked=t strokeweight=20 strokecolor=silver coordsize=100,100 />');
+				draw = '<v:group style="width:'+this.boxW+';height:'+this.boxH+'" coordsize="'+this.boxW+','+this.boxH+'">';break;
 			case 'gecko': draw = this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crL0, 'before').getContext('2d'); 
 				draw.mozImageSmoothingEnabled = false;  
 		}
@@ -480,8 +483,7 @@ var ColorRoller = new Class({
 		
 		if (Browser.Engine.trident)
 			// entire function take 350 ms to run, except this line, which moves it to 3900ms to run
-			this.els.crCircle.innerHTML = draw+'</v:group>\
-				<v:oval style="width:120;height:120;left:-10;top:-10;position:absolute; display:inline-block" filled="false" stroked=t strokeweight=20 strokecolor=silver  />';
+			this.els.crCircle.innerHTML = draw+'</v:group>';
 		else {
 			draw.globalCompositeOperation = 'destination-out';
 			draw.beginPath();

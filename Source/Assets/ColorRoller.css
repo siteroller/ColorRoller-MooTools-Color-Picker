@@ -1,9 +1,12 @@
 /* To change the display effect, modify the closed and opened state. */
-.crClosed{
+.crClosed {
 	height:0;
 }
-.crOpen{
+.crOpen {
 	height:152px;
+}
+.crColorRoller{
+	position:relative;
 }
 
 /* 
@@ -13,7 +16,9 @@
 */
 .crIcon{
 	padding: 1px;
-	position:relative;
+	position:absolute;
+	top:0;
+	left:0;
 	background-color: #f0f0f0;
 	border:2px #d3d3d3 solid;
 	display:inline-block;
@@ -38,7 +43,7 @@
 	overflow:hidden;
 	-moz-border-radius:2px;
 	border:3px solid rgba(127,127,127,.3);
-	pointer-events:none;
+	xpointer-events:none;
 }
 .crIcon2{
 	width:6px;
@@ -52,12 +57,11 @@
 }
 
 /* Parent Styles */
-.crColorRoller{
-	position:relative;
-}
 .crFrame{
 	overflow:hidden;
 	position:absolute;
+	top:22px;
+	left:0;
 }
 .crColorPicker{
 	width:300px;
@@ -150,15 +154,16 @@
 	*	-moz-border-top-colors: #000 #fff; etc.
 	*/
 }
-.crShade{
-	height:100px;
+.crL0, .crL1, .crL2, .crShape, .crShade{
 	width:100%;
+	xheight:100%;
+	height:100px;
 	position:absolute;
 	top:0;
 	left:0;
 	border:0;
-	zoom:1;
 }
+
 .crRound, .crRound .crL2, .crRound .crL0{
 	-moz-border-radius:50%;
 	-webkit-border-radius:50px; 
@@ -277,33 +282,8 @@ span.crD span{
 	width:50px; vertical-align:middle; margin: 0 5px; cursor:pointer;
 }
 
-/* Triangle picker. Buggy in IE6 */
-.crTriangle div{
-	position:absolute;
-	border-bottom:100px dotted transparent;
-	width:0;
-	height:0;
-	bottom:0;
-	right:0;
-}
-.crTri1{
-	left:0;
-	border-left:50px solid silver;
-}
-.crTri2{
-	right:0;
-	border-right:50px solid silver;
-}
 
-.crL0, .crL1, .crL2{
-	width:100%;
-	xheight:100%;
-	height:100px;
-	position:absolute;
-	top:0;
-}
-
-
+/* Gradients */
 v\:*{behavior: url(#default#VML); antialias: false;}
 
 v:line{width:3px;}
@@ -446,3 +426,43 @@ div.crL10 div.crCircle{
 	display:block;
 	height:100px;
 }
+/* Triangle */
+.crShape3{ 
+	border-color: transparent silver;
+	border-width:0 50px 100px;
+	line-height:0;
+	height:0px;
+	width:0px;
+	
+	/* Method #1*/
+	border-style:dashed solid;
+	
+	/* Method 2:
+	border-style:solid;
+	_border-bottom-color:#BAD1E6;
+	filter:chroma(#BAD1E6);
+	*/
+}
+/* IE Oval */
+.crShape0 v:oval{
+
+} 
+
+/* Triangle picker. Buggy in IE6 
+.crTriangle div{
+	position:absolute;
+	border-bottom:100px dotted transparent;
+	width:0;
+	height:0;
+	bottom:0;
+	right:0;
+}
+.crTriangle .crTri1{
+	left:0;
+	border-left:50px solid silver;
+}
+.crTriangle .crTri2{
+	right:0;
+	border-right:50px solid silver;
+}
+*/
