@@ -450,7 +450,7 @@ var ColorRoller = new Class({
 			case 'webkit': draw = document.getCSSCanvasContext('2d', 'circle', 100, 100); break;
 			case 'trident': 
 				this.els.crL1.adopt(this.els.crCircle); 
-				this.els.crTriangle.set('html', '<v:oval style="width:120;height:120;left:-10;top:-10;position:absolute; display:inline-block" filled="false" stroked=t strokeweight=20 strokecolor=silver coordsize=100,100 />');
+				this.els.crShape.set('html', '<v:group style="width:100; height:100;" coordsize = "100,100"><v:oval style="width:120;height:120" filled="false" stroked=t strokeweight=20 strokecolor=silver /></v:group>');
 				draw = '<v:group style="width:'+this.boxW+';height:'+this.boxH+'" coordsize="'+this.boxW+','+this.boxH+'">';break;
 			case 'gecko': draw = this.els.crDraw.set({width:this.boxH, height:this.boxH}).inject(this.els.crL0, 'before').getContext('2d'); 
 				draw.mozImageSmoothingEnabled = false;  

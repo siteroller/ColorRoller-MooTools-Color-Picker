@@ -434,19 +434,31 @@ div.crL10 div.crCircle{
 	height:0px;
 	width:0px;
 	
-	/* Method #1*/
+	/* IE6 fix, method #1*/
 	border-style:dashed solid;
 	
 	/* Method 2:
 	border-style:solid;
 	_border-bottom-color:#BAD1E6;
-	filter:chroma(#BAD1E6);
+	filter:Chroma(Color = #BAD1E6);
+	
+	Both methods show the triangle. Neither returns control to the user agent. :(
 	*/
 }
 /* IE Oval */
-.crShape0 v:oval{
 
+.crShape0 {
+	overflow:hidden;
+}
+div.crShape0 v\:group{
+	position:relative;
+	left:-22px; 
+	top:-22px; 
 } 
+.crShape1 v\:group, .crShape2 v\:group, .crShape3 v\:group{
+	display:none;
+}
+
 
 /* Triangle picker. Buggy in IE6 
 .crTriangle div{
