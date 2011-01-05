@@ -1,0 +1,226 @@
+<!doctype>
+<html>
+<head>
+<title></title>
+</head>
+<body>
+<canvas height="150" width="150" id="tutorial"></canvas>
+<canvas height="150" width="150" id="canvas"></canvas>
+<canvas height="150" width="150" id="c2"></canvas>
+<script>
+function draw(){  
+	var canvas = document.getElementById('tutorial');  
+	if (canvas.getContext){ 
+		var ctx = canvas.getContext('2d');  
+
+ctx.beginPath();  
+ctx.moveTo(25,25);  
+ctx.lineTo(100,25);
+ctx.lineTo(100,100);   
+ctx.lineTo(25,100);  
+ctx.closePath(); 
+
+var lingrad = ctx.createLinearGradient(75,25,25,75);  
+lingrad.addColorStop(0, '#00ABEB');  
+lingrad.addColorStop(1, '#fff'); 
+
+//var radialgradient = ctx.createRadialGradient(25,25,0,75,75,25);
+var radialgradient = ctx.createRadialGradient(25,25,50,75,75,10);
+radialgradient.addColorStop(0, '#00ABEB');
+radialgradient.addColorStop(1, '#f00'); 
+ 
+ctx.fillStyle = radialgradient;//lingrad; 
+//ctx.fill();
+ctx.fillRect(25,25,75,75);
+
+//ctx.stroke(); 
+
+//ctx.beginPath();  
+//ctx.moveTo(25,25);  
+//ctx.lineTo(105,25);  
+//ctx.lineTo(25,105); 
+//ctx.lineTo(45,125);  
+//ctx.closePath(); 
+//ctx.stroke();  
+// 	
+	}  
+} 
+
+function draw3(){  
+	var canvas = document.getElementById('tutorial');  
+	if (!canvas.getContext) return; 
+	
+	var ctx = canvas.getContext('2d');  
+	var rg = ctx.createRadialGradient(0,100,20,5,5,1);
+	rg.addColorStop(0, 'brown');
+	rg.addColorStop(0, 'blue');
+	rg.addColorStop(1, 'red');
+	rg.addColorStop(1, 'yellow');
+	ctx.fillStyle = rg;
+	//ctx.fill();
+	ctx.fillRect(0,0,200,200); 
+} 
+
+function draw2() {
+  var ctx = document.getElementById('canvas').getContext('2d');
+
+  // Create gradients
+  var radgrad = ctx.createRadialGradient(45,45,10,125,50,30);
+  radgrad.addColorStop(0, '#f00');
+  radgrad.addColorStop(1, '#00f');
+  radgrad.addColorStop(1, 'rgba(1,159,98,0)');
+  
+  var radgrad2 = ctx.createRadialGradient(105,105,20,112,120,50); // smallX, smallY, smallRadius, LargeX)
+  radgrad2.addColorStop(0, '#FF5F98');
+  radgrad2.addColorStop(0.75, '#FF0188');
+  radgrad2.addColorStop(1, 'rgba(255,1,136,0)');
+
+  var radgrad3 = ctx.createRadialGradient(95,15,15,102,20,40);
+  radgrad3.addColorStop(0, '#00C9FF');
+  radgrad3.addColorStop(0.8, '#00B5E2');
+  radgrad3.addColorStop(1, 'rgba(0,201,255,0)');
+
+  var radgrad4 = ctx.createRadialGradient(0,150,50,0,140,90);
+  radgrad4.addColorStop(0, '#F4F201');
+  radgrad4.addColorStop(0.8, '#E4C700');
+  radgrad4.addColorStop(1, 'rgba(228,199,0,0)');
+  
+  // draw shapes
+  ctx.fillStyle = radgrad4;
+  //ctx.fill();
+  ctx.fillRect(0,0,150,150);
+
+  ctx.fillStyle = radgrad3;
+  ctx.fillRect(0,0,150,150);
+  ctx.fillStyle = radgrad2;
+  ctx.fillRect(0,0,150,150);
+  ctx.fillStyle = radgrad;
+  ctx.fillRect(0,0,150,150);
+  
+}
+
+function draw5() {  
+	var ctx = document.getElementById('canvas').getContext('2d');  
+	ctx.lineWidth = 10;  
+  
+	ctx.lineJoin = 'miter';  
+	ctx.beginPath(); 
+	ctx.moveTo(10,10);
+	//*
+	var grad1 = ctx.createLinearGradient(10,10,50,50);  
+	grad1.addColorStop(0, 'red');  
+	grad1.addColorStop(1, 'yellow'); 
+	
+	//ctx.lineTo(10,10);
+	ctx.lineTo(50,50);  
+	ctx.strokeStyle = grad1;  
+	ctx.stroke();
+	//*/
+	//*
+	//ctx.moveTo(50,50);
+	var grad2 = ctx.createLinearGradient(50,50,100,10);  
+	grad2.addColorStop(0, 'green');  
+	grad2.addColorStop(1, 'blue'); 
+	
+	ctx.strokeStyle = grad2; 
+	ctx.lineTo(100,10);  
+	//ctx.lineTo(150,50);  
+	ctx.stroke();
+	//*/
+	ctx.strokeStyle = lingrad3;   
+} 
+//draw3();
+//draw5();
+function op6(){
+	var context = document.getElementById('canvas').getContext('2d');  
+	// Create an ImageData object.
+	
+}
+function op7(){
+	var ctx = document.getElementById('canvas').getContext('2d'),
+	r = 75; 
+	/*
+	ctx.beginPath();  
+	ctx.moveTo(25,25);  
+	ctx.lineTo(105,25);  
+	ctx.lineTo(25,105);  
+	ctx.fill();
+	*/
+	var imgd = ctx.createImageData(50,50);
+	var pix = imgd.data;
+
+	// Loop over each pixel and set a transparent red.
+	for (var i = 0; n = pix.length, i < n; i += 1) {
+	  pix[i++] = Math.random() * 255; // red channel
+	  pix[i++] = Math.random() * 255; // red channel
+	  pix[i++] = Math.random() * 255; // red channel
+	  pix[i++] = 127; // alpha channel
+	}
+
+	// Draw the ImageData object at the given (x,y) coordinates.
+	ctx.putImageData(imgd, 0,0);
+	/*
+	var radgrad3 = ctx.createRadialGradient(95,15,15,102,20,40);
+	radgrad3.addColorStop(0, '#00C9FF');
+	radgrad3.addColorStop(0.8, '#00B5E2');
+	radgrad3.addColorStop(1, 'rgba(0,201,255,0)');
+	ctx.fillStyle = radgrad3;
+	ctx.fillRect(0,0,150,150);
+	*/
+	//ctx.globalCompositeOperation = 'destination-in';
+	ctx.beginPath();
+	ctx.arc(r,r,r,6.2830,0,true);
+	ctx.arc(r,r,65,0.001,0,false);
+	ctx.closePath();
+	//ctx.stroke();	
+	
+	//	
+	//ctx.arc(r,r,r,0,6.3,true);
+	ctx.fill();
+	
+}
+op7();
+
+function o3(length){
+	var y = 0
+		, x = -1
+		, r = length / 2
+		, context = document.getElementById('c2').getContext('2d')
+		, imgd = context.createImageData(length,length)
+		, pix = imgd.data;
+		length -= 1;
+
+	for (var d = 0; d < pix.length; d+=4){
+		
+		if (++x > length){
+			x = 0;
+			++y;
+		}
+		
+		var hue = Math.atan2(x - r, r - y) * 0.95492965855137201461330258023509;
+		if (hue < 0) hue += 6;
+		
+		var f = Math.floor(hue),
+			map = [0, Math.round(255 * (f % 2 ? 1 + f - hue : hue - f)), 255],
+			ind = ['210','201','021','012','102','120'][f];
+		
+		for (var m = 0; m < 3; m++)	pix[d + +ind[m]] = map[m];
+		pix[d + 3] = 255;
+	}
+	console.log(pix)
+	context.putImageData(imgd, 0,0);
+	context.globalCompositeOperation = 'destination-in';
+	context.arc(r,r,r,7,0,true);
+	context.fill();	
+}
+
+
+</script>
+
+The methods:
+1) Use the triangle made outside the cone when creating a radial gradient between two triangles.
+2) Create a large number of strips and rotate each one above the other.
+3) Fill in the entire thing pixel by pixel. 
+</body>
+
+</html>

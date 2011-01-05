@@ -74,7 +74,7 @@ var ColorRoller = new Class({
 			});
 		$each({R:'inputRGB',G:'inputRGB',B:'inputRGB',0:'input0',S:'inputS',1:'input1',Hex:'inputRGBHex'},//Apply:'close'
 			function(v,k){
-				if (k == 0) k = 0; // Yes, I know this is odd.
+				if (k == 0) k = 0; // Yes, I know this is odd. if (k == 0) +k;
 				els['cr' +k] = new Element('span',{'text':k||'H','class':'cr'+k||'H'});
 				els['crI'+k] = new Element('input',{'type':'text','class':'crI'+k});
 				els['crI'+k].addEvent('keyup',self[v].bind(self));  // combine with previous line

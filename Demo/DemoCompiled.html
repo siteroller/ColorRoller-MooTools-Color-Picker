@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+	<title>ColorRoller</title>
+	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>-->
+	<script type="text/javascript" src="../Archive/mootools-1.2.4-core-yc.js"></script>
+	<script type="text/javascript" src="../Compiled/ColorRoller.js"></script>
+	<link 	type="text/css" rel="stylesheet" href="../Source/Assets/ColorRoller.css">
+	<script type="text/javascript">
+		window.addEvent('load', function init(){
+			var CRImages = "../Source/Assets/";
+			var picker = new ColorRoller({
+				onComplete:function(color){
+					$('colors').set('value', color);
+				}
+			});
+			picker.injectAfter('colors');
+		});	
+	</script>
+</head>
+<body>
+<input id="colors">
+Click on box to choose color.<br>
+When done, click check mark in upper right of picker.<br>
+
+</body>
+</html>
